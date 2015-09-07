@@ -1,16 +1,20 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.sentence.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.pattern.VerbMatcher;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Action;
-import com.rokuan.calliopecore.sentence.Type;
-import com.rokuan.calliopecore.sentence.VerbConjugation;
-import com.rokuan.calliopecore.sentence.Verb.Form;
+import com.rokuan.calliopecore.sentence.Action.ActionType;
+import com.rokuan.calliopecore.sentence.ActionObject;
+import com.rokuan.calliopecore.sentence.IPronoun.PronounSource;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.IVerbalObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounTarget;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 public class VerbConverter {	
 	// existe-t-il / suis-je / m'envoie-t-il
@@ -74,7 +78,7 @@ public class VerbConverter {
 	public static void parseQuestionVerbalGroup(WordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(PAST_QUESTION_PATTERN)){
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-				object.setTarget(new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue())));
+				object.setTarget(new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue())));
 				words.consume();
 			}
 
@@ -84,30 +88,35 @@ public class VerbConverter {
 				words.consume();
 			}
 
-			object.setSubject(new PronounTarget(Type.parseSubjectPronoun(words.getCurrentElement().getValue())));
+			object.setSubject(new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue())));
 			words.consume();
 
-			object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+			//object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+			object.setAction(new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo()));
 			words.consume();
 		} else if(words.syntaxStartsWith(PRESENT_QUESTION_PATTERN)){			
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-				object.setTarget(new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue())));
+				object.setTarget(new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue())));
 				words.consume();
 			}		
 
-			object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+			//object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+			object.setAction(new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo()));
 			words.consume();
 
 			if(words.getCurrentElement().isOfType(WordType.CONJUGATION_LINK)){
 				words.consume();
 			}
 
-			object.setSubject(new PronounTarget(Type.parseSubjectPronoun(words.getCurrentElement().getValue())));
+			object.setSubject(new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue())));
 			words.consume();
 		} else if(words.syntaxStartsWith(IS_THERE_PATTERN)){
 			words.consume();	// y
-
-			object.setAction(Action.VerbAction.THERE_IS);
+			
+			VerbConjugation conjug = new VerbConjugation("y " + words.getCurrentElement().getValue(), (VerbConjugation)words.getCurrentElement().getVerbInfo(), 
+					new Verb("y avoir", false, ActionType.THERE_IS));
+			
+			object.setAction(new ActionObject(conjug.getTense(), conjug));
 			words.consume();
 
 			if(words.getCurrentElement().isOfType(WordType.CONJUGATION_LINK)){
@@ -115,7 +124,7 @@ public class VerbConverter {
 			}
 
 			// TODO: trouver le sujet correct
-			object.setSubject(new PronounTarget(Type.Pronoun.UNDEFINED));
+			object.setSubject(new PronounSubject(new Pronoun(PronounSource.UNDEFINED)));
 			words.consume();
 		}
 	}
@@ -123,7 +132,7 @@ public class VerbConverter {
 	public static void parseAffirmativeConjugatedVerb(WordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(AFFIRMATIVE_VERB_PATTERN)){
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-				object.setTarget(new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue())));
+				object.setTarget(new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue())));
 				words.consume();
 			}
 
@@ -133,9 +142,11 @@ public class VerbConverter {
 
 	public static void parseConjugatedVerb(WordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(CONJUGATED_VERB_PATTERN)){
+			boolean past = false;
+			
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
 				// TODO: affecter le bon attribut selon le verbe
-				object.setDirectObject(new AbstractTarget(Type.parseDirectPronoun(words.getCurrentElement().getValue())));
+				object.setDirectObject(new AbstractTarget(Pronoun.parseDirectPronoun(words.getCurrentElement().getValue())));
 				words.consume();
 			}
 			
@@ -146,6 +157,7 @@ public class VerbConverter {
 					if(words.getCurrentElement().isOfType(WordType.VERB)){
 						words.previous();
 						words.consume();
+						past = true;
 					} else {
 						words.previous();
 					}
@@ -153,7 +165,9 @@ public class VerbConverter {
 			}
 
 			if(words.getCurrentElement().isOfType(WordType.VERB)){
-				object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+				Tense verbTense = words.getCurrentElement().getVerbInfo().getTense();
+				
+				object.setAction(new ActionObject(past ? Tense.PAST : verbTense, words.getCurrentElement().getVerbInfo()));
 				words.consume();
 			}
 			
@@ -165,9 +179,11 @@ public class VerbConverter {
 	}
 
 	public static void parseInfinitiveVerb(WordBuffer words, IVerbalObject object){
+		boolean withAux = false;
+		
 		if(words.syntaxStartsWith(INFINITIVE_PATTERN)){
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-				object.setDirectObject(new AbstractTarget(Type.parseDirectPronoun(words.getCurrentElement().getValue())));
+				object.setDirectObject(new AbstractTarget(Pronoun.parseDirectPronoun(words.getCurrentElement().getValue())));
 				words.consume();
 			}
 			
@@ -178,24 +194,26 @@ public class VerbConverter {
 					if(words.getCurrentElement().isOfType(WordType.VERB)){
 						words.previous();
 						words.consume();
+						withAux = true;
 					} else {
 						words.previous();
 					}
 				}
 			}
 
-			if(words.getCurrentElement().isOfType(WordType.VERB)){
-				object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
+			if(words.getCurrentElement().isOfType(WordType.VERB)){				
+				object.setAction(new ActionObject(withAux ? Tense.PAST : words.getCurrentElement().getVerbInfo().getTense(), 
+						words.getCurrentElement().getVerbInfo()));
 				words.consume();
 			}
 		}
 	}
 
-	private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
+	/*private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
 		if(conjug == null || conjug.getVerb() == null){
 			return Action.VerbAction.UNDEFINED;
 		}
 
 		return (Action.VerbAction)conjug.getVerb().getAction();
-	}
+	}*/
 }

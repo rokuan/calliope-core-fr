@@ -7,8 +7,15 @@ import java.text.SimpleDateFormat;
 
 import org.junit.Test;
 
-import com.rokuan.calliopecore.sentence.Action.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
+import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
+import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.CustomObject;
+import com.rokuan.calliopecore.sentence.Action.ActionType;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.OrderObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject.RequestType;
@@ -59,7 +66,39 @@ public class JsonTest {
 		time.setTimePreposition(TimeContext.WHEN);
 		time.date = new SimpleDateFormat("HH:mm").parse("17:40");
 		
-		obj.action = VerbAction.TURN_ON;
+		/*obj.action = new ActionObject(Tense.PRESENT, new IVerbConjugation() {			
+			@Override
+			public IVerb getVerb() {
+				return new IVerb() {					
+					@Override
+					public boolean hasAction(ActionType arg0) {
+						return arg0 == ActionType.TURN_ON;
+					}
+					
+					@Override
+					public String getName() {
+						return "allumer";
+					}
+				};
+			}
+			
+			@Override
+			public Tense getTense() {
+				return Tense.PRESENT;
+			}
+			
+			@Override
+			public Form getForm() {
+				return Form.IMPERATIVE;
+			}
+			
+			@Override
+			public boolean does(ActionType arg0) {
+				return getVerb().hasAction(arg0);
+			}
+		});*/
+		obj.action = new ActionObject(Tense.PRESENT, 
+				new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "allume", new Verb("allumer", false, ActionType.TURN_ON)));
 		obj.what = customObject;
 		
 		String json = InterpretationObject.toJSON(obj);

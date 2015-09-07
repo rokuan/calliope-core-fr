@@ -7,7 +7,7 @@ import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.content.IPlaceObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CityObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CountryObject;
-import com.rokuan.calliopecore.sentence.structure.data.place.AdditionalPlaceObject;
+import com.rokuan.calliopecore.sentence.structure.data.place.AdditionalPlace;
 import com.rokuan.calliopecore.sentence.structure.data.place.AddressObject;
 import com.rokuan.calliopecore.sentence.structure.data.place.LocationObject;
 import com.rokuan.calliopecore.sentence.structure.data.place.NamedPlaceObject;
@@ -126,7 +126,7 @@ public class PlaceConverter {
 
 		// TODO: gerer les locations pleines (Le musee du Louvre a Paris en France)
 		if(words.syntaxStartsWith(ADDITIONAL_PLACE_PATTERN)){
-			AdditionalPlaceObject additional = new AdditionalPlaceObject();
+			AdditionalPlace additional = new AdditionalPlace();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
 				additional.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getValue());
@@ -211,7 +211,7 @@ public class PlaceConverter {
 		INominalObject result = null;
 
 		if(words.syntaxStartsWith(ADDITIONAL_PLACE_ONLY_PATTERN)){
-			AdditionalPlaceObject custom = new AdditionalPlaceObject();
+			AdditionalPlace custom = new AdditionalPlace();
 			parseAdditionalPlace(custom, words);
 			result = custom;
 		} else if(words.syntaxStartsWith(PLACE_ONLY_PATTERN)){
@@ -238,7 +238,7 @@ public class PlaceConverter {
 		return result;
 	}
 
-	private static void parseAdditionalPlace(AdditionalPlaceObject additional, WordBuffer words){
+	private static void parseAdditionalPlace(AdditionalPlace additional, WordBuffer words){
 		if(words.getCurrentElement().isOfType(WordType.DEFINITE_ARTICLE)){
 			words.consume();
 		}		

@@ -1,8 +1,8 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Type;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.content.ISecondObject;
@@ -13,8 +13,8 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.CharacterObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ColorObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PhoneNumberObject;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounTarget;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.UnitObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.QuantityObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.VerbalGroup;
 
 public class NominalGroupConverter {
@@ -71,13 +71,13 @@ public class NominalGroupConverter {
 			WordPattern.simpleWord(WordType.NUMBER),
 			WordPattern.simpleWord(WordType.NUMBER));
 	
-	private static final WordPattern UNIT_PATTERN = WordPattern.sequence(
+	private static final WordPattern QUANTITY_PATTERN = WordPattern.sequence(
 			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.REAL)),
 			WordPattern.simpleWord(WordType.UNIT));
 	
 	public static final WordPattern SUBJECT_PATTERN = WordPattern.or(
 			OBJECT_PATTERN,
-			UNIT_PATTERN,
+			QUANTITY_PATTERN,
 			PHONE_NUMBER_PATTERN,
 			PlaceConverter.CITY_ONLY_PATTERN,
 			PlaceConverter.COUNTRY_ONLY_PATTERN,
@@ -140,8 +140,8 @@ public class NominalGroupConverter {
 
 		if(words.syntaxStartsWith(OBJECT_PATTERN)){
 			result = parseAdditionalObject(words);
-		} else if(words.syntaxStartsWith(UNIT_PATTERN)){
-			result = parseUnitObject(words);
+		} else if(words.syntaxStartsWith(QUANTITY_PATTERN)){
+			result = parseQuantityObject(words);
 		} else if(words.syntaxStartsWith(PHONE_NUMBER_PATTERN)){
 			PhoneNumberObject phoneNumber = new PhoneNumberObject();
 			StringBuilder builder = new StringBuilder();
@@ -172,7 +172,7 @@ public class NominalGroupConverter {
 		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
 			result = parseAdditionalPerson(words);
 		} else if(words.syntaxStartsWith(PRONOUN_PATTERN)){
-			PronounTarget pronoun = new PronounTarget(Type.parseSubjectPronoun(words.getCurrentElement().getValue()));
+			PronounSubject pronoun = new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue()));
 			words.consume();
 			result = pronoun;
 		} else if(words.syntaxStartsWith(DateConverter.FIXED_DATE_ONLY_PATTERN)){
@@ -199,7 +199,7 @@ public class NominalGroupConverter {
 
 	public static boolean isADirectObject(WordBuffer words){
 		return words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)
-				|| words.syntaxStartsWith(UNIT_PATTERN)
+				|| words.syntaxStartsWith(QUANTITY_PATTERN)
 				|| words.syntaxStartsWith(DIRECT_OBJECT_PATTERN) 
 				|| words.syntaxStartsWith(PERSON_PATTERN);
 	}
@@ -209,8 +209,8 @@ public class NominalGroupConverter {
 
 		if(words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)){
 			result = parseAdditionalObject(words);
-		} else if(words.syntaxStartsWith(UNIT_PATTERN)){
-			result = parseUnitObject(words);
+		} else if(words.syntaxStartsWith(QUANTITY_PATTERN)){
+			result = parseQuantityObject(words);
 		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
 			result = parseAdditionalPerson(words);
 		} else if(words.syntaxStartsWith(DIRECT_OBJECT_PATTERN)){
@@ -340,15 +340,15 @@ public class NominalGroupConverter {
 		return obj;
 	}
 	
-	private static UnitObject parseUnitObject(WordBuffer words){
-		UnitObject obj = new UnitObject();
+	private static QuantityObject parseQuantityObject(WordBuffer words){
+		QuantityObject qty = new QuantityObject();
 		
-		obj.amount = Double.parseDouble(words.getCurrentElement().getValue());
+		qty.amount = Double.parseDouble(words.getCurrentElement().getValue());
 		words.consume();
-		obj.unitType = words.getCurrentElement().getUnitInfo().getUnitType();
+		qty.unitType = words.getCurrentElement().getUnitInfo().getUnitType();
 		words.consume();
 		
-		return obj;
+		return qty;
 	}
 	
 	private static CharacterObject parseCharacterObject(WordBuffer words){

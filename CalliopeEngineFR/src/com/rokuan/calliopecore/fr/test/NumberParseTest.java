@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.rokuan.calliopecore.sentence.structure.data.CountConverter;
+import com.rokuan.calliopecore.fr.data.CountConverter;
 
 public class NumberParseTest {
 	@Test

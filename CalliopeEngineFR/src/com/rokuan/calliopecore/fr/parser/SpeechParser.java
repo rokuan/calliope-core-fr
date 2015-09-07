@@ -1,15 +1,24 @@
 package com.rokuan.calliopecore.fr.parser;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+import com.rokuan.calliopecore.fr.data.CountConverter;
+import com.rokuan.calliopecore.fr.data.DateConverter;
+import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
+import com.rokuan.calliopecore.fr.data.PlaceConverter;
+import com.rokuan.calliopecore.fr.data.VerbConverter;
+import com.rokuan.calliopecore.fr.data.WayConverter;
+import com.rokuan.calliopecore.fr.sentence.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.parser.AbstractParser;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.parser.WordDatabase;
-import com.rokuan.calliopecore.sentence.Action;
+import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.CharacterInfo;
 import com.rokuan.calliopecore.sentence.CityInfo;
 import com.rokuan.calliopecore.sentence.ColorInfo;
@@ -18,33 +27,26 @@ import com.rokuan.calliopecore.sentence.CustomMode;
 import com.rokuan.calliopecore.sentence.CustomObject;
 import com.rokuan.calliopecore.sentence.CustomPerson;
 import com.rokuan.calliopecore.sentence.CustomPlace;
+import com.rokuan.calliopecore.sentence.IVerbConjugation;
 import com.rokuan.calliopecore.sentence.LanguageInfo;
 import com.rokuan.calliopecore.sentence.PlaceInfo;
 import com.rokuan.calliopecore.sentence.PlacePreposition;
 import com.rokuan.calliopecore.sentence.PurposePreposition;
-import com.rokuan.calliopecore.sentence.SentencePattern;
 import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.TransportInfo;
-import com.rokuan.calliopecore.sentence.Type;
 import com.rokuan.calliopecore.sentence.UnitInfo;
-import com.rokuan.calliopecore.sentence.VerbConjugation;
 import com.rokuan.calliopecore.sentence.WayPreposition;
 import com.rokuan.calliopecore.sentence.Word;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.AffirmationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.OrderObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject.QuestionType;
-import com.rokuan.calliopecore.sentence.structure.data.CountConverter;
-import com.rokuan.calliopecore.sentence.structure.data.DateConverter;
-import com.rokuan.calliopecore.sentence.structure.data.NominalGroupConverter;
-import com.rokuan.calliopecore.sentence.structure.data.PlaceConverter;
-import com.rokuan.calliopecore.sentence.structure.data.VerbConverter;
-import com.rokuan.calliopecore.sentence.structure.data.WayConverter;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounTarget;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 
 public final class SpeechParser implements AbstractParser {
@@ -156,19 +158,19 @@ public final class SpeechParser implements AbstractParser {
 			qObj.questionType = QuestionType.YES_NO;
 
 			if(words.getCurrentElement().isOfType(WordType.PERSONAL_PRONOUN)){
-				qObj.target = new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue()));
+				qObj.target = new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue()));
 				words.consume();
 			}
 
 			words.consume();	// AUXILIARY
-			qObj.subject = new PronounTarget(Type.parseSubjectPronoun(words.getCurrentElement().getValue()));
+			qObj.subject = new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue()));
 			words.consume();
 
 			if(words.getCurrentElement().isOfType(WordType.CONJUGATION_LINK)){
 				words.consume();
 			}
 
-			qObj.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
+			qObj.action = new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo());
 			words.consume();
 
 			//qObj.what = parseComplementObject(words);
@@ -178,23 +180,35 @@ public final class SpeechParser implements AbstractParser {
 			//return inter;			
 		} else if(words.syntaxStartsWith(SentencePattern.INDIRECT_ORDER_PATTERN)){
 			OrderObject oObject = new OrderObject();
+			List<IVerbConjugation> additionalVerbs = null;
 
 			if(words.syntaxStartsWith(SentencePattern.IS_ARE_PATTERN)){
 				words.consume();	// est-ce
 				words.consume();	// que
 				words.consume();	// tu
-				words.consume();	// peux/pourrais				
+				
+				additionalVerbs = new ArrayList<IVerbConjugation>();
+				additionalVerbs.add(words.getCurrentElement().getVerbInfo());
+				words.consume();	// peux/pourrais
 			} else {
+				//words.consume();	
+				additionalVerbs = new ArrayList<IVerbConjugation>();
+				additionalVerbs.add(words.getCurrentElement().getVerbInfo());
 				words.consume();	// peux/pourrais
 				words.consume();	// tu
 			}
 
 			if(words.getCurrentElement().isOfType(WordType.PERSONAL_PRONOUN)){
-				oObject.target = new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue()));
+				oObject.target = new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue()));
 				words.consume();
 			}
 
-			oObject.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
+			IVerbConjugation verb = words.getCurrentElement().getVerbInfo();
+			ActionObject action = additionalVerbs == null ? new ActionObject(Tense.PRESENT, verb) 
+			: new ActionObject(Tense.PRESENT, verb, additionalVerbs);
+			
+			//oObject.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
+			oObject.setAction(action);
 			words.consume();
 			//oObject.what = parseComplementObject(words);
 			parseObject(words, oObject);
@@ -206,7 +220,7 @@ public final class SpeechParser implements AbstractParser {
 			// db.findConjugatedVerb(words.get(0)).form == IMPERATIVE
 			OrderObject order = new OrderObject();
 
-			order.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
+			order.action = new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo());
 			words.consume();
 
 			if(NominalGroupConverter.isADirectObject(words)){
@@ -216,19 +230,19 @@ public final class SpeechParser implements AbstractParser {
 
 				if(NominalGroupConverter.isADirectObject(words)){
 					words.previous();
-					order.target = new PronounTarget(Type.parsePossessivePronoun(words.getCurrentElement().getValue()));
+					order.target = new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue()));
 					words.consume();
 				} else {
 					words.previous();
-					order.what = new PronounTarget(Type.parsePossessivePronoun(words.getCurrentElement().getValue()));
+					order.what = new PronounSubject(Pronoun.parseDirectPronoun(words.getCurrentElement().getValue()));
 					words.consume();
 				}
 			} else if(words.isIntoBounds() && words.getCurrentElement().isOfType(WordType.DEFINITE_ARTICLE) && !NominalGroupConverter.isADirectObject(words)){
-				order.what = new AbstractTarget(Type.parseDirectPronoun(words.getCurrentElement().getValue()));
+				order.what = new AbstractTarget(Pronoun.parseDirectPronoun(words.getCurrentElement().getValue()));
 				words.consume();
 
 				if(words.isIntoBounds() && words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-					order.target = new PronounTarget(Type.parseTargetPronoun(words.getCurrentElement().getValue()));
+					order.target = new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue()));
 					words.consume();
 				}
 			}
@@ -308,9 +322,9 @@ public final class SpeechParser implements AbstractParser {
 	}
 
 	//private static Enum<?> getActionFromVerb(VerbConjugation conjug){
-	private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
+	/*private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
 		return (conjug == null || conjug.getVerb() == null) ? Action.VerbAction.UNDEFINED : conjug.getVerb().getAction();
-	}
+	}*/
 
 	private final Word getWord(String q){
 		// TODO: PROPER_NAME, NUMBER
@@ -375,7 +389,7 @@ public final class SpeechParser implements AbstractParser {
 		TimePreposition timePreposition = db.findTimePreposition(q);
 		WayPreposition wayPreposition = db.findWayPreposition(q);
 		PurposePreposition purposePreposition = db.findPurposePreposition(q);
-		VerbConjugation conjugation = db.findConjugation(q);
+		IVerbConjugation conjugation = db.findConjugation(q);
 
 		if(Character.isUpperCase(q.charAt(0))){
 			if(city == null && country == null) {
@@ -454,7 +468,7 @@ public final class SpeechParser implements AbstractParser {
 		if(conjugation != null){
 			types.add(Word.WordType.VERB);
 
-			if(conjugation.getVerb().isAuxiliary()){
+			if(((VerbConjugation)conjugation).getVerb().isAuxiliary()){
 				types.add(Word.WordType.AUXILIARY);
 			}
 		}

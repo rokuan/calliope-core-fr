@@ -6,20 +6,20 @@ import java.text.SimpleDateFormat;
 
 import org.junit.Test;
 
+import com.rokuan.calliopecore.fr.data.DateConverter;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
+import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
+import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.sentence.Action;
+import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.TimePreposition;
-import com.rokuan.calliopecore.sentence.Verb;
-import com.rokuan.calliopecore.sentence.Verb.ConjugationTense;
-import com.rokuan.calliopecore.sentence.Verb.Form;
-import com.rokuan.calliopecore.sentence.Verb.Pronoun;
-import com.rokuan.calliopecore.sentence.VerbConjugation;
 import com.rokuan.calliopecore.sentence.Word;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.content.ITimeObject;
-import com.rokuan.calliopecore.sentence.structure.data.DateConverter;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.TimeAdverbial;
 import com.rokuan.calliopecore.sentence.structure.data.time.TimeAdverbial.TimeContext;
@@ -198,13 +198,13 @@ public class DateParseTest {
 		WordBuffer words = new WordBuffer();
 
 		Word futureBe = new Word("sera", Word.WordType.VERB);
-		Verb toBeVerb = new Verb("être", Action.VerbAction.BE, true);
+		Verb toBeVerb = new Verb("être", true, Action.ActionType.BE);
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "sera", toBeVerb);		
 		toBeConjug.setVerb(toBeVerb);
 		futureBe.setVerbInfo(toBeConjug);
 		
 		Word imperativeAlert = new Word("préviens", Word.WordType.VERB);
-		Verb toAlert = new Verb("prévenir", Action.VerbAction.ALERT, false);
+		Verb toAlert = new Verb("prévenir", false, Action.ActionType.ALERT);
 		VerbConjugation alertConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "préviens", toAlert);		
 		alertConjug.setVerb(toAlert);
 		imperativeAlert.setVerbInfo(alertConjug);		

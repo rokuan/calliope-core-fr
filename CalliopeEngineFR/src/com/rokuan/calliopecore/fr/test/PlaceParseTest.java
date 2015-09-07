@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.rokuan.calliopecore.fr.data.PlaceConverter;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.sentence.CityInfo;
 import com.rokuan.calliopecore.sentence.CountryInfo;
@@ -12,10 +13,9 @@ import com.rokuan.calliopecore.sentence.PlacePreposition;
 import com.rokuan.calliopecore.sentence.Word;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.IPlaceObject;
-import com.rokuan.calliopecore.sentence.structure.data.PlaceConverter;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CityObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CountryObject;
-import com.rokuan.calliopecore.sentence.structure.data.place.AdditionalPlaceObject;
+import com.rokuan.calliopecore.sentence.structure.data.place.AdditionalPlace;
 import com.rokuan.calliopecore.sentence.structure.data.place.LocationObject;
 import com.rokuan.calliopecore.sentence.structure.data.place.NamedPlaceObject;
 import com.rokuan.calliopecore.sentence.structure.data.place.PlaceAdverbial.PlaceContext;
@@ -149,7 +149,7 @@ public class PlaceParseTest {
 		
 		assertEquals(place.getPlaceType(), PlaceType.CUSTOM);
 		
-		AdditionalPlaceObject customPlace = (AdditionalPlaceObject)place;
+		AdditionalPlace customPlace = (AdditionalPlace)place;
 		
 		assertEquals(customPlace.getPlacePreposition(), PlaceContext.NEAR);
 		assertEquals(customPlace.place.getName(), placeName);
