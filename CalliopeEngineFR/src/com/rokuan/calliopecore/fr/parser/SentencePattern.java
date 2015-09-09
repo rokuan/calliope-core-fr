@@ -2,6 +2,7 @@ package com.rokuan.calliopecore.fr.parser;
 
 import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
 import com.rokuan.calliopecore.fr.data.VerbConverter;
+import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.Word.WordType;
 
@@ -21,9 +22,9 @@ public class SentencePattern {
 	public static final WordPattern INDIRECT_ORDER_PATTERN = WordPattern.sequence(
 			WordPattern.or(
 					// Est-ce que tu peux/pourrais
-					WordPattern.sequence(IS_ARE_PATTERN, WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "tu"), WordPattern.simpleVerb("pouvoir")),
+					WordPattern.sequence(IS_ARE_PATTERN, WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "tu"), VerbPattern.simple("pouvoir")),
 					// (Peux/pourrais)-tu
-					WordPattern.sequence(WordPattern.simpleVerb("pouvoir"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "tu"))
+					WordPattern.sequence(VerbPattern.simple("pouvoir"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "tu"))
 					),
 					WordPattern.optional(WordPattern.simpleWord(WordType.PERSONAL_PRONOUN)),
 					WordPattern.simpleWord(WordType.VERB)
@@ -35,7 +36,7 @@ public class SentencePattern {
 	public static final WordPattern AFFIRMATIVE_ORDER = WordPattern.sequence(
 			WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "je"),
 			WordPattern.optional(WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "t|te")),
-			WordPattern.simpleVerb(ORDER_VERB_REGEX),
+			VerbPattern.simple(ORDER_VERB_REGEX),
 			WordPattern.or(
 					WordPattern.sequence(WordPattern.simpleWord("que"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "tu"), WordPattern.optional(WordPattern.simpleWord(WordType.PERSONAL_PRONOUN))),
 					WordPattern.simpleWord("de"))
@@ -59,10 +60,11 @@ public class SentencePattern {
 			);
 
 	// Quel(s/le(s)) est/sont
-	public static final WordPattern INTERROGATIVE_PATTERN = WordPattern.sequence(
+	/*public static final WordPattern INTERROGATIVE_PATTERN = WordPattern.sequence(
 			WordPattern.or(WordPattern.simpleWord(WordType.INTERROGATIVE_PRONOUN), WordPattern.simpleWord(WordType.INTERROGATIVE_ADJECTIVE)),
-			VerbConverter.CONJUGATED_VERB_PATTERN
-			);
+			//VerbConverter.CONJUGATED_VERB_PATTERN
+			);*/
+	public static final WordPattern INTERROGATIVE_PATTERN = WordPattern.or(WordPattern.simpleWord(WordType.INTERROGATIVE_PRONOUN), WordPattern.simpleWord(WordType.INTERROGATIVE_ADJECTIVE));
 	
 	public static final WordPattern AFFIRMATIVE_SENTENCE_PATTERN = WordPattern.sequence(
 			NominalGroupConverter.SUBJECT_PATTERN,

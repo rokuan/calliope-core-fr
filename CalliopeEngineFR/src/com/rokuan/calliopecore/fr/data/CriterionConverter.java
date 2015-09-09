@@ -3,6 +3,7 @@ package com.rokuan.calliopecore.fr.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.Word.WordType;
@@ -78,14 +79,14 @@ public class CriterionConverter {
 		public static final WordPattern SPECIFICATION_HAVE_PATTERN = WordPattern.sequence(
 				WordPattern.or(
 						WordPattern.simpleWord(WordType.PREPOSITION_WITH),
-						WordPattern.sequence(WordPattern.optional(WordPattern.simpleWord(WordType.RELATIVE_PRONOUN, "qui")), WordPattern.simpleVerb("avoir"))
+						WordPattern.sequence(WordPattern.optional(WordPattern.simpleWord(WordType.RELATIVE_PRONOUN, "qui")), VerbPattern.simple("avoir"))
 						),
 						WordPattern.separatedNonEmptyList(FIELD_CRITERIA_PATTERN, WordPattern.optional(WordPattern.simpleWord(WordType.PREPOSITION_AND)))
 				);
 		// qui est/etant le plus proche
 		public static final WordPattern SPECIFICATION_BE_PATTERN = WordPattern.sequence(
 				WordPattern.optional(WordPattern.simpleWord(WordType.RELATIVE_PRONOUN, "qui")),
-				WordPattern.simpleVerb("être"),
+				VerbPattern.simple("être"),
 				WordPattern.separatedNonEmptyList(CRITERIA_PATTERN, WordPattern.optional(WordPattern.simpleWord(WordType.PREPOSITION_AND)))
 				);
 

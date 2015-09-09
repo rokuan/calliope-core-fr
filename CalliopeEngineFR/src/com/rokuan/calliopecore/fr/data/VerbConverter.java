@@ -1,10 +1,11 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.pattern.VerbMatcher;
+import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.parser.WordBuffer;
-import com.rokuan.calliopecore.pattern.VerbMatcher;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
 import com.rokuan.calliopecore.sentence.ActionObject;
@@ -35,7 +36,7 @@ public class VerbConverter {
 	// y avait-il
 	public static final WordPattern IS_THERE_PATTERN = WordPattern.sequence(
 			WordPattern.simpleWord("y"),
-			WordPattern.simpleVerb("avoir"),
+			VerbPattern.simple("avoir"),
 			WordPattern.optional(WordPattern.simpleWord(WordType.CONJUGATION_LINK, "t")),
 			WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il")
 			);
@@ -51,7 +52,7 @@ public class VerbConverter {
 	public static final WordPattern INFINITIVE_PATTERN = WordPattern.sequence(
 			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)),
 			WordPattern.or(
-					WordPattern.sequence(WordPattern.simpleVerb("avoir"), WordPattern.simpleWord(WordType.VERB)),
+					WordPattern.sequence(VerbPattern.simple("avoir"), WordPattern.simpleWord(WordType.VERB)),
 					WordPattern.simple(new VerbMatcher().getBuilder().setForm(Form.INFINITIVE).build())));
 
 	public static final WordPattern QUESTION_VERB_PATTERN = WordPattern.or(
@@ -73,6 +74,10 @@ public class VerbConverter {
 
 	public static boolean isAConjugatedVerb(WordBuffer words){
 		return words.syntaxStartsWith(CONJUGATED_VERB_PATTERN);
+	}
+	
+	public static boolean isAnInfinitiveVerb(WordBuffer words){
+		return words.syntaxStartsWith(INFINITIVE_PATTERN);
 	}
 
 	public static void parseQuestionVerbalGroup(WordBuffer words, IVerbalObject object){

@@ -66,37 +66,6 @@ public class JsonTest {
 		time.setTimePreposition(TimeContext.WHEN);
 		time.date = new SimpleDateFormat("HH:mm").parse("17:40");
 		
-		/*obj.action = new ActionObject(Tense.PRESENT, new IVerbConjugation() {			
-			@Override
-			public IVerb getVerb() {
-				return new IVerb() {					
-					@Override
-					public boolean hasAction(ActionType arg0) {
-						return arg0 == ActionType.TURN_ON;
-					}
-					
-					@Override
-					public String getName() {
-						return "allumer";
-					}
-				};
-			}
-			
-			@Override
-			public Tense getTense() {
-				return Tense.PRESENT;
-			}
-			
-			@Override
-			public Form getForm() {
-				return Form.IMPERATIVE;
-			}
-			
-			@Override
-			public boolean does(ActionType arg0) {
-				return getVerb().hasAction(arg0);
-			}
-		});*/
 		obj.action = new ActionObject(Tense.PRESENT, 
 				new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "allume", new Verb("allumer", false, ActionType.TURN_ON)));
 		obj.what = customObject;

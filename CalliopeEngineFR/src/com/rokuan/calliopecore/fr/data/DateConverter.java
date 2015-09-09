@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.Word;
@@ -107,7 +108,7 @@ public class DateConverter {
 							WordPattern.optional(WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), MINUTES_DEFINITION_PATTERN)))
 			);
 
-	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(WordPattern.simpleWord("quand"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), WordPattern.simpleVerb("être", "sera")); 
+	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(WordPattern.simpleWord("quand"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), VerbPattern.simple("être", "sera")); 
 
 	public static final WordPattern TIME_DECLARATION_PATTERN = WordPattern.sequence(
 			WordPattern.or(

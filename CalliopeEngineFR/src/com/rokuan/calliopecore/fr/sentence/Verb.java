@@ -82,7 +82,7 @@ public class Verb implements IVerb {
         return auxiliary;
     }
 
-	@Override
+	//@Override
 	public String getName() {
 		return verb;
 	}
@@ -90,5 +90,10 @@ public class Verb implements IVerb {
 	@Override
 	public boolean hasAction(ActionType act) {
 		return actions.contains(act);
+	}
+	
+	@Override
+	public Set<ActionType> getActions(){
+		return actions;
 	}
 }

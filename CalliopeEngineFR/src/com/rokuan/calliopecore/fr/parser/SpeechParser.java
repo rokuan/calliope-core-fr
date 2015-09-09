@@ -15,6 +15,7 @@ import com.rokuan.calliopecore.fr.data.VerbConverter;
 import com.rokuan.calliopecore.fr.data.WayConverter;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
+import com.rokuan.calliopecore.fr.structure.Question;
 import com.rokuan.calliopecore.parser.AbstractParser;
 import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.parser.WordDatabase;
@@ -45,7 +46,6 @@ import com.rokuan.calliopecore.sentence.structure.OrderObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject.QuestionType;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 
@@ -55,7 +55,7 @@ public final class SpeechParser implements AbstractParser {
 	public SpeechParser(WordDatabase database){
 		db = database;
 	}
-	
+
 	@Override
 	public InterpretationObject parseText(String text){
 		return this.parseWordBuffer(this.lexSpeech(text));
@@ -146,7 +146,7 @@ public final class SpeechParser implements AbstractParser {
 
 		return buffer;
 	}
-	
+
 	public InterpretationObject parseWordBuffer(WordBuffer words){
 		InterpretationObject inter = null;
 
@@ -186,7 +186,7 @@ public final class SpeechParser implements AbstractParser {
 				words.consume();	// est-ce
 				words.consume();	// que
 				words.consume();	// tu
-				
+
 				additionalVerbs = new ArrayList<IVerbConjugation>();
 				additionalVerbs.add(words.getCurrentElement().getVerbInfo());
 				words.consume();	// peux/pourrais
@@ -206,7 +206,7 @@ public final class SpeechParser implements AbstractParser {
 			IVerbConjugation verb = words.getCurrentElement().getVerbInfo();
 			ActionObject action = additionalVerbs == null ? new ActionObject(Tense.PRESENT, verb) 
 			: new ActionObject(Tense.PRESENT, verb, additionalVerbs);
-			
+
 			//oObject.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
 			oObject.setAction(action);
 			words.consume();
@@ -224,7 +224,7 @@ public final class SpeechParser implements AbstractParser {
 			words.consume();
 
 			if(NominalGroupConverter.isADirectObject(words)){
-				
+
 			} else if(words.isIntoBounds() && words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN) && !NominalGroupConverter.isADirectObject(words)){
 				words.next();
 
@@ -252,17 +252,130 @@ public final class SpeechParser implements AbstractParser {
 		} else if(words.syntaxStartsWith(SentencePattern.INTERROGATIVE_PATTERN)){
 			QuestionObject qObject = new QuestionObject();
 
-			qObject.questionType = QuestionObject.parseInterrogativePronoun(words.getCurrentElement().getValue());
+			// TODO: gerer les cas du style "est-ce que/qu'est ce que"
+			qObject.questionType = Question.parseInterrogativePronoun(words.getCurrentElement().getValue());
 			words.consume();
-			
-			VerbConverter.parseConjugatedVerb(words, qObject);
+
+			switch(qObject.questionType){
+			case HOW:
+				if(VerbConverter.isAnInfinitiveVerb(words)){
+					// Comment aller à la Tour Eiffel
+					VerbConverter.parseInfinitiveVerb(words, qObject);
+				} else {
+					// Comment est la maison du Dr. Watson
+					VerbConverter.parseConjugatedVerb(words, qObject);
+				}
+				break;
+
+			case HOW_MANY:
+				if(NominalGroupConverter.isADirectObject(words)){
+					// Combien de filles a le Dr. March
+					// TODO: affecter les elements aux bons attributs (=> Combien le Dr. March a-t-il de filles)
+					qObject.what = NominalGroupConverter.parseDirectObject(words);
+
+					if(VerbConverter.isAConjugatedVerb(words)){
+						VerbConverter.parseConjugatedVerb(words, qObject);
+						
+						if(NominalGroupConverter.isASubject(words)){
+							qObject.subject = NominalGroupConverter.parseSubject(words);
+						}
+					}
+				} else if(VerbConverter.isAQuestionVerbalForm(words)){
+					// Combien reste-t-il de temps
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
+				}
+				break;
+
+			case WHAT:
+				if(VerbConverter.isAConjugatedVerb(words)){
+					// Quelle est la hauteur du Mt Everest / Que mangent les chiens
+					VerbConverter.parseConjugatedVerb(words, qObject);
+				} else if(NominalGroupConverter.isADirectObject(words)){
+					// Quel train va à Bordeaux
+					qObject.what = NominalGroupConverter.parseDirectObject(words);
+
+					if(VerbConverter.isAConjugatedVerb(words)){
+						VerbConverter.parseConjugatedVerb(words, qObject);
+					}
+				}
+				break;
+
+			case WHEN:
+				if(VerbConverter.isAQuestionVerbalForm(words)){
+					// Quand viendra-t-il
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
+				} else if(VerbConverter.isAConjugatedVerb(words)){
+					// Quand arrivera le train
+					VerbConverter.parseConjugatedVerb(words, qObject);
+				}
+				break;
+
+			case WHERE:
+				if(VerbConverter.isAQuestionVerbalForm(words)){
+					// Où ira-t-il
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
+				} else if(VerbConverter.isAConjugatedVerb(words)){
+					// Où est né John Smith
+					VerbConverter.parseConjugatedVerb(words, qObject);
+				} else if(VerbConverter.isAnInfinitiveVerb(words)){
+					// Où trouver des cadeaux
+					VerbConverter.parseInfinitiveVerb(words, qObject);
+				}
+				break;
+
+			case WHICH:
+				if(NominalGroupConverter.isADirectObject(words)){
+					// Lequel des 7 nains aime les pommes
+					qObject.what = NominalGroupConverter.parseDirectObject(words);
+
+					if(VerbConverter.isAConjugatedVerb(words)){
+						VerbConverter.parseConjugatedVerb(words, qObject);
+					}
+				}
+				break;
+
+			case WHO:
+				if(VerbConverter.isAQuestionVerbalForm(words)){
+					// Qui est-il
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
+				} else if(VerbConverter.isAConjugatedVerb(words)){
+					// Qui est Arnold Schwarzenegger
+					VerbConverter.parseConjugatedVerb(words, qObject);
+				}
+				break;
+				
+			case WHY:
+				if(VerbConverter.isAQuestionVerbalForm(words)){
+					// Pourquoi est-il venu
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
+				} else if(VerbConverter.isAnInfinitiveVerb(words)){
+					// Pourquoi avoir mangé la pomme
+					VerbConverter.parseInfinitiveVerb(words, qObject);
+				}
+				break;
+				
+			case YES_NO:
+				// TODO: ajouter une methode pour parser une phrase affirmative complete 
+				if(NominalGroupConverter.isASubject(words)){
+					// Est-ce que les chats aiment les chiens
+					qObject.subject = NominalGroupConverter.parseSubject(words);
+
+					if(VerbConverter.isAConjugatedVerb(words)){
+						VerbConverter.parseConjugatedVerb(words, qObject);
+					}
+				}
+				break;
+				
+			default:
+				break;
+			}
 
 			parseObject(words, qObject);
 
 			inter = qObject;
-		} else if(words.syntaxStartsWith(SentencePattern.RESULT_QUESTION_PATTERN)){
+		}/* else if(words.syntaxStartsWith(SentencePattern.RESULT_QUESTION_PATTERN)){
 			QuestionObject qObject = new QuestionObject();
-			
+
 			qObject.questionType = QuestionObject.parseInterrogativePronoun(words.getCurrentElement().getValue());			
 			words.consume();
 
@@ -284,13 +397,13 @@ public final class SpeechParser implements AbstractParser {
 			parseObject(words, qObject);
 
 			inter = qObject;
-		} else if(words.syntaxStartsWith(SentencePattern.AFFIRMATIVE_SENTENCE_PATTERN)){
+		}*/ else if(words.syntaxStartsWith(SentencePattern.AFFIRMATIVE_SENTENCE_PATTERN)){
 			AffirmationObject affirm = new AffirmationObject();
-			
+
 			affirm.subject = NominalGroupConverter.parseSubject(words);
-			
+
 			VerbConverter.parseConjugatedVerb(words, affirm);
-			
+
 			parseObject(words, affirm);
 			inter = affirm;
 		} else {
@@ -331,11 +444,11 @@ public final class SpeechParser implements AbstractParser {
 		if(q.matches(DateConverter.FULL_TIME_REGEX) || q.matches(DateConverter.HOUR_ONLY_REGEX)){
 			return new Word(q, Word.WordType.TIME);
 		}
-		
+
 		if(q.matches(CountConverter.REAL_REGEX)){
 			return new Word(q, WordType.REAL);
 		}
-		
+
 		if(q.matches(CountConverter.NUMBER_REGEX)){
 			return new Word(q, WordType.NUMBER);
 		}
@@ -416,19 +529,19 @@ public final class SpeechParser implements AbstractParser {
 		if(country != null){
 			types.add(Word.WordType.COUNTRY);
 		}
-		
+
 		if(transport != null){
 			types.add(WordType.MEAN_OF_TRANSPORT);
 		}
-		
+
 		if(unit != null){
 			types.add(WordType.UNIT);
 		}
-		
+
 		if(character != null){
 			types.add(WordType.PERSON_TYPE);
 		}
-		
+
 		if(place != null){
 			types.add(WordType.PLACE_TYPE);
 		}
@@ -440,11 +553,11 @@ public final class SpeechParser implements AbstractParser {
 		if(cPlace != null){
 			types.add(Word.WordType.ADDITIONAL_PLACE);
 		}
-		
+
 		if(cMode != null){
 			types.add(WordType.MODE);
 		}
-		
+
 		if(cPerson != null){
 			types.add(WordType.PERSON);
 		}
@@ -494,14 +607,14 @@ public final class SpeechParser implements AbstractParser {
 			result.setUnitInfo(unit);
 			result.setCharacterInfo(character);
 			result.setPlaceInfo(place);
-			
+
 			result.setCustomObject(cObject);
 			result.setCustomPlace(cPlace);
 			result.setCustomMode(cMode);
 			result.setCustomPerson(cPerson);
-			
+
 			result.setVerbInfo(conjugation);
-			
+
 			result.setPlacePreposition(placePreposition);
 			result.setTimePreposition(timePreposition);
 			result.setWayPreposition(wayPreposition);
