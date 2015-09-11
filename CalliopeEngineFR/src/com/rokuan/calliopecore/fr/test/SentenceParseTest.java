@@ -79,7 +79,7 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
-		assertEquals(obj.action, ActionType.GO);
+		assertTrue(obj.action.does(ActionType.GO));
 
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.HOW);
@@ -119,7 +119,7 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
-		assertEquals(obj.action, ActionType.GO);
+		assertTrue(obj.action.does(ActionType.GO));
 
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.HOW);
@@ -161,7 +161,7 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
-		assertEquals(obj.action, ActionType.GO);
+		assertTrue(obj.action.does(ActionType.GO));
 
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.HOW);
@@ -203,7 +203,7 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
-		assertEquals(obj.action, ActionType.GO);
+		assertTrue(obj.action.does(ActionType.GO));
 
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.HOW);
@@ -240,7 +240,7 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
-		assertEquals(obj.action, ActionType.BE);
+		assertTrue(obj.action.does(ActionType.BE));
 
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.WHO);
@@ -397,6 +397,9 @@ public class SentenceParseTest {
 		Verb envoyer = new Verb("envoyer", false, ActionType.SEND);
 		VerbConjugation conjugEnvoyer = new VerbConjugation(ConjugationTense.PAST, Form.PARTICIPLE, null, "envoyées", envoyer);
 		envoyees.setVerbInfo(conjugEnvoyer);
+		Verb etre = new Verb("être", true, ActionType.BE);
+		VerbConjugation conjugEtre = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.ILS_ELLES, "sont", etre);
+		sont.setVerbInfo(conjugEtre);
 		
 		words.add(new Word("où", WordType.INTERROGATIVE_ADJECTIVE));
 		words.add(sont);

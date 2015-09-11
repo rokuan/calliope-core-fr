@@ -261,7 +261,7 @@ public final class SpeechParser implements AbstractParser {
 				if(VerbConverter.isAnInfinitiveVerb(words)){
 					// Comment aller à la Tour Eiffel
 					VerbConverter.parseInfinitiveVerb(words, qObject);
-				} else {
+				} else if(VerbConverter.isAConjugatedVerb(words)){
 					// Comment est la maison du Dr. Watson
 					VerbConverter.parseConjugatedVerb(words, qObject);
 				}
@@ -275,7 +275,7 @@ public final class SpeechParser implements AbstractParser {
 
 					if(VerbConverter.isAConjugatedVerb(words)){
 						VerbConverter.parseConjugatedVerb(words, qObject);
-						
+
 						if(NominalGroupConverter.isASubject(words)){
 							qObject.subject = NominalGroupConverter.parseSubject(words);
 						}
@@ -291,10 +291,13 @@ public final class SpeechParser implements AbstractParser {
 					// Quelle est la hauteur du Mt Everest / Que mangent les chiens
 					VerbConverter.parseConjugatedVerb(words, qObject);
 				} else if(NominalGroupConverter.isADirectObject(words)){
-					// Quel train va à Bordeaux
 					qObject.what = NominalGroupConverter.parseDirectObject(words);
 
-					if(VerbConverter.isAConjugatedVerb(words)){
+					if(VerbConverter.isAQuestionVerbalForm(words)){
+						// Quel train va à Bordeaux
+						VerbConverter.parseQuestionVerbalGroup(words, qObject);
+					} else if(VerbConverter.isAConjugatedVerb(words)){
+						// Quel temps fera-t-il demain
 						VerbConverter.parseConjugatedVerb(words, qObject);
 					}
 				}
@@ -314,12 +317,12 @@ public final class SpeechParser implements AbstractParser {
 				if(VerbConverter.isAQuestionVerbalForm(words)){
 					// Où ira-t-il
 					VerbConverter.parseQuestionVerbalGroup(words, qObject);
-				} else if(VerbConverter.isAConjugatedVerb(words)){
-					// Où est né John Smith
-					VerbConverter.parseConjugatedVerb(words, qObject);
 				} else if(VerbConverter.isAnInfinitiveVerb(words)){
 					// Où trouver des cadeaux
 					VerbConverter.parseInfinitiveVerb(words, qObject);
+				} else if(VerbConverter.isAConjugatedVerb(words)){
+					// Où est né John Smith
+					VerbConverter.parseConjugatedVerb(words, qObject);
 				}
 				break;
 
@@ -343,7 +346,7 @@ public final class SpeechParser implements AbstractParser {
 					VerbConverter.parseConjugatedVerb(words, qObject);
 				}
 				break;
-				
+
 			case WHY:
 				if(VerbConverter.isAQuestionVerbalForm(words)){
 					// Pourquoi est-il venu
@@ -353,7 +356,7 @@ public final class SpeechParser implements AbstractParser {
 					VerbConverter.parseInfinitiveVerb(words, qObject);
 				}
 				break;
-				
+
 			case YES_NO:
 				// TODO: ajouter une methode pour parser une phrase affirmative complete 
 				if(NominalGroupConverter.isASubject(words)){
@@ -365,7 +368,7 @@ public final class SpeechParser implements AbstractParser {
 					}
 				}
 				break;
-				
+
 			default:
 				break;
 			}
@@ -581,8 +584,12 @@ public final class SpeechParser implements AbstractParser {
 		if(conjugation != null){
 			types.add(Word.WordType.VERB);
 
-			if(((VerbConjugation)conjugation).getVerb().isAuxiliary()){
-				types.add(Word.WordType.AUXILIARY);
+			try{
+				if(((VerbConjugation)conjugation).getVerb().isAuxiliary()){
+					types.add(Word.WordType.AUXILIARY);
+				}
+			}catch(Exception e){
+
 			}
 		}
 
