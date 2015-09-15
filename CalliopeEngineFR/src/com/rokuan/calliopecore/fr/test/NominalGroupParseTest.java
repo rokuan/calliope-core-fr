@@ -48,6 +48,6 @@ public class NominalGroupParseTest {
 		
 		AdditionalObject obj = (AdditionalObject)nominal;
 		
-		assertEquals(obj.object.getContent(), objectName);
+		assertEquals(obj.object.getName(), objectName);
 	}
 }

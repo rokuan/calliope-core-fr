@@ -360,7 +360,7 @@ public class SentenceParseTest {
 		
 		AdditionalObject customObject = (AdditionalObject)obj.what;
 		
-		assertEquals(customObject.object.getContent(), objectName);
+		assertEquals(customObject.object.getName(), objectName);
 	}
 	
 	@Test
