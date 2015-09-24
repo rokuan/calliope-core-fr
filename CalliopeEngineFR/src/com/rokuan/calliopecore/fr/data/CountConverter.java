@@ -4,12 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
+import com.rokuan.calliopecore.fr.sentence.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
+import com.rokuan.calliopecore.sentence.IPronoun;
 import com.rokuan.calliopecore.sentence.structure.data.count.AllItemsObject;
 import com.rokuan.calliopecore.sentence.structure.data.count.CountObject;
+import com.rokuan.calliopecore.sentence.structure.data.count.CountObject.ArticleType;
 import com.rokuan.calliopecore.sentence.structure.data.count.CountObject.Range;
 import com.rokuan.calliopecore.sentence.structure.data.count.FixedItemObject;
 import com.rokuan.calliopecore.sentence.structure.data.count.LimitedItemsObject;
@@ -66,44 +70,47 @@ public class CountConverter {
 	public static final String NUMERICAL_POSITION_REGEX = "(\\d+(è|e)me$)|(\\d+e$)";
 	
 	public static final WordPattern FIXED_ITEM_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
-			WordPattern.simpleWord(Word.WordType.NUMERICAL_POSITION));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
+			FRWordPattern.simpleWord(Word.WordType.NUMERICAL_POSITION));
 
 	public static final WordPattern FIXED_RANGE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
-			WordPattern.simpleWord(Word.WordType.NUMBER), 
-			WordPattern.simpleWord(Word.WordType.NUMERICAL_POSITION));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
+			FRWordPattern.simpleWord(Word.WordType.NUMBER), 
+			FRWordPattern.simpleWord(Word.WordType.NUMERICAL_POSITION));
 
 	public static final WordPattern ALL_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(Word.WordType.QUANTITY), 
-			WordPattern.simpleWord(Word.WordType.DEFINITE_ARTICLE));
+			FRWordPattern.simpleWord(Word.WordType.QUANTITY), 
+			FRWordPattern.simpleWord(Word.WordType.DEFINITE_ARTICLE));
 	
 	public static final WordPattern QUANTITY_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
-			WordPattern.simpleWord(WordType.NUMBER));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
+			FRWordPattern.simpleWord(WordType.NUMBER));
 
 	public static final WordPattern SIMPLE_ARTICLE_PATTERN = WordPattern.or(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
-			WordPattern.simpleWord(WordType.INDEFINITE_ARTICLE));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
+			FRWordPattern.simpleWord(WordType.INDEFINITE_ARTICLE));
 
 	private static final WordPattern SINGLE_ITEM_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.PREPOSITION_AND)),
-			WordPattern.optional(WordPattern.simpleWord("numéro(s?)")), 
-			WordPattern.simpleWord(WordType.NUMBER));
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.PREPOSITION_AND)),
+			WordPattern.optional(FRWordPattern.simpleWord("numéro(s?)")), 
+			FRWordPattern.simpleWord(WordType.NUMBER));
 
 	private static final WordPattern SINGLE_POSITION_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.PREPOSITION_AND)),
-			WordPattern.simpleWord(WordType.NUMERICAL_POSITION));
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.PREPOSITION_AND)),
+			FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION));
 
+	// TODO: ajouter la quantite
+	private static final WordPattern POSSESSIVE_PATTERN = FRWordPattern.simpleWord(WordType.POSSESSIVE_ADJECTIVE);
+	
 	public static final WordPattern MULTIPLE_ITEMS_PATTERN = WordPattern.sequence(
 			WordPattern.nonEmptyList(SINGLE_ITEM_PATTERN));
 
 	public static final WordPattern MULTIPLE_POSITIONS_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
-			WordPattern.simpleWord(WordType.NUMERICAL_POSITION),
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
+			FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION),
 			WordPattern.nonEmptyList(SINGLE_POSITION_PATTERN));
 
-	public static final WordPattern COUNT_PATTERN = WordPattern.or(FIXED_ITEM_PATTERN, FIXED_RANGE_PATTERN, ALL_PATTERN, QUANTITY_PATTERN, SIMPLE_ARTICLE_PATTERN);
+	public static final WordPattern COUNT_PATTERN = WordPattern.or(FIXED_ITEM_PATTERN, FIXED_RANGE_PATTERN, ALL_PATTERN, QUANTITY_PATTERN, SIMPLE_ARTICLE_PATTERN, POSSESSIVE_PATTERN);
 
 
 	// TODO: les intervalles (du 3eme au 5eme)
@@ -163,12 +170,12 @@ public class CountConverter {
 		return 0;
 	}
 
-	public static boolean isACountData(WordBuffer words){
+	public static boolean isACountData(FRWordBuffer words){
 		// TODO:
 		return words.syntaxStartsWith(COUNT_PATTERN);
 	}
 
-	public static boolean isASuffixCountData(WordBuffer words){
+	public static boolean isASuffixCountData(FRWordBuffer words){
 		return words.syntaxStartsWith(MULTIPLE_ITEMS_PATTERN);
 	}
 
@@ -220,7 +227,7 @@ public class CountConverter {
 		return false;
 	}
 
-	public static CountObject parseCountObject(WordBuffer words){
+	public static CountObject parseCountObject(FRWordBuffer words){
 		if(words.getCurrentIndex() > words.size()){
 			// TODO: error
 			return null;
@@ -290,12 +297,28 @@ public class CountConverter {
 			} else {
 				result = new AllItemsObject();
 			}
+		} else if(words.syntaxStartsWith(POSSESSIVE_PATTERN)){
+			// TODO: integrer le possessif aux autres patterns
+			ArticleType articleType = ArticleType.POSSESSIVE;
+			IPronoun pronoun = Pronoun.parsePossessivePronoun(words.getCurrentElement().getValue());
+			boolean singular = isSingular(words.getCurrentElement().getValue());
+			
+			words.consume();
+			
+			if(singular){
+				result = new FixedItemObject(1);
+			} else {
+				result = new AllItemsObject();
+			}
+			
+			result.definition = articleType;
+			result.possessiveTarget = pronoun;
 		}
 
 		return result;
 	}
 
-	public static CountObject parseSuffixCountObject(WordBuffer words){
+	public static CountObject parseSuffixCountObject(FRWordBuffer words){
 		CountObject result = null;
 
 		if(words.syntaxStartsWith(MULTIPLE_ITEMS_PATTERN)){

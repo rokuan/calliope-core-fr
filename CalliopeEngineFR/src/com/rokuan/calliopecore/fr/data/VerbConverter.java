@@ -1,18 +1,19 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
 import com.rokuan.calliopecore.fr.pattern.VerbMatcher;
 import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.IPronoun.PronounSource;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.IVerbalObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
@@ -20,39 +21,39 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 public class VerbConverter {	
 	// existe-t-il / suis-je / m'envoie-t-il
 	public static final WordPattern PRESENT_QUESTION_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)),
-			WordPattern.simpleWord(WordType.VERB), 
-			WordPattern.optional(WordPattern.simpleWord(WordType.CONJUGATION_LINK)), 
-			WordPattern.simpleWord(WordType.PERSONAL_PRONOUN)); 
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			FRWordPattern.simpleWord(WordType.VERB), 
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.CONJUGATION_LINK)), 
+			FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN)); 
 
 	// a-t-il mangé / suis-je venu / TODO: m'a-t-il donné
 	public static final WordPattern PAST_QUESTION_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)), 
-			WordPattern.simpleWord(WordType.AUXILIARY), 
-			WordPattern.optional(WordPattern.simpleWord(WordType.CONJUGATION_LINK)), 
-			WordPattern.simpleWord(WordType.PERSONAL_PRONOUN), 
-			WordPattern.simpleWord(WordType.VERB));
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)), 
+			FRWordPattern.simpleWord(WordType.AUXILIARY), 
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.CONJUGATION_LINK)), 
+			FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN), 
+			FRWordPattern.simpleWord(WordType.VERB));
 
 	// y avait-il
 	public static final WordPattern IS_THERE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord("y"),
+			FRWordPattern.simpleWord("y"),
 			VerbPattern.simple("avoir"),
-			WordPattern.optional(WordPattern.simpleWord(WordType.CONJUGATION_LINK, "t")),
-			WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il")
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.CONJUGATION_LINK, "t")),
+			FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il")
 			);
 
 	// TODO: prendre en compte les COD entre le verbe et le TARGET_PRONOUN
 	public static final WordPattern CONJUGATED_VERB_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
 			WordPattern.or(
-					WordPattern.sequence(WordPattern.simpleWord(WordType.AUXILIARY), WordPattern.simpleWord(WordType.VERB)),
-					WordPattern.simpleWord(WordType.VERB)));
+					WordPattern.sequence(FRWordPattern.simpleWord(WordType.AUXILIARY), FRWordPattern.simpleWord(WordType.VERB)),
+					FRWordPattern.simpleWord(WordType.VERB)));
 
 	// (me) donner
 	public static final WordPattern INFINITIVE_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
 			WordPattern.or(
-					WordPattern.sequence(VerbPattern.simple("avoir"), WordPattern.simpleWord(WordType.VERB)),
+					WordPattern.sequence(VerbPattern.simple("avoir"), FRWordPattern.simpleWord(WordType.VERB)),
 					WordPattern.simple(new VerbMatcher().getBuilder().setForm(Form.INFINITIVE).build())));
 
 	public static final WordPattern QUESTION_VERB_PATTERN = WordPattern.or(
@@ -64,23 +65,23 @@ public class VerbConverter {
 
 	// TODO: ajouter les negations
 	public static final WordPattern AFFIRMATIVE_VERB_PATTERN = WordPattern.sequence(
-			WordPattern.optional(WordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
 			CONJUGATED_VERB_PATTERN
 			);
 
-	public static boolean isAQuestionVerbalForm(WordBuffer words){
+	public static boolean isAQuestionVerbalForm(FRWordBuffer words){
 		return words.syntaxStartsWith(QUESTION_VERB_PATTERN);
 	}
 
-	public static boolean isAConjugatedVerb(WordBuffer words){
+	public static boolean isAConjugatedVerb(FRWordBuffer words){
 		return words.syntaxStartsWith(CONJUGATED_VERB_PATTERN);
 	}
 	
-	public static boolean isAnInfinitiveVerb(WordBuffer words){
+	public static boolean isAnInfinitiveVerb(FRWordBuffer words){
 		return words.syntaxStartsWith(INFINITIVE_PATTERN);
 	}
 
-	public static void parseQuestionVerbalGroup(WordBuffer words, IVerbalObject object){
+	public static void parseQuestionVerbalGroup(FRWordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(PAST_QUESTION_PATTERN)){
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
 				object.setTarget(new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue())));
@@ -134,7 +135,7 @@ public class VerbConverter {
 		}
 	}
 
-	public static void parseAffirmativeConjugatedVerb(WordBuffer words, IVerbalObject object){
+	public static void parseAffirmativeConjugatedVerb(FRWordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(AFFIRMATIVE_VERB_PATTERN)){
 			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
 				object.setTarget(new PronounSubject(Pronoun.parseTargetPronoun(words.getCurrentElement().getValue())));
@@ -145,7 +146,7 @@ public class VerbConverter {
 		}
 	}
 
-	public static void parseConjugatedVerb(WordBuffer words, IVerbalObject object){
+	public static void parseConjugatedVerb(FRWordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(CONJUGATED_VERB_PATTERN)){
 			boolean past = false;
 			
@@ -183,7 +184,7 @@ public class VerbConverter {
 		}
 	}
 
-	public static void parseInfinitiveVerb(WordBuffer words, IVerbalObject object){
+	public static void parseInfinitiveVerb(FRWordBuffer words, IVerbalObject object){
 		boolean withAux = false;
 		
 		if(words.syntaxStartsWith(INFINITIVE_PATTERN)){

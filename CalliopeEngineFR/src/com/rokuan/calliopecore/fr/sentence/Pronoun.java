@@ -76,7 +76,7 @@ public class Pronoun implements IPronoun {
 		} else if(str.equals("vous")){
 			p = PronounSource.YOU_;
 		} else if(str.equals("leur")){
-			p = PronounSource.HE__SHE__;
+			p = PronounSource.THEY;
 		}
 
 		return new Pronoun(p);
@@ -98,7 +98,27 @@ public class Pronoun implements IPronoun {
 		} else if(str.equals("vous")){
 			p = PronounSource.YOU_;
 		} else if(str.equals("les")){
-			p = PronounSource.HE__SHE__;
+			p = PronounSource.THEY;
+		}
+		
+		return new Pronoun(p);
+	}
+	
+	public static Pronoun parsePossessivePronoun(String str){
+		PronounSource p = PronounSource.UNDEFINED;
+		
+		if(str.equals("mon") || str.equals("ma") || str.equals("mes")){
+			p = PronounSource.I;
+		} else if(str.equals("ton") || str.equals("ta") || str.equals("tes")){
+			p = PronounSource.YOU;
+		} else if(str.equals("son") || str.equals("sa") || str.equals("ses")){
+			p = PronounSource.HE_SHE;
+		} else if(str.equals("notre") || str.equals("nos")){
+			p = PronounSource.WE;
+		} else if(str.equals("votre") || str.equals("vos")){
+			p = PronounSource.YOU_;
+		} else if(str.equals("leur") || str.equals("leurs")){
+			p = PronounSource.THEY;
 		}
 		
 		return new Pronoun(p);

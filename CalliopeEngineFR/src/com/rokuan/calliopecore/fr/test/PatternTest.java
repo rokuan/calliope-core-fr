@@ -4,16 +4,17 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 
 public class PatternTest {
 	@Test
 	public void testSequence(){
-		WordBuffer words = new WordBuffer();
-		WordPattern sequence = WordPattern.sequence(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), WordPattern.simpleWord(WordType.COMMON_NAME));
+		FRWordBuffer words = new FRWordBuffer();
+		WordPattern sequence = WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COMMON_NAME));
 
 		assertFalse(words.syntaxStartsWith(sequence));
 
@@ -27,8 +28,8 @@ public class PatternTest {
 
 	@Test
 	public void testOptional(){
-		WordBuffer words = new WordBuffer();
-		WordPattern optional = WordPattern.optional(WordPattern.simpleWord(WordType.QUANTITY));
+		FRWordBuffer words = new FRWordBuffer();
+		WordPattern optional = WordPattern.optional(FRWordPattern.simpleWord(WordType.QUANTITY));
 
 		assertFalse(words.syntaxStartsWith(optional));
 
@@ -43,8 +44,8 @@ public class PatternTest {
 
 	@Test
 	public void testSimple(){
-		WordBuffer words = new WordBuffer();
-		WordPattern simple = WordPattern.simpleWord(WordType.PROPER_NAME);
+		FRWordBuffer words = new FRWordBuffer();
+		WordPattern simple = FRWordPattern.simpleWord(WordType.PROPER_NAME);
 
 		assertFalse(words.syntaxStartsWith(simple));
 
@@ -58,8 +59,8 @@ public class PatternTest {
 	
 	@Test
 	public void testOr(){
-		WordBuffer words = new WordBuffer();
-		WordPattern or = WordPattern.or(WordPattern.simpleWord(WordType.PROPER_NAME), WordPattern.simpleWord(WordType.COMMON_NAME));
+		FRWordBuffer words = new FRWordBuffer();
+		WordPattern or = WordPattern.or(FRWordPattern.simpleWord(WordType.PROPER_NAME), FRWordPattern.simpleWord(WordType.COMMON_NAME));
 		
 		words.add(new Word("programme", WordType.COMMON_NAME));
 		
@@ -68,9 +69,9 @@ public class PatternTest {
 
 	@Test
 	public void testList(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		WordPattern list = WordPattern.nonEmptyList(
-				WordPattern.sequence(WordPattern.simpleWord(WordType.INDEFINITE_ARTICLE), WordPattern.simpleWord(WordType.COMMON_NAME)));
+				WordPattern.sequence(FRWordPattern.simpleWord(WordType.INDEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COMMON_NAME)));
 
 		assertFalse(words.syntaxStartsWith(list));
 
@@ -86,10 +87,10 @@ public class PatternTest {
 
 	@Test
 	public void testSeparatedList(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		WordPattern separatedList = WordPattern.separatedNonEmptyList(
-				WordPattern.sequence(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), WordPattern.simpleWord(WordType.COMMON_NAME)),
-				WordPattern.optional(WordPattern.simpleWord(WordType.PREPOSITION_AND))
+				WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COMMON_NAME)),
+				WordPattern.optional(FRWordPattern.simpleWord(WordType.PREPOSITION_AND))
 				);
 
 		assertFalse(words.syntaxStartsWith(separatedList));

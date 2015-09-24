@@ -10,12 +10,14 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
 import com.rokuan.calliopecore.sentence.CityInfo;
 import com.rokuan.calliopecore.sentence.CustomObject;
@@ -25,8 +27,6 @@ import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.PlacePreposition;
 import com.rokuan.calliopecore.sentence.TransportInfo;
 import com.rokuan.calliopecore.sentence.WayPreposition;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject.RequestType;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
@@ -52,7 +52,7 @@ import com.rokuan.calliopecore.sentence.structure.data.way.WayAdverbial.WayType;
 public class SentenceParseTest {
 	@Test
 	public void testGoTo(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word go = new Word("aller", Word.WordType.VERB, WordType.COMMON_NAME);
 		Verb toGo = new Verb("aller", false, ActionType.GO);
 		VerbConjugation toGoConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INFINITIVE, null, "aller", toGo);		
@@ -76,7 +76,7 @@ public class SentenceParseTest {
 		words.add(by);
 		words.add(car);
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		assertTrue(obj.action.does(ActionType.GO));
@@ -93,7 +93,7 @@ public class SentenceParseTest {
 
 	@Test
 	public void testGoTo2(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word go = new Word("aller", Word.WordType.VERB);
 		Verb toGo = new Verb("aller", false, ActionType.GO);
 		VerbConjugation toGoConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INFINITIVE, null, "aller", toGo);
@@ -116,7 +116,7 @@ public class SentenceParseTest {
 		words.add(by);
 		words.add(car);
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		assertTrue(obj.action.does(ActionType.GO));
@@ -134,7 +134,7 @@ public class SentenceParseTest {
 	
 	@Test
 	public void testGoTo3(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word go = new Word("aller", Word.WordType.VERB, WordType.COMMON_NAME);
 		Verb toGo = new Verb("aller", false, ActionType.GO);
 		VerbConjugation toGoConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INFINITIVE, null, "aller", toGo);
@@ -158,7 +158,7 @@ public class SentenceParseTest {
 		words.add(by);
 		words.add(plane);
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		assertTrue(obj.action.does(ActionType.GO));
@@ -176,7 +176,7 @@ public class SentenceParseTest {
 	
 	@Test
 	public void testGoTo4(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word go = new Word("aller", Word.WordType.VERB, WordType.COMMON_NAME);
 		Verb toGo = new Verb("aller", false, ActionType.GO);
 		VerbConjugation toGoConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INFINITIVE, null, "aller", toGo);
@@ -200,7 +200,7 @@ public class SentenceParseTest {
 		words.add(by);
 		words.add(walk);
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		assertTrue(obj.action.does(ActionType.GO));
@@ -218,7 +218,7 @@ public class SentenceParseTest {
 
 	@Test
 	public void testWhoIs(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		Word be = new Word("est", Word.WordType.VERB);
 		Verb toBe = new Verb("être", true, ActionType.BE);
@@ -237,7 +237,7 @@ public class SentenceParseTest {
 		/*words.add(new Word("Arnold", WordType.FIRSTNAME));
 		words.add(new Word("Schwarzenegger", WordType.PROPER_NAME));*/
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		assertTrue(obj.action.does(ActionType.BE));
@@ -254,7 +254,7 @@ public class SentenceParseTest {
 
 	@Test
 	public void testDoubleDirectObject(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		Word find = new Word("trouve", WordType.VERB);
 		Verb toFind = new Verb("trouver", false, ActionType.FIND);
@@ -269,7 +269,7 @@ public class SentenceParseTest {
 		words.add(new Word("de", WordType.PREPOSITION_OF));
 		words.add(new Word("chats", WordType.COMMON_NAME));
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		ComplementObject compl = (ComplementObject)obj.what;
 		assertEquals(compl.object, "vidéos");
@@ -279,7 +279,7 @@ public class SentenceParseTest {
 
 	@Test
 	public void testResultQuestion(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		Word make = new Word("fait", WordType.VERB);
 		Verb toMake = new Verb("faire", false, ActionType.DO, ActionType.MAKE);
@@ -292,7 +292,7 @@ public class SentenceParseTest {
 		words.add(make);
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		ComplementObject compl = (ComplementObject)obj.what;
 		assertTrue(obj.action.does(ActionType.DO) && obj.action.does(ActionType.MAKE));
@@ -302,7 +302,7 @@ public class SentenceParseTest {
 
 	@Test
 	public void testTrapQuestion(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		Word make = new Word("fera", WordType.VERB);
 		Verb toMake = new Verb("faire", false, ActionType.DO, ActionType.MAKE);
@@ -317,7 +317,7 @@ public class SentenceParseTest {
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
 		words.add(new Word("demain", WordType.DATE));
 
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		ComplementObject compl = (ComplementObject)obj.what;
 		assertTrue(obj.action.does(ActionType.DO) && obj.action.does(ActionType.MAKE));
@@ -336,7 +336,7 @@ public class SentenceParseTest {
 	
 	@Test
 	public void testObjectSentence(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		String objectName = "lumières de la cuisine";
 		Word light = new Word(objectName, WordType.OBJECT);
 		Word switchOff = new Word("éteinds", WordType.VERB);
@@ -351,10 +351,10 @@ public class SentenceParseTest {
 		words.add(new Word("4", WordType.NUMBER));
 		words.add(light);
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), RequestType.ORDER);
-		assertEquals(obj.action, ActionType.TURN_OFF);
+		assertTrue(obj.action.does(ActionType.TURN_OFF));
 		
 		assertEquals(obj.what.getGroupType(), GroupType.OBJECT);
 		
@@ -365,7 +365,7 @@ public class SentenceParseTest {
 	
 	@Test
 	public void testAffirmativeSentence(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word hate = new Word("détestent", WordType.VERB);
 		Verb toHate = new Verb("détester", false, ActionType.HATE);
 		VerbConjugation hateConjugation = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.ILS_ELLES, "détestent", toHate);
@@ -378,7 +378,7 @@ public class SentenceParseTest {
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("chats", WordType.COMMON_NAME));
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), RequestType.AFFIRMATION);
 		assertEquals(obj.subject.getGroupType(), GroupType.COMPLEMENT);
@@ -386,7 +386,7 @@ public class SentenceParseTest {
 	
 	@Test
 	public void testAffirmativeSentenceWithVerbalSecondObject(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word sont = new Word("sont", WordType.VERB, WordType.AUXILIARY);
 		Word ai = new Word("ai", WordType.VERB, WordType.AUXILIARY);
 		Word envoyees = new Word("envoyées", WordType.VERB, WordType.AUXILIARY);
@@ -412,7 +412,7 @@ public class SentenceParseTest {
 		words.add(envoyees);
 		words.add(new Word("hier", WordType.DATE));
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), RequestType.QUESTION);
 		assertEquals(obj.what.getGroupType(), GroupType.COMPLEMENT);

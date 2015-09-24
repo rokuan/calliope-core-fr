@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.rokuan.calliopecore.fr.data.PlaceConverter;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.CityInfo;
 import com.rokuan.calliopecore.sentence.CountryInfo;
 import com.rokuan.calliopecore.sentence.CustomPlace;
 import com.rokuan.calliopecore.sentence.PlacePreposition;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.IPlaceObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CityObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CountryObject;
@@ -25,7 +25,7 @@ import com.rokuan.calliopecore.sentence.structure.data.place.PlaceAdverbial.Plac
 public class PlaceParseTest {
 	@Test
 	public void testCityParse(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word paris = new Word("Paris", WordType.CITY, WordType.PROPER_NAME);
 		Word in = new Word("à", WordType.PLACE_PREPOSITION);
 
@@ -46,7 +46,7 @@ public class PlaceParseTest {
 	
 	@Test
 	public void testCountryParse(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word france = new Word("France", WordType.COUNTRY);
 		Word in = new Word("en", WordType.PREPOSITION_IN, WordType.PLACE_PREPOSITION);
 		
@@ -68,7 +68,7 @@ public class PlaceParseTest {
 
 	@Test
 	public void testCityAndCountryParse(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word paris = new Word("Paris", WordType.CITY);
 		Word france = new Word("France", WordType.COUNTRY);
 		Word in1 = new Word("à", WordType.PREPOSITION_AT, WordType.PLACE_PREPOSITION);
@@ -96,7 +96,7 @@ public class PlaceParseTest {
 	
 	@Test
 	public void testMonumentParse(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word at = new Word("à", WordType.PLACE_PREPOSITION);		
 
 		at.setPlacePreposition(new PlacePreposition("à", PlaceContext.AT, PlaceType.NAMED_PLACE));
@@ -114,7 +114,7 @@ public class PlaceParseTest {
 	
 	@Test
 	public void testCommonPlaceParse(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word at = new Word("à", WordType.PLACE_PREPOSITION);
 		
 		at.setPlacePreposition(new PlacePreposition("à", PlaceContext.AT, PlaceType.NAMED_PLACE));
@@ -134,7 +134,7 @@ public class PlaceParseTest {
 
 	@Test
 	public void testPlaceWithPreposition(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		String placeName = "Mont Compote Energie";
 		Word near = new Word("à proximité de", WordType.PLACE_PREPOSITION);
 		near.setPlacePreposition(new PlacePreposition("à proximité de", PlaceContext.NEAR, PlaceType.CUSTOM));

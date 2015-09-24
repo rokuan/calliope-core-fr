@@ -7,9 +7,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.rokuan.calliopecore.fr.data.CountConverter;
-import com.rokuan.calliopecore.parser.WordBuffer;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
+import com.rokuan.calliopecore.sentence.IPronoun;
 import com.rokuan.calliopecore.sentence.structure.data.count.CountObject;
 import com.rokuan.calliopecore.sentence.structure.data.count.FixedItemObject;
 import com.rokuan.calliopecore.sentence.structure.data.count.LimitedItemsObject;
@@ -20,7 +21,7 @@ import com.rokuan.calliopecore.sentence.structure.data.count.CountObject.Range;
 public class CountParseTest {
 	@Test
 	public void testSimplePosition() {
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("le", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("premier", WordType.NUMERICAL_POSITION));
 
@@ -38,7 +39,7 @@ public class CountParseTest {
 
 	@Test
 	public void testRangeForFirst(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("5", WordType.NUMBER));
 		words.add(new Word("premiers", WordType.NUMERICAL_POSITION));
@@ -57,7 +58,7 @@ public class CountParseTest {
 
 	@Test
 	public void testRangeForLast(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("7", WordType.NUMBER));
 		words.add(new Word("derniers", WordType.NUMERICAL_POSITION));
@@ -76,7 +77,7 @@ public class CountParseTest {
 	
 	@Test
 	public void testMutiple1(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("numéros", WordType.COMMON_NAME));
 		words.add(new Word("4", WordType.NUMBER));
 		words.add(new Word("5", WordType.NUMBER));
@@ -100,7 +101,7 @@ public class CountParseTest {
 	
 	@Test
 	public void testMutiple2(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("5ème", WordType.NUMERICAL_POSITION));
 		words.add(new Word("8ème", WordType.NUMERICAL_POSITION));
@@ -124,7 +125,7 @@ public class CountParseTest {
 	
 	@Test
 	public void testQuantity(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("4", WordType.NUMBER));
@@ -137,6 +138,18 @@ public class CountParseTest {
 	@Test
 	public void testNumberRegex(){
 		assertTrue("14".matches(CountConverter.NUMBER_REGEX));
+	}
+	
+	@Test
+	public void testPossessiveArticle(){
+		FRWordBuffer words = new FRWordBuffer();
+		
+		words.add(new Word("mon", WordType.POSSESSIVE_ADJECTIVE));
+		
+		CountObject count = CountConverter.parseCountObject(words);
+		
+		assertEquals(count.getType(), CountType.FIXED);
+		assertEquals(count.possessiveTarget.getSource(), IPronoun.PronounSource.I);
 	}
 	
 	@Test

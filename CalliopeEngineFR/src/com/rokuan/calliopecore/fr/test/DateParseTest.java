@@ -7,17 +7,17 @@ import java.text.SimpleDateFormat;
 import org.junit.Test;
 
 import com.rokuan.calliopecore.fr.data.DateConverter;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.Action;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.TimePreposition;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.content.ITimeObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
@@ -33,7 +33,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseFromToDate(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("du", Word.WordType.PREPOSITION_FROM));
 		words.add(new Word("1", Word.WordType.NUMBER));
 		words.add(new Word("janvier", Word.WordType.DATE_MONTH));
@@ -59,7 +59,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseBetweenDate(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("entre", Word.WordType.PREPOSITION_BETWEEN));
 		words.add(new Word("le", Word.WordType.DEFINITE_ARTICLE));
 		words.add(new Word("1er", Word.WordType.NUMERICAL_POSITION));
@@ -87,7 +87,7 @@ public class DateParseTest {
 	
 	@Test
 	public void testParseTimeFull(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h30", Word.WordType.TIME));
 
@@ -106,7 +106,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseTimeHourOnly(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h", Word.WordType.TIME));
 
@@ -125,7 +125,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseTimeRelativeMinutesQuarter(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5", Word.WordType.NUMBER));
 		words.add(new Word("heures", Word.WordType.DATE_UNIT_HOUR));
@@ -148,7 +148,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseTimeRelativeMinutesHalf(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h", Word.WordType.NUMBER));
 		words.add(new Word("et", Word.WordType.PREPOSITION_AND));
@@ -169,7 +169,7 @@ public class DateParseTest {
 
 	@Test
 	public void testParseDateAndTime(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		words.add(new Word("le", Word.WordType.DEFINITE_ARTICLE));
 		words.add(new Word("1er", Word.WordType.NUMERICAL_POSITION));
@@ -195,7 +195,7 @@ public class DateParseTest {
 	
 	@Test
 	public void testParseWhenTime(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 
 		Word futureBe = new Word("sera", Word.WordType.VERB);
 		Verb toBeVerb = new Verb("être", true, Action.ActionType.BE);
@@ -216,7 +216,7 @@ public class DateParseTest {
 		words.add(futureBe);
 		words.add(new Word("15h47", WordType.TIME));
 		
-		InterpretationObject object = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject object = new SpeechParser(null).parseFRWordBuffer(words);
 		//ITimeObject dateObj = DateConverter.parseTimeAdverbial(words);
 		ITimeObject dateObj = object.when;
 		
@@ -233,7 +233,7 @@ public class DateParseTest {
 	
 	@Test
 	public void testParseWithPreposition(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word before = new Word("avant", WordType.TIME_PREPOSITION);
 		before.setTimePreposition(new TimePreposition("avant", TimeContext.BEFORE));
 		
@@ -254,7 +254,7 @@ public class DateParseTest {
 	
 	@Test
 	public void testParseWithContractedPreposition(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word until = new Word("jusqu'au", WordType.TIME_PREPOSITION, WordType.CONTRACTED);
 		until.setTimePreposition(new TimePreposition("jusqu'au", TimeContext.UNTIL));
 		

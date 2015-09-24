@@ -7,11 +7,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
 import com.rokuan.calliopecore.fr.pattern.VerbPattern;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.content.ITimeObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
@@ -29,92 +29,92 @@ public class DateConverter {
 
 	// (NUMBER | NUMERICAL_POSITION) (DATE_MONTH NUMBER?)?
 	private static final WordPattern FROM_DATE_PATTERN = WordPattern.sequence(
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
 			WordPattern.optional(WordPattern.sequence(
-					WordPattern.simpleWord(WordType.DATE_MONTH), 
-					WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER))))
+					FRWordPattern.simpleWord(WordType.DATE_MONTH), 
+					WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER))))
 			);
 	// (NUMBER | NUMERICAL_POSITION) DATE_MONTH NUMBER?
 	private static final WordPattern TO_DATE_PATTERN = WordPattern.sequence(
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
 			WordPattern.sequence(
-					WordPattern.simpleWord(WordType.DATE_MONTH), 
-					WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER)))
+					FRWordPattern.simpleWord(WordType.DATE_MONTH), 
+					WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER)))
 			);
 
 	public static final WordPattern FROM_TO_DATE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(Word.WordType.PREPOSITION_FROM),
-			WordPattern.or(FROM_DATE_PATTERN, WordPattern.simpleWord(WordType.DATE)),
-			WordPattern.simpleWord(Word.WordType.PREPOSITION_TO),
-			WordPattern.or(TO_DATE_PATTERN, WordPattern.simpleWord(WordType.DATE))
+			FRWordPattern.simpleWord(WordType.PREPOSITION_FROM),
+			WordPattern.or(FROM_DATE_PATTERN, FRWordPattern.simpleWord(WordType.DATE)),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_TO),
+			WordPattern.or(TO_DATE_PATTERN, FRWordPattern.simpleWord(WordType.DATE))
 			);
 
 	public static final WordPattern BETWEEN_DATE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_BETWEEN),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_BETWEEN),
 			WordPattern.or(
-					WordPattern.sequence(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FROM_DATE_PATTERN),
-					WordPattern.simpleWord(WordType.DATE)
+					WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FROM_DATE_PATTERN),
+					FRWordPattern.simpleWord(WordType.DATE)
 					),
-					WordPattern.simpleWord(WordType.PREPOSITION_AND),
+					FRWordPattern.simpleWord(WordType.PREPOSITION_AND),
 					WordPattern.or(
-							WordPattern.sequence(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), TO_DATE_PATTERN),
-							WordPattern.simpleWord(WordType.DATE))
+							WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), TO_DATE_PATTERN),
+							FRWordPattern.simpleWord(WordType.DATE))
 			);
 
 	public static final WordPattern DATE_PREPOSITION_PATTERN = WordPattern.or(
-			WordPattern.simpleWord(new WordType[]{ WordType.TIME_PREPOSITION, WordType.CONTRACTED }),
-			WordPattern.sequence(WordPattern.optional(WordPattern.simpleWord(WordType.TIME_PREPOSITION)), WordPattern.simpleWord(WordType.DEFINITE_ARTICLE))
+			FRWordPattern.simpleWord(new WordType[]{ WordType.TIME_PREPOSITION, WordType.CONTRACTED }),
+			WordPattern.sequence(WordPattern.optional(FRWordPattern.simpleWord(WordType.TIME_PREPOSITION)), FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE))
 			);
 
 	public static final WordPattern SINGLE_DATE_ONLY_PATTERN = WordPattern.sequence(
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
-			WordPattern.simpleWord(WordType.DATE_MONTH),
-			WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER))); 
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			FRWordPattern.simpleWord(WordType.DATE_MONTH),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER))); 
 
 	public static final WordPattern FIXED_DATE_ONLY_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
-			WordPattern.simpleWord(WordType.DATE_MONTH),
-			WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER)));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			FRWordPattern.simpleWord(WordType.DATE_MONTH),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER)));
 
 	public static final WordPattern FIXED_DATE_PATTERN = WordPattern.sequence(
 			//WordPattern.sequence(WordPattern.optional(WordPattern.simple(WordType.ANY, "pour")), WordPattern.simple(WordType.DEFINITE_ARTICLE)),
 			DATE_PREPOSITION_PATTERN,
-			WordPattern.optional(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE)),
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
-			WordPattern.simpleWord(WordType.DATE_MONTH),
-			WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER))
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE)),
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			FRWordPattern.simpleWord(WordType.DATE_MONTH),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER))
 			//WordPattern.optional(timePattern)
 			);
 	public static final WordPattern MINUTES_DEFINITION_PATTERN = WordPattern.or(
 			WordPattern.sequence(
-					WordPattern.or(WordPattern.simpleWord("moins"), WordPattern.simpleWord(WordType.PREPOSITION_AND), WordPattern.simpleWord(WordType.INDEFINITE_ARTICLE, "un(e?)"), WordPattern.simpleWord(WordType.PREPOSITION_AND, "et")),
-					WordPattern.optional(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE)),
-					WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord("quart|demi(e?)"))
+					WordPattern.or(FRWordPattern.simpleWord("moins"), FRWordPattern.simpleWord(WordType.PREPOSITION_AND), FRWordPattern.simpleWord(WordType.INDEFINITE_ARTICLE, "un(e?)"), FRWordPattern.simpleWord(WordType.PREPOSITION_AND, "et")),
+					WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE)),
+					WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord("quart|demi(e?)"))
 					));
 
 	public static final String FULL_TIME_REGEX = "(\\d)+h(\\d)+";
 	public static final String HOUR_ONLY_REGEX = "(\\d)+h";
-	private static final WordPattern FULL_TIME_PATTERN = WordPattern.simpleWord(FULL_TIME_REGEX);
-	private static final WordPattern HOUR_ONLY_PATTERN = WordPattern.simpleWord(HOUR_ONLY_REGEX);
+	private static final WordPattern FULL_TIME_PATTERN = FRWordPattern.simpleWord(FULL_TIME_REGEX);
+	private static final WordPattern HOUR_ONLY_PATTERN = FRWordPattern.simpleWord(HOUR_ONLY_REGEX);
 	public static final WordPattern TIME_PATTERN = WordPattern.or(
 			FULL_TIME_PATTERN,
 			WordPattern.sequence(
 					WordPattern.or(
-							WordPattern.sequence(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.DATE_UNIT_HOUR, "heure(s?)")),
+							WordPattern.sequence(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.DATE_UNIT_HOUR, "heure(s?)")),
 							HOUR_ONLY_PATTERN,
-							WordPattern.simpleWord(WordType.DATE_UNIT_HOUR)
+							FRWordPattern.simpleWord(WordType.DATE_UNIT_HOUR)
 							), 
-							WordPattern.optional(WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), MINUTES_DEFINITION_PATTERN)))
+							WordPattern.optional(WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), MINUTES_DEFINITION_PATTERN)))
 			);
 
-	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(WordPattern.simpleWord("quand"), WordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), VerbPattern.simple("être", "sera")); 
+	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(FRWordPattern.simpleWord("quand"), FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), VerbPattern.simple("être", "sera")); 
 
 	public static final WordPattern TIME_DECLARATION_PATTERN = WordPattern.sequence(
 			WordPattern.or(
 					VERBAL_WHEN,
-					WordPattern.simpleWord(WordType.PREPOSITION_AT),
-					WordPattern.simpleWord(WordType.TIME_PREPOSITION)),
+					FRWordPattern.simpleWord(WordType.PREPOSITION_AT),
+					FRWordPattern.simpleWord(WordType.TIME_PREPOSITION)),
 					//WordPattern.simple(WordType.ANY, "pour"), 
 					TIME_PATTERN
 			);
@@ -123,25 +123,25 @@ public class DateConverter {
 	// Direct object patterns
 
 	public static final WordPattern SECOND_OBJECT_DATE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF, "du"),
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
-			WordPattern.simpleWord(WordType.DATE_MONTH),
-			WordPattern.optional(WordPattern.simpleWord(WordType.NUMBER)),
-			WordPattern.optional(WordPattern.sequence(WordPattern.simpleWord(WordType.PREPOSITION_AT), TIME_PATTERN))
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF, "du"),
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.NUMERICAL_POSITION)),
+			FRWordPattern.simpleWord(WordType.DATE_MONTH),
+			WordPattern.optional(FRWordPattern.simpleWord(WordType.NUMBER)),
+			WordPattern.optional(WordPattern.sequence(FRWordPattern.simpleWord(WordType.PREPOSITION_AT), TIME_PATTERN))
 			);
 
 	public static final WordPattern SECOND_OBJECT_TIME_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF, "de"),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF, "de"),
 			TIME_PATTERN
 			);
 
 	public static final WordPattern SINGLE_DATE_SECOND_OBJECT_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
 			SINGLE_DATE_ONLY_PATTERN);
 
-	public static final WordPattern RELATIVE_DATE_PATTERN = WordPattern.simpleWord(WordType.DATE);
+	public static final WordPattern RELATIVE_DATE_PATTERN = FRWordPattern.simpleWord(WordType.DATE);
 
-	public static boolean isATimeAdverbial(WordBuffer words){
+	public static boolean isATimeAdverbial(FRWordBuffer words){
 		return WordPattern.syntaxStartsWith(words, FROM_TO_DATE_PATTERN)
 				|| WordPattern.syntaxStartsWith(words, BETWEEN_DATE_PATTERN)
 				|| WordPattern.syntaxStartsWith(words, FIXED_DATE_PATTERN)
@@ -150,16 +150,16 @@ public class DateConverter {
 		//|| WordPattern.syntaxStartsWith(words, timePattern); 
 	}
 
-	public static boolean isANominalGroup(WordBuffer words){
+	public static boolean isANominalGroup(FRWordBuffer words){
 		return words.syntaxStartsWith(FIXED_DATE_ONLY_PATTERN);
 	}
 
-	public static boolean isAnDateSecondObject(WordBuffer words){
+	public static boolean isAnDateSecondObject(FRWordBuffer words){
 		return WordPattern.syntaxStartsWith(words, SECOND_OBJECT_DATE_PATTERN)
 				|| WordPattern.syntaxStartsWith(words, SECOND_OBJECT_TIME_PATTERN);
 	}
 
-	public static ITimeObject parseTimeAdverbial(WordBuffer words){
+	public static ITimeObject parseTimeAdverbial(FRWordBuffer words){
 		TimeAdverbial result = null;
 
 		if(WordPattern.syntaxStartsWith(words, FROM_TO_DATE_PATTERN)){
@@ -255,7 +255,7 @@ public class DateConverter {
 		return result;
 	}
 
-	public static INominalObject parseNominalDateObject(WordBuffer words){
+	public static INominalObject parseNominalDateObject(FRWordBuffer words){
 		INominalObject result = null;
 
 		if(words.syntaxStartsWith(FIXED_DATE_PATTERN)){
@@ -276,7 +276,7 @@ public class DateConverter {
 		return result;
 	}
 
-	public static ITimeObject parseDirectObjectTimeAdverbial(WordBuffer words){
+	public static ITimeObject parseDirectObjectTimeAdverbial(FRWordBuffer words){
 		if(words.syntaxStartsWith(SECOND_OBJECT_DATE_PATTERN)){
 			words.consume();	// PREPOSITION_OF
 
@@ -302,7 +302,7 @@ public class DateConverter {
 		return null;
 	}
 
-	private static int[] parseDate(WordBuffer words){
+	private static int[] parseDate(FRWordBuffer words){
 		// TODO: modifier si on prend en compte l'heure
 		int[] date = new int[TimeUnit.values().length + 1];
 
@@ -359,7 +359,7 @@ public class DateConverter {
 		return date;
 	}
 
-	private static int[] parseTime(WordBuffer words){
+	private static int[] parseTime(FRWordBuffer words){
 		int[] date = new int[TimeUnit.values().length];
 
 		Arrays.fill(date, DEFAULT_DATE_FIELD_VALUE);

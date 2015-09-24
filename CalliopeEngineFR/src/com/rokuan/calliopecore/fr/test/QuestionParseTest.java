@@ -8,17 +8,17 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.Action;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject.QuestionType;
@@ -28,7 +28,7 @@ import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
 public class QuestionParseTest {
 	@Test
 	public void howManyTimeTest(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word have = new Word("a", WordType.VERB, WordType.AUXILIARY);
 		Verb toHave = new Verb("avoir", true, Action.ActionType.HAVE);
 		VerbConjugation toHaveConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "avoir", toHave);
@@ -53,7 +53,7 @@ public class QuestionParseTest {
 	
 	@Test
 	public void whatIsTest(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB, WordType.COMMON_NAME);
 		Verb toBe = new Verb("être", true, Action.ActionType.BE);
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "être", toBe);
@@ -65,7 +65,7 @@ public class QuestionParseTest {
 		words.add(new Word("la", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("température", WordType.COMMON_NAME));
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		
@@ -76,7 +76,7 @@ public class QuestionParseTest {
 	
 	@Test
 	public void whatWillBeTest(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word willBe = new Word("fera", WordType.VERB);
 		Verb toBe = new Verb("faire", false, Action.ActionType.DO, ActionType.MAKE);
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "faire", toBe);
@@ -90,7 +90,7 @@ public class QuestionParseTest {
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
 		words.add(new Word("demain", WordType.DATE));
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		
@@ -114,7 +114,7 @@ public class QuestionParseTest {
 	
 	@Test
 	public void whatTimeIsItTest(){
-		WordBuffer words = new WordBuffer();
+		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB);
 		Verb toBe = new Verb("être", true, Action.ActionType.BE);
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "être", toBe);
@@ -126,7 +126,7 @@ public class QuestionParseTest {
 		words.add(is);
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
 		
-		InterpretationObject obj = new SpeechParser(null).parseWordBuffer(words);
+		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), InterpretationObject.RequestType.QUESTION);
 		

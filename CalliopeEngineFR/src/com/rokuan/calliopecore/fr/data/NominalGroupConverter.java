@@ -1,9 +1,10 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.content.ISecondObject;
 import com.rokuan.calliopecore.sentence.structure.content.IVerbalObject;
@@ -19,61 +20,61 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.VerbalGroup;
 
 public class NominalGroupConverter {
 	// NominalGroup
-	public static final WordPattern ABSTRACT_TARGET_PATTERN = WordPattern.simpleWord(WordType.POSSESSIVE_ADJECTIVE);
+	public static final WordPattern ABSTRACT_TARGET_PATTERN = FRWordPattern.simpleWord(WordType.POSSESSIVE_ADJECTIVE);
 	//public static final WordPattern PLACE_PATTERN = PlaceConverter.PLACE_PATTERN;		
 
 	// ComplementObject
 	public static final WordPattern DIRECT_OBJECT_PATTERN = WordPattern.sequence(
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
-			WordPattern.simpleWord(WordType.COMMON_NAME),
+			FRWordPattern.simpleWord(WordType.COMMON_NAME),
 			WordPattern.optional(CountConverter.MULTIPLE_ITEMS_PATTERN),
 			WordPattern.optional(CriterionConverter.CRITERIA_PATTERN));	
 
 	public static final WordPattern CUSTOM_OBJECT_PATTERN = WordPattern.sequence(
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
-			WordPattern.simpleWord(WordType.OBJECT));
-	public static final WordPattern CUSTOM_PERSON_PATTERN = WordPattern.simpleWord(WordType.PERSON);
+			FRWordPattern.simpleWord(WordType.OBJECT));
+	public static final WordPattern CUSTOM_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
 
 	public static final WordPattern NAME_PATTERN = WordPattern.or(
-			WordPattern.simpleWord(WordType.OBJECT),
-			WordPattern.simpleWord(WordType.COMMON_NAME)
+			FRWordPattern.simpleWord(WordType.OBJECT),
+			FRWordPattern.simpleWord(WordType.COMMON_NAME)
 			);
 
-	public static final WordPattern FIRST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(WordPattern.simpleWord(WordType.FIRSTNAME));
-	public static final WordPattern LAST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(WordPattern.simpleWord(WordType.PROPER_NAME));
+	public static final WordPattern FIRST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(FRWordPattern.simpleWord(WordType.FIRSTNAME));
+	public static final WordPattern LAST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(FRWordPattern.simpleWord(WordType.PROPER_NAME));
 
 	/*public static final WordPattern PERSON_PATTERN = WordPattern.or(
-			WordPattern.simpleWord(WordType.PERSON)
+			FRWordPattern.simpleWord(WordType.PERSON)
 			// TODO: trouver un moyen de parser les noms non enregistres (ex: Ludwig Van Beethoven)
 			//, LAST_NAME_SEQUENCE_PATTERN,
 			//FIRST_NAME_SEQUENCE_PATTERN,
 			//WordPattern.sequence(FIRST_NAME_SEQUENCE_PATTERN, LAST_NAME_SEQUENCE_PATTERN),
 			//WordPattern.sequence(LAST_NAME_SEQUENCE_PATTERN, FIRST_NAME_SEQUENCE_PATTERN)
 			);*/
-	public static final WordPattern PERSON_PATTERN = WordPattern.simpleWord(WordType.PERSON);
+	public static final WordPattern PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
 	public static final WordPattern CHARACTER_PATTERN = WordPattern.sequence(
 			// TODO: ajouter la prise en charge des articles possessifs
 			CountConverter.COUNT_PATTERN,
-			WordPattern.simpleWord(WordType.PERSON_TYPE));
+			FRWordPattern.simpleWord(WordType.PERSON_TYPE));
 
-	private static final WordPattern PRONOUN_PATTERN = WordPattern.simpleWord(WordType.PERSONAL_PRONOUN);
-	private static final WordPattern COLOR_PATTERN = WordPattern.sequence(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), WordPattern.simpleWord(WordType.COLOR));
+	private static final WordPattern PRONOUN_PATTERN = FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN);
+	private static final WordPattern COLOR_PATTERN = WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COLOR));
 	// TODO: ajouter les adjectifs
-	private static final WordPattern OBJECT_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, WordPattern.simpleWord(WordType.OBJECT));
-	private static final WordPattern COMMON_NAME_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, WordPattern.simpleWord(WordType.COMMON_NAME));
+	private static final WordPattern OBJECT_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, FRWordPattern.simpleWord(WordType.OBJECT));
+	private static final WordPattern COMMON_NAME_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, FRWordPattern.simpleWord(WordType.COMMON_NAME));
 
 	// TODO: 
 	private static final WordPattern PHONE_NUMBER_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
-			WordPattern.simpleWord(WordType.NUMBER),
-			WordPattern.simpleWord(WordType.NUMBER),
-			WordPattern.simpleWord(WordType.NUMBER),
-			WordPattern.simpleWord(WordType.NUMBER),
-			WordPattern.simpleWord(WordType.NUMBER));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE),
+			FRWordPattern.simpleWord(WordType.NUMBER),
+			FRWordPattern.simpleWord(WordType.NUMBER),
+			FRWordPattern.simpleWord(WordType.NUMBER),
+			FRWordPattern.simpleWord(WordType.NUMBER),
+			FRWordPattern.simpleWord(WordType.NUMBER));
 	
 	private static final WordPattern QUANTITY_PATTERN = WordPattern.sequence(
-			WordPattern.or(WordPattern.simpleWord(WordType.NUMBER), WordPattern.simpleWord(WordType.REAL)),
-			WordPattern.simpleWord(WordType.UNIT));
+			WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), FRWordPattern.simpleWord(WordType.REAL)),
+			FRWordPattern.simpleWord(WordType.UNIT));
 	
 	public static final WordPattern SUBJECT_PATTERN = WordPattern.or(
 			OBJECT_PATTERN,
@@ -94,14 +95,14 @@ public class NominalGroupConverter {
 			);
 	
 	private static final WordPattern PERSON_SECOND_OBJECT_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
 			PERSON_PATTERN);			
 	private static final WordPattern COMPLEMENT_SECOND_OBJECT_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
-			WordPattern.simpleWord(WordType.COMMON_NAME));
+			FRWordPattern.simpleWord(WordType.COMMON_NAME));
 	private static final WordPattern CUSTOM_OBJECT_SECOND_OBJECT_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.PREPOSITION_OF),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
 			CUSTOM_OBJECT_PATTERN);
 	
 	private static final WordPattern NOMINAL_SECOND_OBJECT_PATTERN = WordPattern.or(
@@ -110,32 +111,32 @@ public class NominalGroupConverter {
 			PERSON_SECOND_OBJECT_PATTERN);
 	
 	private static final WordPattern VERBAL_SECOND_OBJECT_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord("qu(e?)"),
+			FRWordPattern.simpleWord("qu(e?)"),
 			SUBJECT_PATTERN,
 			VerbConverter.AFFIRMATIVE_VERB_PATTERN
 			);	
 	
 	public static final WordPattern TO_PATTERN = WordPattern.or(
-			WordPattern.sequence(WordPattern.simpleWord(WordType.PREPOSITION_AT, "à"), WordPattern.optional(WordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"))),
-			WordPattern.simpleWord(WordType.PREPOSITION_AT, "au.*")
+			WordPattern.sequence(FRWordPattern.simpleWord(WordType.PREPOSITION_AT, "à"), WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"))),
+			FRWordPattern.simpleWord(WordType.PREPOSITION_AT, "au.*")
 			);
 
 	private static final WordPattern INDIRECT_PERSON_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord("à"),
-			WordPattern.simpleWord(WordType.PERSON));
+			FRWordPattern.simpleWord("à"),
+			FRWordPattern.simpleWord(WordType.PERSON));
 	private static final WordPattern INDIRECT_PERSON_TYPE_PATTERN = WordPattern.sequence(
-			WordPattern.or(WordPattern.simpleWord("à"), WordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"),
-					WordPattern.simpleWord("au")),
-			WordPattern.simpleWord(WordType.PERSON_TYPE));
+			WordPattern.or(FRWordPattern.simpleWord("à"), FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"),
+					FRWordPattern.simpleWord("au")),
+			FRWordPattern.simpleWord(WordType.PERSON_TYPE));
 	public static final WordPattern INDIRECT_OBJECT_PATTERN = WordPattern.or(
 			INDIRECT_PERSON_PATTERN,
 			INDIRECT_PERSON_TYPE_PATTERN);
 
-	public static boolean isASubject(WordBuffer words){
+	public static boolean isASubject(FRWordBuffer words){
 		return words.syntaxStartsWith(SUBJECT_PATTERN);
 	}
 
-	public static INominalObject parseSubject(WordBuffer words){
+	public static INominalObject parseSubject(FRWordBuffer words){
 		INominalObject result = null;
 
 		if(words.syntaxStartsWith(OBJECT_PATTERN)){
@@ -197,14 +198,14 @@ public class NominalGroupConverter {
 		return result;
 	}
 
-	public static boolean isADirectObject(WordBuffer words){
+	public static boolean isADirectObject(FRWordBuffer words){
 		return words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)
 				|| words.syntaxStartsWith(QUANTITY_PATTERN)
 				|| words.syntaxStartsWith(DIRECT_OBJECT_PATTERN) 
 				|| words.syntaxStartsWith(PERSON_PATTERN);
 	}
 
-	public static INominalObject parseDirectObject(WordBuffer words){
+	public static INominalObject parseDirectObject(FRWordBuffer words){
 		INominalObject result = null;
 
 		if(words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)){
@@ -220,11 +221,11 @@ public class NominalGroupConverter {
 		return result;
 	}
 
-	public static boolean isAnIndirectObject(WordBuffer words){
+	public static boolean isAnIndirectObject(FRWordBuffer words){
 		return words.syntaxStartsWith(INDIRECT_OBJECT_PATTERN);
 	}
 
-	public static INominalObject parseIndirectObject(WordBuffer words){
+	public static INominalObject parseIndirectObject(FRWordBuffer words){
 		INominalObject result = null;
 
 		if(words.syntaxStartsWith(INDIRECT_PERSON_PATTERN)){
@@ -255,11 +256,11 @@ public class NominalGroupConverter {
 		return result;
 	}
 	
-	public static boolean isANominalSecondObject(WordBuffer words){
+	public static boolean isANominalSecondObject(FRWordBuffer words){
 		return words.syntaxStartsWith(NOMINAL_SECOND_OBJECT_PATTERN);
 	}
 	
-	public static INominalObject parseNominalSecondObject(WordBuffer words){
+	public static INominalObject parseNominalSecondObject(FRWordBuffer words){
 		INominalObject result = null;
 		
 		if(words.syntaxStartsWith(CUSTOM_OBJECT_SECOND_OBJECT_PATTERN)){
@@ -278,11 +279,11 @@ public class NominalGroupConverter {
 		return result;
 	}
 	
-	public static boolean isAVerbalSecondObject(WordBuffer words){
+	public static boolean isAVerbalSecondObject(FRWordBuffer words){
 		return words.syntaxStartsWith(VERBAL_SECOND_OBJECT_PATTERN);
 	}
 	
-	public static IVerbalObject parseVerbalSecondObject(WordBuffer words){
+	public static IVerbalObject parseVerbalSecondObject(FRWordBuffer words){
 		VerbalGroup result = null;
 		
 		if(words.syntaxStartsWith(VERBAL_SECOND_OBJECT_PATTERN)){
@@ -315,7 +316,7 @@ public class NominalGroupConverter {
 		return result;
 	}
 	
-	private static void parseSecondObjects(WordBuffer words, ISecondObject obj){
+	private static void parseSecondObjects(FRWordBuffer words, ISecondObject obj){
 		if(isANominalSecondObject(words)){
 			obj.setNominalSecondObject(parseNominalSecondObject(words));
 		}
@@ -325,7 +326,7 @@ public class NominalGroupConverter {
 		}
 	}
 
-	private static AdditionalObject parseAdditionalObject(WordBuffer words){
+	private static AdditionalObject parseAdditionalObject(FRWordBuffer words){
 		AdditionalObject obj = new AdditionalObject();
 		
 		if(CountConverter.isACountData(words)){
@@ -340,7 +341,7 @@ public class NominalGroupConverter {
 		return obj;
 	}
 	
-	private static QuantityObject parseQuantityObject(WordBuffer words){
+	private static QuantityObject parseQuantityObject(FRWordBuffer words){
 		QuantityObject qty = new QuantityObject();
 		
 		qty.amount = Double.parseDouble(words.getCurrentElement().getValue());
@@ -351,7 +352,7 @@ public class NominalGroupConverter {
 		return qty;
 	}
 	
-	private static CharacterObject parseCharacterObject(WordBuffer words){
+	private static CharacterObject parseCharacterObject(FRWordBuffer words){
 		CharacterObject character = new CharacterObject();
 		
 		if(words.syntaxStartsWith(CountConverter.COUNT_PATTERN)){
@@ -366,7 +367,7 @@ public class NominalGroupConverter {
 		return character;
 	}
 	
-	private static ComplementObject parseComplementObject(WordBuffer words){
+	private static ComplementObject parseComplementObject(FRWordBuffer words){
 		ComplementObject obj = new ComplementObject();
 
 		if(CountConverter.isACountData(words)){
@@ -405,7 +406,7 @@ public class NominalGroupConverter {
 		return obj;
 	}
 
-	private static AdditionalPerson parseAdditionalPerson(WordBuffer words){
+	private static AdditionalPerson parseAdditionalPerson(FRWordBuffer words){
 		AdditionalPerson person = new AdditionalPerson();
 
 		person.person = words.getCurrentElement().getCustomPerson();
@@ -414,7 +415,7 @@ public class NominalGroupConverter {
 		return person;
 	}
 	
-	/*private static String parsePerson(WordBuffer words){
+	/*private static String parsePerson(FRWordBuffer words){
 		StringBuilder name = new StringBuilder();
 
 		if(words.getCurrentElement().isOfType(WordType.FIRSTNAME)){

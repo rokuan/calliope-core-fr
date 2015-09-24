@@ -1,10 +1,11 @@
 package com.rokuan.calliopecore.fr.pattern;
 
 import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordMatcher;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.Word;
-import com.rokuan.calliopecore.sentence.Word.WordType;
+import com.rokuan.calliopecore.sentence.IWord;
 
 public class VerbMatcher implements WordMatcher {
 	private boolean auxiliary = false;
@@ -57,22 +58,24 @@ public class VerbMatcher implements WordMatcher {
 	}
 
 	@Override
-	public boolean matches(Word word) {
-		if(!word.isOfType(WordType.VERB)){
+	public boolean matches(IWord word) {
+		Word w = (Word)word;
+		
+		if(!w.isOfType(WordType.VERB)){
 			return false;
 		}
 
-		if(auxiliary && !word.isOfType(WordType.AUXILIARY)){
+		if(auxiliary && !w.isOfType(WordType.AUXILIARY)){
 			return false;
 		}
 
-		if(conjugatedVerb != null && !word.getValue().matches(conjugatedVerb)){
+		if(conjugatedVerb != null && !w.getValue().matches(conjugatedVerb)){
 			return false;
 		}
 
 		try{
 			if(infiniteVerb != null
-					&& (word.getVerbInfo() == null || !((Verb)(word.getVerbInfo().getVerb())).getName().matches(infiniteVerb))){
+					&& (w.getVerbInfo() == null || !((Verb)(w.getVerbInfo().getVerb())).getName().matches(infiniteVerb))){
 				return false;
 			}
 		}catch(Exception e){
@@ -80,7 +83,7 @@ public class VerbMatcher implements WordMatcher {
 		}
 
 		if(form != null 
-				&& (word.getVerbInfo() == null || word.getVerbInfo().getForm() != form)){
+				&& (w.getVerbInfo() == null || w.getVerbInfo().getForm() != form)){
 			return false;
 		}
 

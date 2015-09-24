@@ -15,9 +15,10 @@ import com.rokuan.calliopecore.fr.data.VerbConverter;
 import com.rokuan.calliopecore.fr.data.WayConverter;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
+import com.rokuan.calliopecore.fr.sentence.Word;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.fr.structure.Question;
 import com.rokuan.calliopecore.parser.AbstractParser;
-import com.rokuan.calliopecore.parser.WordBuffer;
 import com.rokuan.calliopecore.parser.WordDatabase;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.CharacterInfo;
@@ -37,9 +38,7 @@ import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.TransportInfo;
 import com.rokuan.calliopecore.sentence.UnitInfo;
 import com.rokuan.calliopecore.sentence.WayPreposition;
-import com.rokuan.calliopecore.sentence.Word;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.AffirmationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.OrderObject;
@@ -58,11 +57,11 @@ public final class SpeechParser implements AbstractParser {
 
 	@Override
 	public InterpretationObject parseText(String text){
-		return this.parseWordBuffer(this.lexSpeech(text));
+		return this.parseFRWordBuffer(this.lexSpeech(text));
 	}
 
-	private final WordBuffer lexSpeech(String text){
-		WordBuffer buffer = new WordBuffer();
+	private final FRWordBuffer lexSpeech(String text){
+		FRWordBuffer buffer = new FRWordBuffer();
 		String[] words = text.split(" ");
 
 		for(int i=0; i<words.length; i++){
@@ -142,12 +141,12 @@ public final class SpeechParser implements AbstractParser {
 			buffer.add(currentWord);
 		}
 
-		System.out.println("wordBuffer=" + buffer);
+		System.out.println("FRWordBuffer=" + buffer);
 
 		return buffer;
 	}
 
-	public InterpretationObject parseWordBuffer(WordBuffer words){
+	public InterpretationObject parseFRWordBuffer(FRWordBuffer words){
 		InterpretationObject inter = null;
 
 		//if(words.syntaxStartsWith(Word.WordType.AUXILIARY, Word.WordType.PERSONAL_PRONOUN, Word.WordType.VERB)){
@@ -417,7 +416,7 @@ public final class SpeechParser implements AbstractParser {
 		return inter;
 	}
 
-	public void parseObject(WordBuffer words, InterpretationObject obj){
+	public void parseObject(FRWordBuffer words, InterpretationObject obj){
 		while(words.isIntoBounds()){
 			if(DateConverter.isATimeAdverbial(words)){
 				obj.when = DateConverter.parseTimeAdverbial(words);
@@ -436,11 +435,6 @@ public final class SpeechParser implements AbstractParser {
 			}
 		}
 	}
-
-	//private static Enum<?> getActionFromVerb(VerbConjugation conjug){
-	/*private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
-		return (conjug == null || conjug.getVerb() == null) ? Action.VerbAction.UNDEFINED : conjug.getVerb().getAction();
-	}*/
 
 	private final Word getWord(String q){
 		// TODO: PROPER_NAME, NUMBER
@@ -488,7 +482,7 @@ public final class SpeechParser implements AbstractParser {
 		}
 
 		Set<WordType> types = new HashSet<WordType>();
-		Word result = db.findWord(q);
+		Word result = (Word)db.findWord(q);
 		LanguageInfo language = db.findLanguageInfo(q);
 		ColorInfo color = db.findColorInfo(q);
 		CityInfo city = db.findCityInfo(q);

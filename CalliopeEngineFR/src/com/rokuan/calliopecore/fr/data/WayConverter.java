@@ -1,8 +1,9 @@
 package com.rokuan.calliopecore.fr.data;
 
-import com.rokuan.calliopecore.parser.WordBuffer;
+import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
+import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.content.IWayObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ColorObject;
@@ -13,41 +14,41 @@ import com.rokuan.calliopecore.sentence.structure.data.way.WayAdverbial.WayType;
 
 public class WayConverter {
 	public static final WordPattern MEANS_OF_TRANSPORT_PATTERN = WordPattern.sequence(
-			//WordPattern.simpleWord("à|en|par"),
-			WordPattern.simpleWayPrep(WayType.TRANSPORT),
-			WordPattern.simpleWord(WordType.MEAN_OF_TRANSPORT));
+			//FRWordPattern.simpleWord("à|en|par"),
+			FRWordPattern.simpleWayPrep(WayType.TRANSPORT),
+			FRWordPattern.simpleWord(WordType.MEAN_OF_TRANSPORT));
 	
 	public static final WordPattern LANGUAGE_ONLY_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
-			WordPattern.simpleWord(WordType.LANGUAGE));
+			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
+			FRWordPattern.simpleWord(WordType.LANGUAGE));
 	
 	public static final WordPattern LANGUAGE_PATTERN = WordPattern.sequence(
-			//WordPattern.simpleWord(WordType.WAY_PREPOSITION, "en"),
-			WordPattern.simpleWayPrep(WayType.LANGUAGE),
-			WordPattern.simpleWord(WordType.LANGUAGE)
+			//FRWordPattern.simpleWord(WordType.WAY_PREPOSITION, "en"),
+			FRWordPattern.simpleWayPrep(WayType.LANGUAGE),
+			FRWordPattern.simpleWord(WordType.LANGUAGE)
 			);
 	
 	public static final WordPattern MODE_PATTERN = WordPattern.sequence(
-			WordPattern.simpleWord(WordType.WAY_PREPOSITION),
-			WordPattern.simpleWord(WordType.MODE));
+			FRWordPattern.simpleWord(WordType.WAY_PREPOSITION),
+			FRWordPattern.simpleWord(WordType.MODE));
 	
 	public static final WordPattern COLOR_PATTERN = WordPattern.sequence(
-			//WordPattern.simpleWord(WordType.WAY_PREPOSITION, "en"),
-			WordPattern.simpleWayPrep(WayType.COLOR),
-			WordPattern.simpleWord(WordType.COLOR)); 
+			//FRWordPattern.simpleWord(WordType.WAY_PREPOSITION, "en"),
+			FRWordPattern.simpleWayPrep(WayType.COLOR),
+			FRWordPattern.simpleWord(WordType.COLOR)); 
 
-	public static boolean isAWayAdverbial(WordBuffer words){
+	public static boolean isAWayAdverbial(FRWordBuffer words){
 		return words.syntaxStartsWith(MEANS_OF_TRANSPORT_PATTERN)
 				|| words.syntaxStartsWith(LANGUAGE_PATTERN)
 				|| words.syntaxStartsWith(MODE_PATTERN)
 				|| words.syntaxStartsWith(COLOR_PATTERN);
 	}
 	
-	public static boolean isANominalGroup(WordBuffer words){
+	public static boolean isANominalGroup(FRWordBuffer words){
 		return words.syntaxStartsWith(LANGUAGE_ONLY_PATTERN);
 	}
 
-	public static IWayObject parseWayAdverbial(WordBuffer words){
+	public static IWayObject parseWayAdverbial(FRWordBuffer words){
 		IWayObject result = null;
 		
 		if(words.syntaxStartsWith(MODE_PATTERN)){
@@ -99,7 +100,7 @@ public class WayConverter {
 		return result;
 	}
 	
-	public static INominalObject parseNominalWayObject(WordBuffer words){
+	public static INominalObject parseNominalWayObject(FRWordBuffer words){
 		INominalObject result = null;
 		
 		if(words.syntaxStartsWith(LANGUAGE_ONLY_PATTERN)){
