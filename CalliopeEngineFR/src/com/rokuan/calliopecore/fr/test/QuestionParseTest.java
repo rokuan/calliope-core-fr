@@ -22,7 +22,7 @@ import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject.QuestionType;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.NameObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
 
 public class QuestionParseTest {
@@ -55,15 +55,15 @@ public class QuestionParseTest {
 	public void whatIsTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB, WordType.COMMON_NAME);
-		Verb toBe = new Verb("être", true, Action.ActionType.BE);
-		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "être", toBe);
+		Verb toBe = new Verb("ï¿½tre", true, Action.ActionType.BE);
+		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "ï¿½tre", toBe);
 		toBeConjug.setVerb(toBe);
 		is.setVerbInfo(toBeConjug);
 		
 		words.add(new Word("quelle", WordType.INTERROGATIVE_ADJECTIVE));
 		words.add(is);
 		words.add(new Word("la", WordType.DEFINITE_ARTICLE));
-		words.add(new Word("température", WordType.COMMON_NAME));
+		words.add(new Word("tempï¿½rature", WordType.COMMON_NAME));
 		
 		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
@@ -98,7 +98,7 @@ public class QuestionParseTest {
 		
 		assertEquals(question.questionType, QuestionType.WHAT);
 		
-		ComplementObject complement = (ComplementObject)question.what;
+		NameObject complement = (NameObject)question.what;
 
 		assertTrue(question.action.does(ActionType.DO));
 		assertEquals(complement.object, "temps");
@@ -116,8 +116,8 @@ public class QuestionParseTest {
 	public void whatTimeIsItTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB);
-		Verb toBe = new Verb("être", true, Action.ActionType.BE);
-		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "être", toBe);
+		Verb toBe = new Verb("ï¿½tre", true, Action.ActionType.BE);
+		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "ï¿½tre", toBe);
 		toBeConjug.setVerb(toBe);
 		is.setVerbInfo(toBeConjug);
 		

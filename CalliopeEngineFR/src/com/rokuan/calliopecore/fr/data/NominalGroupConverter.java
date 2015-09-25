@@ -12,7 +12,7 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.AdditionalObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AdditionalPerson;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CharacterObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ColorObject;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.NameObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PhoneNumberObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.QuantityObject;
@@ -23,7 +23,7 @@ public class NominalGroupConverter {
 	public static final WordPattern ABSTRACT_TARGET_PATTERN = FRWordPattern.simpleWord(WordType.POSSESSIVE_ADJECTIVE);
 	//public static final WordPattern PLACE_PATTERN = PlaceConverter.PLACE_PATTERN;		
 
-	// ComplementObject
+	// NameObject
 	public static final WordPattern DIRECT_OBJECT_PATTERN = WordPattern.sequence(
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
 			FRWordPattern.simpleWord(WordType.COMMON_NAME),
@@ -117,15 +117,15 @@ public class NominalGroupConverter {
 			);	
 	
 	public static final WordPattern TO_PATTERN = WordPattern.or(
-			WordPattern.sequence(FRWordPattern.simpleWord(WordType.PREPOSITION_AT, "à"), WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"))),
+			WordPattern.sequence(FRWordPattern.simpleWord(WordType.PREPOSITION_AT, "ï¿½"), WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"))),
 			FRWordPattern.simpleWord(WordType.PREPOSITION_AT, "au.*")
 			);
 
 	private static final WordPattern INDIRECT_PERSON_PATTERN = WordPattern.sequence(
-			FRWordPattern.simpleWord("à"),
+			FRWordPattern.simpleWord("ï¿½"),
 			FRWordPattern.simpleWord(WordType.PERSON));
 	private static final WordPattern INDIRECT_PERSON_TYPE_PATTERN = WordPattern.sequence(
-			WordPattern.or(FRWordPattern.simpleWord("à"), FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"),
+			WordPattern.or(FRWordPattern.simpleWord("ï¿½"), FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"),
 					FRWordPattern.simpleWord("au")),
 			FRWordPattern.simpleWord(WordType.PERSON_TYPE));
 	public static final WordPattern INDIRECT_OBJECT_PATTERN = WordPattern.or(
@@ -190,7 +190,7 @@ public class NominalGroupConverter {
 		} else if(words.syntaxStartsWith(WayConverter.LANGUAGE_ONLY_PATTERN)){
 			result = WayConverter.parseNominalWayObject(words);
 		} else if(words.syntaxStartsWith(COMMON_NAME_PATTERN)){
-			result = parseComplementObject(words);
+			result = parseNameObject(words);
 		} else if(words.syntaxStartsWith(PlaceConverter.PLACE_ONLY_PATTERN)){
 			result = PlaceConverter.parseNominalPlaceObject(words);
 		}
@@ -215,7 +215,7 @@ public class NominalGroupConverter {
 		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
 			result = parseAdditionalPerson(words);
 		} else if(words.syntaxStartsWith(DIRECT_OBJECT_PATTERN)){
-			result = parseComplementObject(words);
+			result = parseNameObject(words);
 		}
 
 		return result;
@@ -237,9 +237,9 @@ public class NominalGroupConverter {
 
 			result = parseAdditionalPerson(words);
 		} else if(words.syntaxStartsWith(INDIRECT_PERSON_TYPE_PATTERN)){
-			ComplementObject compl = new ComplementObject();
+			NameObject compl = new NameObject();
 			
-			// TODO: affecter la quantité (/possession)
+			// TODO: affecter la quantitï¿½ (/possession)
 			words.consume();	// PREPOSITION_AT
 			
 			if(words.getCurrentElement().isOfType(WordType.DEFINITE_ARTICLE)){
@@ -247,7 +247,7 @@ public class NominalGroupConverter {
 			}
 
 			// TODO: voir s'il faut creer un type pour les mots en rapport avec la famille (cousin/tante/soeur/...)
-			compl.object = words.getCurrentElement().getValue();
+			compl.object = words.getCurrentElement().getNameInfo();
 			words.consume();
 			
 			result = compl;
@@ -271,7 +271,7 @@ public class NominalGroupConverter {
 			result = parseAdditionalPerson(words);
 		} else if(words.syntaxStartsWith(COMPLEMENT_SECOND_OBJECT_PATTERN)){
 			words.consume();
-			result = parseComplementObject(words);
+			result = parseNameObject(words);
 		} 
 		
 		// TODO: ajouter les autres
@@ -367,15 +367,15 @@ public class NominalGroupConverter {
 		return character;
 	}
 	
-	private static ComplementObject parseComplementObject(FRWordBuffer words){
-		ComplementObject obj = new ComplementObject();
+	private static NameObject parseNameObject(FRWordBuffer words){
+		NameObject obj = new NameObject();
 
 		if(CountConverter.isACountData(words)){
 			obj.count = CountConverter.parseCountObject(words);
 		}
 
 		// TODO: parser les adjectifs et autres
-		obj.object = words.getCurrentElement().getValue();
+		obj.object = words.getCurrentElement().getNameInfo();
 		words.consume();
 
 		/*if(CountConverter.isASuffixCountData(words)){
@@ -392,7 +392,7 @@ public class NominalGroupConverter {
 				words.consume();
 
 				try{
-					obj.of = (ComplementObject)NominalGroupConverter.parseDirectObject(words);
+					obj.of = (NameObject)NominalGroupConverter.parseDirectObject(words);
 				}catch(Exception e){
 					System.out.println(e);
 				}

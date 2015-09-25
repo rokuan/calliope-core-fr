@@ -1,8 +1,8 @@
 package com.rokuan.calliopecore.fr.pattern;
 
+import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.structure.data.time.TimeAdverbial.TimeType;
 
@@ -24,7 +24,7 @@ public class TimePrepositionMatcher extends PrepositionMatcher<TimeType> {
 		}
 		
 		if(possibleFollowers != null){
-			TimePreposition prep = word.getTimePreposition();
+			TimePreposition prep = (TimePreposition)word.getTimePreposition();
 
 			if(prep == null){
 				return false;

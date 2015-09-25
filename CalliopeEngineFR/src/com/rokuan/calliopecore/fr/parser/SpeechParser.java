@@ -13,13 +13,16 @@ import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
 import com.rokuan.calliopecore.fr.data.PlaceConverter;
 import com.rokuan.calliopecore.fr.data.VerbConverter;
 import com.rokuan.calliopecore.fr.data.WayConverter;
+import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.PurposePreposition;
+import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
+import com.rokuan.calliopecore.fr.sentence.WayPreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.fr.structure.Question;
 import com.rokuan.calliopecore.parser.AbstractParser;
-import com.rokuan.calliopecore.parser.WordDatabase;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.CharacterInfo;
 import com.rokuan.calliopecore.sentence.CityInfo;
@@ -32,12 +35,8 @@ import com.rokuan.calliopecore.sentence.CustomPlace;
 import com.rokuan.calliopecore.sentence.IVerbConjugation;
 import com.rokuan.calliopecore.sentence.LanguageInfo;
 import com.rokuan.calliopecore.sentence.PlaceInfo;
-import com.rokuan.calliopecore.sentence.PlacePreposition;
-import com.rokuan.calliopecore.sentence.PurposePreposition;
-import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.TransportInfo;
 import com.rokuan.calliopecore.sentence.UnitInfo;
-import com.rokuan.calliopecore.sentence.WayPreposition;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
 import com.rokuan.calliopecore.sentence.structure.AffirmationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
@@ -172,7 +171,7 @@ public final class SpeechParser implements AbstractParser {
 			qObj.action = new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo());
 			words.consume();
 
-			//qObj.what = parseComplementObject(words);
+			//qObj.what = parseNameObject(words);
 			parseObject(words, qObj);
 
 			inter = qObj;			
@@ -209,7 +208,7 @@ public final class SpeechParser implements AbstractParser {
 			//oObject.action = getActionFromVerb(words.getCurrentElement().getVerbInfo());
 			oObject.setAction(action);
 			words.consume();
-			//oObject.what = parseComplementObject(words);
+			//oObject.what = parseNameObject(words);
 			parseObject(words, oObject);
 
 			inter = oObject;
@@ -258,7 +257,7 @@ public final class SpeechParser implements AbstractParser {
 			switch(qObject.questionType){
 			case HOW:
 				if(VerbConverter.isAnInfinitiveVerb(words)){
-					// Comment aller à la Tour Eiffel
+					// Comment aller ï¿½ la Tour Eiffel
 					VerbConverter.parseInfinitiveVerb(words, qObject);
 				} else if(VerbConverter.isAConjugatedVerb(words)){
 					// Comment est la maison du Dr. Watson
@@ -293,7 +292,7 @@ public final class SpeechParser implements AbstractParser {
 					qObject.what = NominalGroupConverter.parseDirectObject(words);
 
 					if(VerbConverter.isAQuestionVerbalForm(words)){
-						// Quel train va à Bordeaux
+						// Quel train va ï¿½ Bordeaux
 						VerbConverter.parseQuestionVerbalGroup(words, qObject);
 					} else if(VerbConverter.isAConjugatedVerb(words)){
 						// Quel temps fera-t-il demain
@@ -314,13 +313,13 @@ public final class SpeechParser implements AbstractParser {
 
 			case WHERE:
 				if(VerbConverter.isAQuestionVerbalForm(words)){
-					// Où ira-t-il
+					// Oï¿½ ira-t-il
 					VerbConverter.parseQuestionVerbalGroup(words, qObject);
 				} else if(VerbConverter.isAnInfinitiveVerb(words)){
-					// Où trouver des cadeaux
+					// Oï¿½ trouver des cadeaux
 					VerbConverter.parseInfinitiveVerb(words, qObject);
 				} else if(VerbConverter.isAConjugatedVerb(words)){
-					// Où est né John Smith
+					// Oï¿½ est nï¿½ John Smith
 					VerbConverter.parseConjugatedVerb(words, qObject);
 				}
 				break;
@@ -351,7 +350,7 @@ public final class SpeechParser implements AbstractParser {
 					// Pourquoi est-il venu
 					VerbConverter.parseQuestionVerbalGroup(words, qObject);
 				} else if(VerbConverter.isAnInfinitiveVerb(words)){
-					// Pourquoi avoir mangé la pomme
+					// Pourquoi avoir mangï¿½ la pomme
 					VerbConverter.parseInfinitiveVerb(words, qObject);
 				}
 				break;
@@ -381,7 +380,7 @@ public final class SpeechParser implements AbstractParser {
 			qObject.questionType = QuestionObject.parseInterrogativePronoun(words.getCurrentElement().getValue());			
 			words.consume();
 
-			ComplementObject complement = new ComplementObject();
+			NameObject complement = new NameObject();
 			StringBuilder whatString = new StringBuilder();
 
 			// TODO: modifier pour parser un groupe nominal entier
@@ -410,7 +409,7 @@ public final class SpeechParser implements AbstractParser {
 			inter = affirm;
 		} else {
 			// TODO: Le sujet est un groupe nominal ?
-			// ComplementObject
+			// NameObject
 		}
 
 		return inter;
@@ -482,7 +481,7 @@ public final class SpeechParser implements AbstractParser {
 		}
 
 		Set<WordType> types = new HashSet<WordType>();
-		Word result = (Word)db.findWord(q);
+		Word result = db.findWord(q);
 		LanguageInfo language = db.findLanguageInfo(q);
 		ColorInfo color = db.findColorInfo(q);
 		CityInfo city = db.findCityInfo(q);
@@ -499,7 +498,7 @@ public final class SpeechParser implements AbstractParser {
 		TimePreposition timePreposition = db.findTimePreposition(q);
 		WayPreposition wayPreposition = db.findWayPreposition(q);
 		PurposePreposition purposePreposition = db.findPurposePreposition(q);
-		IVerbConjugation conjugation = db.findConjugation(q);
+		VerbConjugation conjugation = db.findConjugation(q);
 
 		if(Character.isUpperCase(q.charAt(0))){
 			if(city == null && country == null) {
@@ -579,7 +578,7 @@ public final class SpeechParser implements AbstractParser {
 			types.add(Word.WordType.VERB);
 
 			try{
-				if(((VerbConjugation)conjugation).getVerb().isAuxiliary()){
+				if(conjugation.getVerb().isAuxiliary()){
 					types.add(Word.WordType.AUXILIARY);
 				}
 			}catch(Exception e){

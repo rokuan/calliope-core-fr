@@ -11,12 +11,12 @@ import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.CustomObject;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AdditionalObject;
-import com.rokuan.calliopecore.sentence.structure.data.nominal.ComplementObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.NameObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.NominalGroup.GroupType;
 
 public class NominalGroupParseTest {
 	@Test
-	public void complementObjectParseTest(){
+	public void NameObjectParseTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		
 		words.add(new Word("le", WordType.DEFINITE_ARTICLE));
@@ -26,7 +26,7 @@ public class NominalGroupParseTest {
 		
 		assertEquals(nominal.getGroupType(), GroupType.COMPLEMENT);
 		
-		ComplementObject compl = (ComplementObject)nominal;
+		NameObject compl = (NameObject)nominal;
 		
 		assertEquals(compl.object, "chat");
 	}

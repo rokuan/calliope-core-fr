@@ -82,7 +82,7 @@ public class PlaceConverter {
 			FRWordPattern.simpleWord(WordType.ADDITIONAL_PLACE)
 			);
 
-	// le musée du Louvre, la Grande Muraille de Chine 
+	// le musï¿½e du Louvre, la Grande Muraille de Chine 
 	private static final WordPattern NAMED_PLACE_PATTERN = WordPattern.sequence(
 			NAMED_PLACE_PREPOSITION_PATTERN,
 			WordPattern.or(
@@ -130,7 +130,7 @@ public class PlaceConverter {
 			AdditionalPlace additional = new AdditionalPlace();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				additional.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getValue());
+				additional.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
 				words.consume();
 			}
 
@@ -162,7 +162,7 @@ public class PlaceConverter {
 			CityObject city = new CityObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				city.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getValue());
+				city.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
 				words.consume();
 			}
 
@@ -174,7 +174,7 @@ public class PlaceConverter {
 			CountryObject country = new CountryObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				country.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getValue());
+				country.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
 				words.consume();
 			}
 
@@ -190,7 +190,7 @@ public class PlaceConverter {
 			NamedPlaceObject place = new NamedPlaceObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				place.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getValue());
+				place.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
 				words.consume();
 			}
 

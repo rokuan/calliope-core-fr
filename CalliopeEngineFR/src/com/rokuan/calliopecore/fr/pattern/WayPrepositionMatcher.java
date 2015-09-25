@@ -1,8 +1,8 @@
 package com.rokuan.calliopecore.fr.pattern;
 
+import com.rokuan.calliopecore.fr.sentence.WayPreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.WayPreposition;
 import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.structure.data.way.WayAdverbial.WayType;
 
@@ -24,7 +24,7 @@ public class WayPrepositionMatcher extends PrepositionMatcher<WayType> {
 		}
 
 		if(possibleFollowers != null){
-			WayPreposition prep = word.getWayPreposition();
+			WayPreposition prep = (WayPreposition)word.getWayPreposition();
 
 			if(prep == null){
 				return false;

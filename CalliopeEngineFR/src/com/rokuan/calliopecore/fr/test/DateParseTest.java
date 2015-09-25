@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.rokuan.calliopecore.fr.data.DateConverter;
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
+import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
@@ -17,7 +18,6 @@ import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.Action;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.content.ITimeObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
@@ -88,7 +88,7 @@ public class DateParseTest {
 	@Test
 	public void testParseTimeFull(){
 		FRWordBuffer words = new FRWordBuffer();
-		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h30", Word.WordType.TIME));
 
 		ITimeObject dateObj = DateConverter.parseTimeAdverbial(words);
@@ -107,7 +107,7 @@ public class DateParseTest {
 	@Test
 	public void testParseTimeHourOnly(){
 		FRWordBuffer words = new FRWordBuffer();
-		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h", Word.WordType.TIME));
 
 		ITimeObject dateObj = DateConverter.parseTimeAdverbial(words);
@@ -126,7 +126,7 @@ public class DateParseTest {
 	@Test
 	public void testParseTimeRelativeMinutesQuarter(){
 		FRWordBuffer words = new FRWordBuffer();
-		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5", Word.WordType.NUMBER));
 		words.add(new Word("heures", Word.WordType.DATE_UNIT_HOUR));
 		words.add(new Word("moins", Word.WordType.SUPERLATIVE));
@@ -149,7 +149,7 @@ public class DateParseTest {
 	@Test
 	public void testParseTimeRelativeMinutesHalf(){
 		FRWordBuffer words = new FRWordBuffer();
-		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("5h", Word.WordType.NUMBER));
 		words.add(new Word("et", Word.WordType.PREPOSITION_AND));
 		words.add(new Word("demi", Word.WordType.TIME));
@@ -175,7 +175,7 @@ public class DateParseTest {
 		words.add(new Word("1er", Word.WordType.NUMERICAL_POSITION));
 		words.add(new Word("mai", Word.WordType.DATE_MONTH));
 		words.add(new Word("2012", WordType.NUMBER));		
-		words.add(new Word("à", Word.WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", Word.WordType.PREPOSITION_AT));
 		words.add(new Word("midi", Word.WordType.DATE_UNIT_HOUR));
 		words.add(new Word("moins", Word.WordType.PREPOSITION_AND));
 		words.add(new Word("10", Word.WordType.NUMBER));
@@ -198,14 +198,14 @@ public class DateParseTest {
 		FRWordBuffer words = new FRWordBuffer();
 
 		Word futureBe = new Word("sera", Word.WordType.VERB);
-		Verb toBeVerb = new Verb("être", true, Action.ActionType.BE);
+		Verb toBeVerb = new Verb("ï¿½tre", true, Action.ActionType.BE);
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "sera", toBeVerb);		
 		toBeConjug.setVerb(toBeVerb);
 		futureBe.setVerbInfo(toBeConjug);
 		
-		Word imperativeAlert = new Word("préviens", Word.WordType.VERB);
-		Verb toAlert = new Verb("prévenir", false, Action.ActionType.ALERT);
-		VerbConjugation alertConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "préviens", toAlert);		
+		Word imperativeAlert = new Word("prï¿½viens", Word.WordType.VERB);
+		Verb toAlert = new Verb("prï¿½venir", false, Action.ActionType.ALERT);
+		VerbConjugation alertConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "prï¿½viens", toAlert);		
 		alertConjug.setVerb(toAlert);
 		imperativeAlert.setVerbInfo(alertConjug);		
 		

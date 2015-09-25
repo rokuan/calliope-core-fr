@@ -15,16 +15,17 @@ import com.rokuan.calliopecore.sentence.CustomMode;
 import com.rokuan.calliopecore.sentence.CustomObject;
 import com.rokuan.calliopecore.sentence.CustomPerson;
 import com.rokuan.calliopecore.sentence.CustomPlace;
+import com.rokuan.calliopecore.sentence.IPlacePreposition;
+import com.rokuan.calliopecore.sentence.IPurposePreposition;
+import com.rokuan.calliopecore.sentence.ITimePreposition;
 import com.rokuan.calliopecore.sentence.IVerbConjugation;
+import com.rokuan.calliopecore.sentence.IWayPreposition;
 import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.LanguageInfo;
+import com.rokuan.calliopecore.sentence.NameInfo;
 import com.rokuan.calliopecore.sentence.PlaceInfo;
-import com.rokuan.calliopecore.sentence.PlacePreposition;
-import com.rokuan.calliopecore.sentence.PurposePreposition;
-import com.rokuan.calliopecore.sentence.TimePreposition;
 import com.rokuan.calliopecore.sentence.TransportInfo;
 import com.rokuan.calliopecore.sentence.UnitInfo;
-import com.rokuan.calliopecore.sentence.WayPreposition;
 
 @DatabaseTable(tableName = "words")
 public class Word implements IWord {
@@ -65,7 +66,7 @@ public class Word implements IWord {
 		QUANTITY,
 		PREPOSITION_BETWEEN,	// entre
 		PREPOSITION_AND,	// et
-		PREPOSITION_AT,	// à/au
+		PREPOSITION_AT,	// ï¿½/au
 		PREPOSITION_OF,	// de
 		PREPOSITION_IN,	// en
 		PREPOSITION_WITH,	// avec
@@ -74,9 +75,9 @@ public class Word implements IWord {
 		TARGET_PRONOUN,	// moi/toi/me/te/...
 		DATE_UNIT_HOUR,	// midi/minuit
 		MEAN_OF_TRANSPORT, // pied/voiture/bus/avion/...
-		PLACE_TYPE,	// restaurant/cinéma/...
+		PLACE_TYPE,	// restaurant/cinï¿½ma/...
 		STREET_TYPE,	//rue/avenue/boulevard/...
-		PERSON_TYPE,	// voisin/oncle/médecin
+		PERSON_TYPE,	// voisin/oncle/mï¿½decin
 
 		CITY,
 		COUNTRY,
@@ -109,6 +110,7 @@ public class Word implements IWord {
 	@DatabaseField(columnName = TYPES_FIELD_NAME, dataType = DataType.SERIALIZABLE)
 	private HashSet<WordType> types = new HashSet<WordType>();
 	private IVerbConjugation verbInfo;
+	private NameInfo nameInfo;
 	private LanguageInfo langInfo;
 	private ColorInfo colorInfo;
 	private CountryInfo countryInfo;
@@ -185,9 +187,17 @@ public class Word implements IWord {
 		return verbInfo;
 	}
 
-	@Override
-	public void setVerbInfo(IVerbConjugation verbInfo) {
+	public void setVerbInfo(VerbConjugation verbInfo) {
 		this.verbInfo = verbInfo;
+	}
+	
+	@Override
+	public NameInfo getNameInfo(){
+		return nameInfo;
+	}
+	
+	public void setNameInfo(NameInfo nameInfo){
+		this.nameInfo = nameInfo;
 	}
 
 	@Override
@@ -195,7 +205,6 @@ public class Word implements IWord {
 		return langInfo;
 	}
 
-	@Override
 	public void setLanguageInfo(LanguageInfo langInfo) {
 		this.langInfo = langInfo;
 	}
@@ -205,7 +214,6 @@ public class Word implements IWord {
 		return colorInfo;
 	}
 
-	@Override
 	public void setColorInfo(ColorInfo colorInfo) {
 		this.colorInfo = colorInfo;
 	}
@@ -215,7 +223,6 @@ public class Word implements IWord {
 		return countryInfo;
 	}
 
-	@Override
 	public void setCountryInfo(CountryInfo countryInfo) {
 		this.countryInfo = countryInfo;
 	}
@@ -225,7 +232,6 @@ public class Word implements IWord {
 		return cityInfo;
 	}
 
-	@Override
 	public void setCityInfo(CityInfo cityInfo) {
 		this.cityInfo = cityInfo;
 	}
@@ -235,7 +241,6 @@ public class Word implements IWord {
 		return transportInfo;
 	}
 
-	@Override
 	public void setTransportInfo(TransportInfo transportInfo) {
 		this.transportInfo = transportInfo;
 	}
@@ -245,7 +250,6 @@ public class Word implements IWord {
 		return unitInfo;
 	}
 
-	@Override
 	public void setUnitInfo(UnitInfo unitInfo) {
 		this.unitInfo = unitInfo;
 	}
@@ -255,7 +259,6 @@ public class Word implements IWord {
 		return characterInfo;
 	}
 
-	@Override
 	public void setCharacterInfo(CharacterInfo characterInfo) {
 		this.characterInfo = characterInfo;
 	}
@@ -265,47 +268,42 @@ public class Word implements IWord {
 		return placeInfo;
 	}
 
-	@Override
 	public void setPlaceInfo(PlaceInfo placeInfo) {
 		this.placeInfo = placeInfo;
 	}
 
 	@Override
-	public TimePreposition getTimePreposition() {
+	public ITimePreposition getTimePreposition() {
 		return timePreposition;
 	}
 
-	@Override
 	public void setTimePreposition(TimePreposition timePreposition) {
 		this.timePreposition = timePreposition;
 	}
 
 	@Override
-	public PlacePreposition getPlacePreposition() {
+	public IPlacePreposition getPlacePreposition() {
 		return placePreposition;
 	}
 
-	@Override
 	public void setPlacePreposition(PlacePreposition placePreposition) {
 		this.placePreposition = placePreposition;
 	}
 
 	@Override
-	public WayPreposition getWayPreposition() {
+	public IWayPreposition getWayPreposition() {
 		return wayPreposition;
 	}
 
-	@Override
 	public void setWayPreposition(WayPreposition wayPreposition) {
 		this.wayPreposition = wayPreposition;
 	}
 
 	@Override
-	public PurposePreposition getPurposePreposition() {
+	public IPurposePreposition getPurposePreposition() {
 		return purposePreposition;
 	}
 
-	@Override
 	public void setPurposePreposition(PurposePreposition purposePreposition) {
 		this.purposePreposition = purposePreposition;
 	}
@@ -315,7 +313,6 @@ public class Word implements IWord {
 		return customObject;
 	}
 
-	@Override
 	public void setCustomObject(CustomObject customObject) {
 		this.customObject = customObject;
 	}
@@ -325,7 +322,6 @@ public class Word implements IWord {
 		return customPlace;
 	}
 
-	@Override
 	public void setCustomPlace(CustomPlace customPlace) {
 		this.customPlace = customPlace;
 	}
@@ -335,7 +331,6 @@ public class Word implements IWord {
 		return customPerson;
 	}
 
-	@Override
 	public void setCustomPerson(CustomPerson customPerson) {
 		this.customPerson = customPerson;
 	}
@@ -345,7 +340,6 @@ public class Word implements IWord {
 		return customMode;
 	}
 
-	@Override
 	public void setCustomMode(CustomMode customMode) {
 		this.customMode = customMode;
 	}

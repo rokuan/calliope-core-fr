@@ -1,8 +1,8 @@
 package com.rokuan.calliopecore.fr.pattern;
 
+import com.rokuan.calliopecore.fr.sentence.PurposePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.PurposePreposition;
 import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.structure.data.purpose.PurposeAdverbial.PurposeType;
 
@@ -25,7 +25,7 @@ public class PurposePrepositionMatcher extends PrepositionMatcher<PurposeType> {
 		}
 
 		if(possibleFollowers != null){
-			PurposePreposition prep = word.getPurposePreposition();
+			PurposePreposition prep = (PurposePreposition)word.getPurposePreposition();
 
 			if(prep == null){
 				return false;

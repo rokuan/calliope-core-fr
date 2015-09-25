@@ -1,10 +1,10 @@
 package com.rokuan.calliopecore.fr.pattern;
 
 
+import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.IWord;
-import com.rokuan.calliopecore.sentence.PlacePreposition;
 import com.rokuan.calliopecore.sentence.structure.data.place.PlaceAdverbial.PlaceType;
 
 public class PlacePrepositionMatcher extends PrepositionMatcher<PlaceType> {
@@ -25,7 +25,7 @@ public class PlacePrepositionMatcher extends PrepositionMatcher<PlaceType> {
 		}
 
 		if(possibleFollowers != null){
-			PlacePreposition prep = word.getPlacePreposition();
+			PlacePreposition prep = (PlacePreposition)word.getPlacePreposition();
 
 			if(prep == null){
 				return false;

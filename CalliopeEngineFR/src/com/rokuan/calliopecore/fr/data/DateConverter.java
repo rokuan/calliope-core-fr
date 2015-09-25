@@ -108,7 +108,7 @@ public class DateConverter {
 							WordPattern.optional(WordPattern.or(FRWordPattern.simpleWord(WordType.NUMBER), MINUTES_DEFINITION_PATTERN)))
 			);
 
-	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(FRWordPattern.simpleWord("quand"), FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), VerbPattern.simple("être", "sera")); 
+	private static final WordPattern VERBAL_WHEN = WordPattern.sequence(FRWordPattern.simpleWord("quand"), FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN, "il"), VerbPattern.simple("ï¿½tre", "sera")); 
 
 	public static final WordPattern TIME_DECLARATION_PATTERN = WordPattern.sequence(
 			WordPattern.or(
@@ -207,7 +207,7 @@ public class DateConverter {
 
 			if(words.getCurrentElement().isOfType(WordType.TIME_PREPOSITION)){
 				// TODO: parser la preposition
-				single.setTimePreposition(words.getCurrentElement().getTimePreposition().getValue());
+				single.setTimePreposition(words.getCurrentElement().getTimePreposition().getTimeContext());
 				words.consume();
 			}
 
@@ -232,7 +232,7 @@ public class DateConverter {
 				words.consume();
 				words.consume();
 			} else if(words.getCurrentElement().isOfType(WordType.TIME_PREPOSITION)){
-				preposition = words.getCurrentElement().getTimePreposition().getValue();
+				preposition = words.getCurrentElement().getTimePreposition().getTimeContext();
 				words.consume();
 			} else if(words.getCurrentElement().isOfType(WordType.PREPOSITION_AT)){
 				preposition = TimeContext.WHEN;
@@ -544,7 +544,7 @@ public class DateConverter {
 				if(parts[i].equals("avant") || parts[i].equals("hier")){
 					calendar.add(Calendar.DAY_OF_MONTH, -1);
 					//oneDay.tense = TimeTense.PAST;
-				} else if(parts[i].equals("après") || parts[i].equals("demain")){
+				} else if(parts[i].equals("aprï¿½s") || parts[i].equals("demain")){
 					calendar.add(Calendar.DAY_OF_MONTH, 1);
 					//oneDay.tense = TimeTense.FUTURE;
 				}

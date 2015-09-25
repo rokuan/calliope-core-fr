@@ -14,7 +14,7 @@ import com.rokuan.calliopecore.sentence.structure.data.way.WayAdverbial.WayType;
 
 public class WayConverter {
 	public static final WordPattern MEANS_OF_TRANSPORT_PATTERN = WordPattern.sequence(
-			//FRWordPattern.simpleWord("à|en|par"),
+			//FRWordPattern.simpleWord("ï¿½|en|par"),
 			FRWordPattern.simpleWayPrep(WayType.TRANSPORT),
 			FRWordPattern.simpleWord(WordType.MEAN_OF_TRANSPORT));
 	
@@ -60,20 +60,9 @@ public class WayConverter {
 			
 			result = custom;
 		} else if(words.syntaxStartsWith(MEANS_OF_TRANSPORT_PATTERN)){
-			/*ComplementObject compl = new ComplementObject();
-			String mean = null;
-
-			words.consume();
-
-			mean = words.getCurrentElement().getValue();
-			words.consume();
-
-			compl.object = mean;
-			
-			result = compl;*/
 			TransportObject transport = new TransportObject();
 			
-			transport.setWayPreposition(words.getCurrentElement().getWayPreposition().getValue());
+			transport.setWayPreposition(words.getCurrentElement().getWayPreposition().getWayContext());
 			words.consume();
 			transport.transportType = words.getCurrentElement().getTransportInfo().getTransportType();			
 			words.consume();
