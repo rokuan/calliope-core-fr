@@ -1,6 +1,5 @@
 package com.rokuan.calliopecore.fr.sentence;
 
-import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
@@ -20,25 +19,20 @@ public class VerbConjugation implements IVerbConjugation {
 	@DatabaseField(generatedId = true)
 	private int id;
 
-	@Expose
 	@DatabaseField(columnName = VALUE_FIELD_NAME, index = true)
-	protected String name;
+	private String name;
 
-	@Expose
 	@DatabaseField(columnName = VERB_FIELD_NAME, uniqueCombo = true, foreign = true, foreignAutoRefresh = true)
-	protected Verb verb;
+	private Verb verb;
 
-	@Expose
 	@DatabaseField(columnName = TENSE_FIELD_NAME, uniqueCombo = true)
-	protected Verb.ConjugationTense tense;
+	private Verb.ConjugationTense tense;
 
-	@Expose
 	@DatabaseField(columnName = FORM_FIELD_NAME, uniqueCombo = true)
-	protected IVerbConjugation.Form form;
+	private IVerbConjugation.Form form;
 
-	@Expose
 	@DatabaseField(columnName = PERSON_FIELD_NAME, uniqueCombo = true)
-	protected Verb.Pronoun pronoun;
+	private Verb.Pronoun pronoun;
 
 	public VerbConjugation(){
 
@@ -55,7 +49,13 @@ public class VerbConjugation implements IVerbConjugation {
 	public VerbConjugation(String conjugValue, VerbConjugation conjug, Verb v){
 		this(conjug.tense, conjug.form, conjug.pronoun, conjugValue, v);
 	}
+	
+	@Override
+	public String getValue(){
+		return name;
+	}
 
+	@Override
 	public Verb getVerb() {
 		return verb;
 	}
@@ -64,10 +64,12 @@ public class VerbConjugation implements IVerbConjugation {
 		this.verb = verb;
 	}
 
+	@Override
 	public Form getForm() {
 		return form;
 	}
 
+	@Override
 	public boolean does(ActionType action){
 		return verb != null && verb.hasAction(action);
 	}

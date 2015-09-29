@@ -19,11 +19,9 @@ public class PurposePreposition extends Preposition implements IPurposePrepositi
 	@DatabaseField(generatedId = true)
 	private int id;
 	
-	//@Expose
 	@DatabaseField(columnName = VALUE_FIELD_NAME, uniqueIndex = true)
 	private String name;
 
-	//@Expose
 	@DatabaseField(columnName = PREPOSITION_FIELD_NAME)
 	private PurposeContext purposePreposition;
 	

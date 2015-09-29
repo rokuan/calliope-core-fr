@@ -13,10 +13,24 @@ import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
 import com.rokuan.calliopecore.fr.data.PlaceConverter;
 import com.rokuan.calliopecore.fr.data.VerbConverter;
 import com.rokuan.calliopecore.fr.data.WayConverter;
+import com.rokuan.calliopecore.fr.sentence.AdjectiveInfo;
+import com.rokuan.calliopecore.fr.sentence.CharacterInfo;
+import com.rokuan.calliopecore.fr.sentence.CityInfo;
+import com.rokuan.calliopecore.fr.sentence.ColorInfo;
+import com.rokuan.calliopecore.fr.sentence.CountryInfo;
+import com.rokuan.calliopecore.fr.sentence.CustomMode;
+import com.rokuan.calliopecore.fr.sentence.CustomObject;
+import com.rokuan.calliopecore.fr.sentence.CustomPerson;
+import com.rokuan.calliopecore.fr.sentence.CustomPlace;
+import com.rokuan.calliopecore.fr.sentence.LanguageInfo;
+import com.rokuan.calliopecore.fr.sentence.NameInfo;
+import com.rokuan.calliopecore.fr.sentence.PlaceInfo;
 import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.PurposePreposition;
 import com.rokuan.calliopecore.fr.sentence.TimePreposition;
+import com.rokuan.calliopecore.fr.sentence.TransportInfo;
+import com.rokuan.calliopecore.fr.sentence.UnitInfo;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.WayPreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
@@ -24,19 +38,7 @@ import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.fr.structure.Question;
 import com.rokuan.calliopecore.parser.AbstractParser;
 import com.rokuan.calliopecore.sentence.ActionObject;
-import com.rokuan.calliopecore.sentence.CharacterInfo;
-import com.rokuan.calliopecore.sentence.CityInfo;
-import com.rokuan.calliopecore.sentence.ColorInfo;
-import com.rokuan.calliopecore.sentence.CountryInfo;
-import com.rokuan.calliopecore.sentence.CustomMode;
-import com.rokuan.calliopecore.sentence.CustomObject;
-import com.rokuan.calliopecore.sentence.CustomPerson;
-import com.rokuan.calliopecore.sentence.CustomPlace;
 import com.rokuan.calliopecore.sentence.IVerbConjugation;
-import com.rokuan.calliopecore.sentence.LanguageInfo;
-import com.rokuan.calliopecore.sentence.PlaceInfo;
-import com.rokuan.calliopecore.sentence.TransportInfo;
-import com.rokuan.calliopecore.sentence.UnitInfo;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
 import com.rokuan.calliopecore.sentence.structure.AffirmationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
@@ -482,6 +484,8 @@ public final class SpeechParser implements AbstractParser {
 
 		Set<WordType> types = new HashSet<WordType>();
 		Word result = db.findWord(q);
+		NameInfo name = db.findNameInfo(q);
+		AdjectiveInfo adjective = db.findAdjectiveInfo(q);
 		LanguageInfo language = db.findLanguageInfo(q);
 		ColorInfo color = db.findColorInfo(q);
 		CityInfo city = db.findCityInfo(q);
@@ -510,6 +514,14 @@ public final class SpeechParser implements AbstractParser {
 			}
 		}
 
+		if(name != null){
+			types.add(WordType.COMMON_NAME);
+		}
+		
+		if(adjective != null){
+			types.add(WordType.ADJECTIVE);
+		}
+		
 		if(language != null){
 			types.add(Word.WordType.LANGUAGE);
 		}
@@ -599,6 +611,8 @@ public final class SpeechParser implements AbstractParser {
 		}
 
 		if(result != null) {
+			result.setNameInfo(name);
+			result.setAdjectiveInfo(adjective);
 			result.setLanguageInfo(language);
 			result.setColorInfo(color);
 			result.setCityInfo(city);

@@ -12,7 +12,12 @@ import org.junit.Test;
 
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.parser.SpeechParser;
+import com.rokuan.calliopecore.fr.sentence.CityInfo;
+import com.rokuan.calliopecore.fr.sentence.CustomObject;
+import com.rokuan.calliopecore.fr.sentence.CustomPerson;
+import com.rokuan.calliopecore.fr.sentence.NameInfo;
 import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
+import com.rokuan.calliopecore.fr.sentence.TransportInfo;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
@@ -21,12 +26,8 @@ import com.rokuan.calliopecore.fr.sentence.WayPreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
-import com.rokuan.calliopecore.sentence.CityInfo;
-import com.rokuan.calliopecore.sentence.CustomObject;
-import com.rokuan.calliopecore.sentence.CustomPerson;
 import com.rokuan.calliopecore.sentence.IPronoun.PronounSource;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.TransportInfo;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject.RequestType;
 import com.rokuan.calliopecore.sentence.structure.QuestionObject;
@@ -170,7 +171,7 @@ public class SentenceParseTest {
 		
 		CityObject city = (CityObject)place;
 		
-		assertEquals(city.city.getName(), "Paris");
+		assertEquals(city.city.getValue(), "Paris");
 		assertEquals(((TransportObject)obj.how).transportType, TransportType.PLANE);
 	}
 	
@@ -212,7 +213,7 @@ public class SentenceParseTest {
 		
 		CityObject city = (CityObject)place;
 		
-		assertEquals(city.city.getName(), "Paris");
+		assertEquals(city.city.getValue(), "Paris");
 		assertEquals(((TransportObject)obj.how).transportType, TransportType.WALK);
 	}
 
@@ -249,7 +250,7 @@ public class SentenceParseTest {
 
 		/*NameObject compl = (NameObject)question.what;
 		assertEquals(compl.object, "Arnold Schwarzenegger");*/
-		assertEquals(((AdditionalPerson)question.what).person.getName(), "Arnold Schwarzenegger");
+		assertEquals(((AdditionalPerson)question.what).person.getValue(), "Arnold Schwarzenegger");
 	}
 
 	@Test
@@ -261,20 +262,24 @@ public class SentenceParseTest {
 		VerbConjugation toFindConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "trouver", toFind);
 		toFindConjug.setVerb(toFind);
 		find.setVerbInfo(toFindConjug);
+		Word videos = new Word("vidéos", WordType.COMMON_NAME);
+		videos.setNameInfo(new NameInfo("vidéos", "VIDEO"));
+		Word cats = new Word("chats", WordType.COMMON_NAME);
+		cats.setNameInfo(new NameInfo("chats", "CAT"));
 
 		words.add(find);
 		words.add(new Word("moi", WordType.TARGET_PRONOUN));
 		words.add(new Word("des", WordType.INDEFINITE_ARTICLE, WordType.PREPOSITION_OF));
-		words.add(new Word("vid�os", WordType.COMMON_NAME));
+		words.add(videos);
 		words.add(new Word("de", WordType.PREPOSITION_OF));
-		words.add(new Word("chats", WordType.COMMON_NAME));
+		words.add(cats);
 
 		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 
 		NameObject compl = (NameObject)obj.what;
-		assertEquals(compl.object, "vid�os");
+		assertEquals(compl.object.getValue(), "vidéos");
 		assert (compl.getNominalSecondObject() != null);
-		assertEquals(((NameObject)compl.getNominalSecondObject()).object, "chats");
+		assertEquals(((NameObject)compl.getNominalSecondObject()).object.getValue(), "chats");
 	}
 
 	@Test
@@ -286,9 +291,11 @@ public class SentenceParseTest {
 		VerbConjugation toMakeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "faire", toMake);
 		toMakeConjug.setVerb(toMake);
 		make.setVerbInfo(toMakeConjug);
+		Word temperature = new Word("température", WordType.COMMON_NAME);
+		temperature.setNameInfo(new NameInfo("température", "TEMPERATURE"));
 
 		words.add(new Word("quelle", WordType.INTERROGATIVE_ADJECTIVE));
-		words.add(new Word("temp�rature", WordType.COMMON_NAME));
+		words.add(temperature);
 		words.add(make);
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
 
@@ -297,7 +304,7 @@ public class SentenceParseTest {
 		NameObject compl = (NameObject)obj.what;
 		assertTrue(obj.action.does(ActionType.DO) && obj.action.does(ActionType.MAKE));
 		assertEquals(((PronounSubject)obj.subject).pronoun.getSource(), PronounSource.HE);
-		assertEquals(compl.object, "temp�rature");
+		assertEquals(compl.object.getValue(), "température");
 	}
 
 	@Test
@@ -309,9 +316,11 @@ public class SentenceParseTest {
 		VerbConjugation toMakeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "faire", toMake);
 		toMakeConjug.setVerb(toMake);
 		make.setVerbInfo(toMakeConjug);
+		Word weather = new Word("temps", WordType.COMMON_NAME);
+		weather.setNameInfo(new NameInfo("temps", "WEATHER"));
 
 		words.add(new Word("quel", WordType.INTERROGATIVE_ADJECTIVE));
-		words.add(new Word("temps", WordType.COMMON_NAME));
+		words.add(weather);
 		words.add(make);
 		words.add(new Word("t", WordType.CONJUGATION_LINK));
 		words.add(new Word("il", WordType.PERSONAL_PRONOUN));
@@ -322,7 +331,7 @@ public class SentenceParseTest {
 		NameObject compl = (NameObject)obj.what;
 		assertTrue(obj.action.does(ActionType.DO) && obj.action.does(ActionType.MAKE));
 		assertEquals(((PronounSubject)obj.subject).pronoun.getSource(), PronounSource.HE);
-		assertEquals(compl.object, "temps");
+		assertEquals(compl.object.getValue(), "temps");
 		assertEquals(obj.when.getTimeType(), TimeAdverbial.TimeType.SINGLE);
 		
 		Calendar calendar = Calendar.getInstance();
@@ -337,7 +346,7 @@ public class SentenceParseTest {
 	@Test
 	public void testObjectSentence(){
 		FRWordBuffer words = new FRWordBuffer();
-		String objectName = "lumi�res de la cuisine";
+		String objectName = "lumières de la cuisine";
 		Word light = new Word(objectName, WordType.OBJECT);
 		Word switchOff = new Word("�teinds", WordType.VERB);
 		Verb toSwitchOff = new Verb("�teindre", false, ActionType.TURN_OFF);
@@ -360,7 +369,7 @@ public class SentenceParseTest {
 		
 		AdditionalObject customObject = (AdditionalObject)obj.what;
 		
-		assertEquals(customObject.object.getName(), objectName);
+		assertEquals(customObject.object.getValue(), objectName);
 	}
 	
 	@Test
@@ -369,19 +378,23 @@ public class SentenceParseTest {
 		Word hate = new Word("d�testent", WordType.VERB);
 		Verb toHate = new Verb("d�tester", false, ActionType.HATE);
 		VerbConjugation hateConjugation = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.ILS_ELLES, "d�testent", toHate);
+		Word dogs = new Word("chiens", WordType.COMMON_NAME);
+		Word cats = new Word("chats", WordType.COMMON_NAME);
 		
 		hate.setVerbInfo(hateConjugation);
+		dogs.setNameInfo(new NameInfo("chiens", "DOG"));
+		cats.setNameInfo(new NameInfo("chats", "CAT"));
 		
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
-		words.add(new Word("chiens", WordType.COMMON_NAME));
+		words.add(dogs);
 		words.add(hate);
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
-		words.add(new Word("chats", WordType.COMMON_NAME));
+		words.add(cats);
 		
 		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), RequestType.AFFIRMATION);
-		assertEquals(obj.subject.getGroupType(), GroupType.COMPLEMENT);
+		assertEquals(obj.subject.getGroupType(), GroupType.COMMON_NAME);
 	}
 	
 	@Test
@@ -400,11 +413,13 @@ public class SentenceParseTest {
 		Verb etre = new Verb("�tre", true, ActionType.BE);
 		VerbConjugation conjugEtre = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.ILS_ELLES, "sont", etre);
 		sont.setVerbInfo(conjugEtre);
+		Word lettres = new Word("lettres", WordType.COMMON_NAME);
+		lettres.setNameInfo(new NameInfo("lettres", "LETTER"));
 		
 		words.add(new Word("o�", WordType.INTERROGATIVE_ADJECTIVE));
 		words.add(sont);
 		words.add(new Word("les", WordType.DEFINITE_ARTICLE));
-		words.add(new Word("lettres", WordType.COMMON_NAME));
+		words.add(lettres);
 		words.add(new Word("que", WordType.PREPOSITION));
 		words.add(new Word("je", WordType.PERSONAL_PRONOUN));
 		words.add(new Word("t", WordType.TARGET_PRONOUN));
@@ -415,11 +430,11 @@ public class SentenceParseTest {
 		InterpretationObject obj = new SpeechParser(null).parseFRWordBuffer(words);
 		
 		assertEquals(obj.getRequestType(), RequestType.QUESTION);
-		assertEquals(obj.what.getGroupType(), GroupType.COMPLEMENT);
+		assertEquals(obj.what.getGroupType(), GroupType.COMMON_NAME);
 		
 		NameObject compl = (NameObject)obj.what;
 		
-		assertEquals(compl.object, "lettres");
+		assertEquals(compl.object.getValue(), "lettres");
 		assertNotNull(compl.getVerbalSecondObject());
 		
 		IVerbalObject verbal = compl.getVerbalSecondObject();

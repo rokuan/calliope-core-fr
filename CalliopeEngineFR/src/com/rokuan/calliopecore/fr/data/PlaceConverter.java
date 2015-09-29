@@ -130,7 +130,7 @@ public class PlaceConverter {
 			AdditionalPlace additional = new AdditionalPlace();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				additional.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
+				additional.setPlacePreposition(words.getCurrentElement().getPlacePreposition());
 				words.consume();
 			}
 
@@ -162,7 +162,7 @@ public class PlaceConverter {
 			CityObject city = new CityObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				city.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
+				city.setPlacePreposition(words.getCurrentElement().getPlacePreposition());
 				words.consume();
 			}
 
@@ -174,7 +174,7 @@ public class PlaceConverter {
 			CountryObject country = new CountryObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				country.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
+				country.setPlacePreposition(words.getCurrentElement().getPlacePreposition());
 				words.consume();
 			}
 
@@ -190,7 +190,7 @@ public class PlaceConverter {
 			NamedPlaceObject place = new NamedPlaceObject();
 
 			if(words.getCurrentElement().isOfType(WordType.PLACE_PREPOSITION)){
-				place.setPlacePreposition(words.getCurrentElement().getPlacePreposition().getPlaceContext());
+				place.setPlacePreposition(words.getCurrentElement().getPlacePreposition());
 				words.consume();
 			}
 

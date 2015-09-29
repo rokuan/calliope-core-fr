@@ -7,25 +7,26 @@ import java.util.Set;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.rokuan.calliopecore.sentence.CharacterInfo;
-import com.rokuan.calliopecore.sentence.CityInfo;
-import com.rokuan.calliopecore.sentence.ColorInfo;
-import com.rokuan.calliopecore.sentence.CountryInfo;
-import com.rokuan.calliopecore.sentence.CustomMode;
-import com.rokuan.calliopecore.sentence.CustomObject;
-import com.rokuan.calliopecore.sentence.CustomPerson;
-import com.rokuan.calliopecore.sentence.CustomPlace;
+import com.rokuan.calliopecore.sentence.IAdjectiveInfo;
+import com.rokuan.calliopecore.sentence.ICharacterInfo;
+import com.rokuan.calliopecore.sentence.ICityInfo;
+import com.rokuan.calliopecore.sentence.IColorInfo;
+import com.rokuan.calliopecore.sentence.ICountryInfo;
+import com.rokuan.calliopecore.sentence.ICustomMode;
+import com.rokuan.calliopecore.sentence.ICustomObject;
+import com.rokuan.calliopecore.sentence.ICustomPerson;
+import com.rokuan.calliopecore.sentence.ICustomPlace;
+import com.rokuan.calliopecore.sentence.ILanguageInfo;
+import com.rokuan.calliopecore.sentence.INameInfo;
+import com.rokuan.calliopecore.sentence.IPlaceInfo;
 import com.rokuan.calliopecore.sentence.IPlacePreposition;
 import com.rokuan.calliopecore.sentence.IPurposePreposition;
 import com.rokuan.calliopecore.sentence.ITimePreposition;
+import com.rokuan.calliopecore.sentence.ITransportInfo;
+import com.rokuan.calliopecore.sentence.IUnitInfo;
 import com.rokuan.calliopecore.sentence.IVerbConjugation;
 import com.rokuan.calliopecore.sentence.IWayPreposition;
 import com.rokuan.calliopecore.sentence.IWord;
-import com.rokuan.calliopecore.sentence.LanguageInfo;
-import com.rokuan.calliopecore.sentence.NameInfo;
-import com.rokuan.calliopecore.sentence.PlaceInfo;
-import com.rokuan.calliopecore.sentence.TransportInfo;
-import com.rokuan.calliopecore.sentence.UnitInfo;
 
 @DatabaseTable(tableName = "words")
 public class Word implements IWord {
@@ -111,6 +112,7 @@ public class Word implements IWord {
 	private HashSet<WordType> types = new HashSet<WordType>();
 	private IVerbConjugation verbInfo;
 	private NameInfo nameInfo;
+	private AdjectiveInfo adjectiveInfo;
 	private LanguageInfo langInfo;
 	private ColorInfo colorInfo;
 	private CountryInfo countryInfo;
@@ -192,16 +194,25 @@ public class Word implements IWord {
 	}
 	
 	@Override
-	public NameInfo getNameInfo(){
+	public INameInfo getNameInfo(){
 		return nameInfo;
 	}
 	
 	public void setNameInfo(NameInfo nameInfo){
 		this.nameInfo = nameInfo;
 	}
+	
+	@Override
+	public IAdjectiveInfo getAdjectiveInfo(){
+		return adjectiveInfo;
+	}
+	
+	public void setAdjectiveInfo(AdjectiveInfo adjectiveInfo){
+		this.adjectiveInfo = adjectiveInfo;
+	}
 
 	@Override
-	public LanguageInfo getLanguageInfo() {
+	public ILanguageInfo getLanguageInfo() {
 		return langInfo;
 	}
 
@@ -210,7 +221,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public ColorInfo getColorInfo() {
+	public IColorInfo getColorInfo() {
 		return colorInfo;
 	}
 
@@ -219,7 +230,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CountryInfo getCountryInfo() {
+	public ICountryInfo getCountryInfo() {
 		return countryInfo;
 	}
 
@@ -228,7 +239,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CityInfo getCityInfo() {
+	public ICityInfo getCityInfo() {
 		return cityInfo;
 	}
 
@@ -237,7 +248,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public TransportInfo getTransportInfo() {
+	public ITransportInfo getTransportInfo() {
 		return transportInfo;
 	}
 
@@ -246,7 +257,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public UnitInfo getUnitInfo() {
+	public IUnitInfo getUnitInfo() {
 		return unitInfo;
 	}
 
@@ -255,7 +266,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CharacterInfo getCharacterInfo() {
+	public ICharacterInfo getCharacterInfo() {
 		return characterInfo;
 	}
 
@@ -264,7 +275,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public PlaceInfo getPlaceInfo() {
+	public IPlaceInfo getPlaceInfo() {
 		return placeInfo;
 	}
 
@@ -309,7 +320,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CustomObject getCustomObject() {
+	public ICustomObject getCustomObject() {
 		return customObject;
 	}
 
@@ -318,7 +329,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CustomPlace getCustomPlace() {
+	public ICustomPlace getCustomPlace() {
 		return customPlace;
 	}
 
@@ -327,7 +338,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CustomPerson getCustomPerson() {
+	public ICustomPerson getCustomPerson() {
 		return customPerson;
 	}
 
@@ -336,7 +347,7 @@ public class Word implements IWord {
 	}
 
 	@Override
-	public CustomMode getCustomMode() {
+	public ICustomMode getCustomMode() {
 		return customMode;
 	}
 

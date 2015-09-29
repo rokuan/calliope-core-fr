@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import com.rokuan.calliopecore.fr.data.PlaceConverter;
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
+import com.rokuan.calliopecore.fr.sentence.CityInfo;
+import com.rokuan.calliopecore.fr.sentence.CountryInfo;
+import com.rokuan.calliopecore.fr.sentence.CustomPlace;
 import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.CityInfo;
-import com.rokuan.calliopecore.sentence.CountryInfo;
-import com.rokuan.calliopecore.sentence.CustomPlace;
 import com.rokuan.calliopecore.sentence.structure.content.IPlaceObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CityObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CountryObject;
@@ -41,7 +41,7 @@ public class PlaceParseTest {
 
 		CityObject c = (CityObject)place;
 
-		assertEquals(c.city.getName(), "Paris");
+		assertEquals(c.city.getValue(), "Paris");
 	}
 	
 	@Test
@@ -62,8 +62,8 @@ public class PlaceParseTest {
 
 		CountryObject c = (CountryObject)place;
 
-		assertEquals(c.country.getName(), "France");
-		assertEquals(c.country.getCode(), "FR");
+		assertEquals(c.country.getValue(), "France");
+		assertEquals(c.country.getCountryCode(), "FR");
 	}
 
 	@Test
@@ -90,8 +90,8 @@ public class PlaceParseTest {
 
 		LocationObject state = (LocationObject)place;
 
-		assertEquals(state.city.getName(), "Paris");
-		assertEquals(state.country.getName(), "France");
+		assertEquals(state.city.getValue(), "Paris");
+		assertEquals(state.country.getValue(), "France");
 	}
 	
 	@Test
@@ -151,7 +151,7 @@ public class PlaceParseTest {
 		
 		AdditionalPlace customPlace = (AdditionalPlace)place;
 		
-		assertEquals(customPlace.getPlacePreposition(), PlaceContext.NEAR);
-		assertEquals(customPlace.place.getName(), placeName);
+		assertEquals(customPlace.getPlacePreposition().getPlaceContext(), PlaceContext.NEAR);
+		assertEquals(customPlace.place.getValue(), placeName);
 	}	
 }

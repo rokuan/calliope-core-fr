@@ -1,6 +1,5 @@
 package com.rokuan.calliopecore.fr.sentence;
 
-import com.google.gson.annotations.Expose;
 import com.rokuan.calliopecore.sentence.IPronoun;
 
 public class Pronoun implements IPronoun {
@@ -25,11 +24,17 @@ public class Pronoun implements IPronoun {
 		ELLES
 	}
 
-	@Expose
+	private String value;
 	private PronounSource source = PronounSource.UNDEFINED; 
 
-	public Pronoun(PronounSource p){
+	public Pronoun(String s, PronounSource p){
+		value = s;
 		source = p;
+	}
+
+	@Override
+	public String getValue() {
+		return value;
 	}
 	
 	@Override
@@ -58,7 +63,7 @@ public class Pronoun implements IPronoun {
 			p = PronounSource.SHE_;
 		}
 
-		return new Pronoun(p);
+		return new Pronoun(str, p);
 	}
 
 	public static Pronoun parseTargetPronoun(String str){
@@ -79,7 +84,7 @@ public class Pronoun implements IPronoun {
 			p = PronounSource.THEY;
 		}
 
-		return new Pronoun(p);
+		return new Pronoun(str, p);
 	}
 	
 	public static Pronoun parseDirectPronoun(String str){
@@ -101,7 +106,7 @@ public class Pronoun implements IPronoun {
 			p = PronounSource.THEY;
 		}
 		
-		return new Pronoun(p);
+		return new Pronoun(str, p);
 	}
 	
 	public static Pronoun parsePossessivePronoun(String str){
@@ -121,7 +126,7 @@ public class Pronoun implements IPronoun {
 			p = PronounSource.THEY;
 		}
 		
-		return new Pronoun(p);
+		return new Pronoun(str, p);
 	}
 
 	/*public static Pronoun parseIndirectPronoun(String str){

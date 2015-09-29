@@ -32,7 +32,7 @@ public class PurposeConverter {
 		if(words.syntaxStartsWith(INFINITIVE_VERB_PATTERN)){
 			VerbalGroup verbal = new VerbalGroup();
 			
-			verbal.setPurposePreposition(words.getCurrentElement().getPurposePreposition().getPurposeContext());
+			verbal.setPurposePreposition(words.getCurrentElement().getPurposePreposition());
 			words.consume();
 			
 			VerbConverter.parseInfinitiveVerb(words, verbal);
@@ -41,7 +41,7 @@ public class PurposeConverter {
 		} else if(words.syntaxStartsWith(CONJUGATED_VERB_PATTERN)){
 			VerbalGroup verbal = new VerbalGroup();
 			
-			verbal.setPurposePreposition(words.getCurrentElement().getPurposePreposition().getPurposeContext());
+			verbal.setPurposePreposition(words.getCurrentElement().getPurposePreposition());
 			words.consume();
 			
 			VerbConverter.parseConjugatedVerb(words, verbal);

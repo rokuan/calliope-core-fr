@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -52,15 +51,12 @@ public class Verb implements IVerb {
     public static final String ACTIONS_FIELD_NAME = "actions";
     public static final String AUXILIARY_FIELD_NAME = "auxiliary";
     
-    @Expose
     @DatabaseField(columnName = ID_FIELD_NAME, id = true)
     private String verb = "";
     
-    @Expose
     @DatabaseField(columnName = ACTIONS_FIELD_NAME, dataType = DataType.SERIALIZABLE)
     private HashSet<Action.ActionType> actions = new HashSet<Action.ActionType>(); //VerbAction.UNDEFINED;
     
-    @Expose
     @DatabaseField(columnName = AUXILIARY_FIELD_NAME)
     private boolean auxiliary = false;
     
@@ -82,8 +78,8 @@ public class Verb implements IVerb {
         return auxiliary;
     }
 
-	//@Override
-	public String getName() {
+	@Override
+	public String getValue() {
 		return verb;
 	}
 

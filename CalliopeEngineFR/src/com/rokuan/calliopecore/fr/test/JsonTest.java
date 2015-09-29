@@ -7,12 +7,13 @@ import java.text.SimpleDateFormat;
 
 import org.junit.Test;
 
+import com.rokuan.calliopecore.fr.sentence.CustomObject;
+import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.sentence.ActionObject;
-import com.rokuan.calliopecore.sentence.CustomObject;
 import com.rokuan.calliopecore.sentence.Action.ActionType;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
 import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
@@ -37,7 +38,7 @@ public class JsonTest {
 
 		words.add(new Word("comment", WordType.INTERROGATIVE_PRONOUN));
 		words.add(go);
-		words.add(new Word("à", WordType.PREPOSITION_AT));
+		words.add(new Word("ï¿½", WordType.PREPOSITION_AT));
 		words.add(new Word("la", WordType.DEFINITE_ARTICLE));
 		words.add(new Word("Mairie", WordType.PLACE_TYPE, WordType.PROPER_NAME, WordType.COMMON_NAME));
 		words.add(new Word("de", WordType.PREPOSITION_OF));
@@ -60,10 +61,10 @@ public class JsonTest {
 		OrderObject obj = new OrderObject();
 		AdditionalObject customObject = new AdditionalObject();
 		customObject.count = new AllItemsObject();
-		customObject.object = new CustomObject("lumière de la cuisine", "KITCHEN_LIGHT");
+		customObject.object = new CustomObject("lumiï¿½re de la cuisine", "KITCHEN_LIGHT");
 		SingleTimeObject time = new SingleTimeObject();
 		time.dateDefinition = DateDefinition.TIME_ONLY;
-		time.setTimePreposition(TimeContext.WHEN);
+		time.setTimePreposition(new TimePreposition("Ã ", TimeContext.WHEN));
 		time.date = new SimpleDateFormat("HH:mm").parse("17:40");
 		
 		obj.action = new ActionObject(Tense.PRESENT, 

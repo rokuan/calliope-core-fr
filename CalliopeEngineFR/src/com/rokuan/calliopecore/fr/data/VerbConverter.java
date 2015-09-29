@@ -26,7 +26,7 @@ public class VerbConverter {
 			WordPattern.optional(FRWordPattern.simpleWord(WordType.CONJUGATION_LINK)), 
 			FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN)); 
 
-	// a-t-il mangé / suis-je venu / TODO: m'a-t-il donné
+	// a-t-il mangï¿½ / suis-je venu / TODO: m'a-t-il donnï¿½
 	public static final WordPattern PAST_QUESTION_PATTERN = WordPattern.sequence(
 			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)), 
 			FRWordPattern.simpleWord(WordType.AUXILIARY), 
@@ -130,7 +130,7 @@ public class VerbConverter {
 			}
 
 			// TODO: trouver le sujet correct
-			object.setSubject(new PronounSubject(new Pronoun(PronounSource.UNDEFINED)));
+			object.setSubject(new PronounSubject(new Pronoun("", PronounSource.UNDEFINED)));
 			words.consume();
 		}
 	}

@@ -75,7 +75,7 @@ public class VerbMatcher implements WordMatcher {
 
 		try{
 			if(infiniteVerb != null
-					&& (w.getVerbInfo() == null || !((Verb)(w.getVerbInfo().getVerb())).getName().matches(infiniteVerb))){
+					&& (w.getVerbInfo() == null || !((Verb)(w.getVerbInfo().getVerb())).getValue().matches(infiniteVerb))){
 				return false;
 			}
 		}catch(Exception e){

@@ -10,6 +10,7 @@ import java.util.Locale;
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
 import com.rokuan.calliopecore.fr.pattern.VerbPattern;
+import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
@@ -207,7 +208,7 @@ public class DateConverter {
 
 			if(words.getCurrentElement().isOfType(WordType.TIME_PREPOSITION)){
 				// TODO: parser la preposition
-				single.setTimePreposition(words.getCurrentElement().getTimePreposition().getTimeContext());
+				single.setTimePreposition(words.getCurrentElement().getTimePreposition());
 				words.consume();
 			}
 
@@ -224,18 +225,18 @@ public class DateConverter {
 			result = single;
 		} else if(WordPattern.syntaxStartsWith(words, TIME_DECLARATION_PATTERN)){
 			SingleTimeObject single = new SingleTimeObject();
-			TimeContext preposition = TimeContext.WHEN;
+			TimePreposition preposition = new TimePreposition("à", TimeContext.WHEN);
 
 			if(words.syntaxStartsWith(VERBAL_WHEN)){
-				preposition = TimeContext.WHEN;
+				preposition = new TimePreposition("quand il sera", TimeContext.WHEN);
 				words.consume();
 				words.consume();
 				words.consume();
 			} else if(words.getCurrentElement().isOfType(WordType.TIME_PREPOSITION)){
-				preposition = words.getCurrentElement().getTimePreposition().getTimeContext();
+				preposition = (TimePreposition)words.getCurrentElement().getTimePreposition();
 				words.consume();
 			} else if(words.getCurrentElement().isOfType(WordType.PREPOSITION_AT)){
-				preposition = TimeContext.WHEN;
+				preposition = new TimePreposition("à", TimeContext.WHEN);
 				words.consume();
 			}
 

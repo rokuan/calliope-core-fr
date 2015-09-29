@@ -62,7 +62,7 @@ public class WayConverter {
 		} else if(words.syntaxStartsWith(MEANS_OF_TRANSPORT_PATTERN)){
 			TransportObject transport = new TransportObject();
 			
-			transport.setWayPreposition(words.getCurrentElement().getWayPreposition().getWayContext());
+			transport.setWayPreposition(words.getCurrentElement().getWayPreposition());
 			words.consume();
 			transport.transportType = words.getCurrentElement().getTransportInfo().getTransportType();			
 			words.consume();
