@@ -59,7 +59,7 @@ public class FRWordPattern {
 	public static WordPattern simplePlacePrep(PlaceType follower, boolean contracted){
 		return WordPattern.simple(new PlacePrepositionMatcher().getBuilder()
 		.setMatchContractedForm(contracted)
-		.setPossibleFollowers(follower)
+		.setPossibleFollowers(new PlaceType[]{ follower })
 		.build()); 
 	}
 
@@ -70,7 +70,7 @@ public class FRWordPattern {
 	public static WordPattern simpleTimePrep(TimeType next, boolean contracted){
 		return WordPattern.simple(new TimePrepositionMatcher().getBuilder()
 		.setMatchContractedForm(contracted)
-		.setPossibleFollowers(next)
+		.setPossibleFollowers(new TimeType[]{ next })
 		.build());
 	}
 	
@@ -81,7 +81,7 @@ public class FRWordPattern {
 	public static WordPattern simpleWayPrep(WayType next, boolean contracted){
 		return WordPattern.simple(new WayPrepositionMatcher().getBuilder()
 		.setMatchContractedForm(contracted)
-		.setPossibleFollowers(next)
+		.setPossibleFollowers(new WayType[]{ next })
 		.build());
 	}
 	
@@ -92,7 +92,7 @@ public class FRWordPattern {
 	public static WordPattern simplePurposePrep(PurposeType next, boolean contracted){
 		return WordPattern.simple(new PurposePrepositionMatcher().getBuilder()
 		.setMatchContractedForm(contracted)
-		.setPossibleFollowers(next)
+		.setPossibleFollowers(new PurposeType[]{ next })
 		.build());
 	}
 }

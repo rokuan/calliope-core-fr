@@ -3,9 +3,8 @@ package com.rokuan.calliopecore.fr.pattern;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordMatcher;
-import com.rokuan.calliopecore.sentence.IWord;
 
-public class SimpleWordMatcher implements WordMatcher {
+public class SimpleWordMatcher implements WordMatcher<Word> {
 	private WordType[] types;
 	private String wordRegex;
 
@@ -36,10 +35,10 @@ public class SimpleWordMatcher implements WordMatcher {
 	}
 	
 	@Override
-	public boolean matches(IWord word) {
+	public boolean matches(Word word) {
 		if(types != null){
 			for(WordType ty: types){
-				if(!((Word)word).isOfType(ty)){
+				if(!word.isOfType(ty)){
 					return false;
 				}
 			}

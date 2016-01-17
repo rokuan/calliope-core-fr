@@ -27,7 +27,6 @@ import com.rokuan.calliopecore.sentence.ITransportInfo;
 import com.rokuan.calliopecore.sentence.IUnitInfo;
 import com.rokuan.calliopecore.sentence.IWayPreposition;
 import com.rokuan.calliopecore.sentence.IWord;
-import com.rokuan.calliopecore.sentence.structure.common.IVerbalContent;
 
 @DatabaseTable(tableName = "words")
 public class Word implements IWord {

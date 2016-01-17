@@ -3,7 +3,6 @@ package com.rokuan.calliopecore.fr.pattern;
 import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.structure.data.time.TimeAdverbial.TimeType;
 
 public class TimePrepositionMatcher extends PrepositionMatcher<TimeType> {
@@ -18,7 +17,7 @@ public class TimePrepositionMatcher extends PrepositionMatcher<TimeType> {
 	}	
 	
 	@Override
-	public boolean matches(IWord word) {
+	public boolean matches(Word word) {
 		if(matchContractedForm && !((Word)word).isOfType(WordType.CONTRACTED)){
 			return false;
 		}

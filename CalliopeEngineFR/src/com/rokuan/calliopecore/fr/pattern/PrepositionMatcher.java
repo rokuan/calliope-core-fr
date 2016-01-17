@@ -1,9 +1,10 @@
 package com.rokuan.calliopecore.fr.pattern;
 
+import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.pattern.WordMatcher;
 
 
-public abstract class PrepositionMatcher<FollowerType> implements WordMatcher {
+public abstract class PrepositionMatcher<FollowerType> implements WordMatcher<Word> {
 	protected boolean matchContractedForm = false;
 	protected FollowerType[] possibleFollowers = null;
 
@@ -19,7 +20,7 @@ public abstract class PrepositionMatcher<FollowerType> implements WordMatcher {
 			return this;
 		}
 		
-		public PrepositionMatcherBuilder<FType> setPossibleFollowers(FType... types){
+		public PrepositionMatcherBuilder<FType> setPossibleFollowers(FType[] types){
 			matcher.possibleFollowers = types;
 			return this;
 		}

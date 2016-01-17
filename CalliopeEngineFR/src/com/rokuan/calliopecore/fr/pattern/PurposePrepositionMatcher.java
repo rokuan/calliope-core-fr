@@ -3,7 +3,6 @@ package com.rokuan.calliopecore.fr.pattern;
 import com.rokuan.calliopecore.fr.sentence.PurposePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.IWord;
 import com.rokuan.calliopecore.sentence.structure.data.purpose.PurposeAdverbial.PurposeType;
 
 public class PurposePrepositionMatcher extends PrepositionMatcher<PurposeType> {
@@ -19,7 +18,7 @@ public class PurposePrepositionMatcher extends PrepositionMatcher<PurposeType> {
 	}	
 
 	@Override
-	public boolean matches(IWord word) {
+	public boolean matches(Word word) {
 		if(matchContractedForm && !((Word)word).isOfType(WordType.CONTRACTED)){
 			return false;
 		}
