@@ -1,21 +1,19 @@
 package com.rokuan.calliopecore.fr.sentence;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.rokuan.calliopecore.sentence.Action;
-import com.rokuan.calliopecore.sentence.Action.ActionType;
-import com.rokuan.calliopecore.sentence.IVerb;
+import com.rokuan.calliopecore.sentence.IAction.ActionType;
 
 /**
  * Created by LEBEAU Christophe on 19/02/2015.
  */
 @DatabaseTable(tableName = "verbs")
-public class Verb implements IVerb {
+public class Verb {
     public enum ConjugationTense {
         PRESENT,
         PAST,
@@ -50,12 +48,13 @@ public class Verb implements IVerb {
     public static final String ID_FIELD_NAME = "verb";
     public static final String ACTIONS_FIELD_NAME = "actions";
     public static final String AUXILIARY_FIELD_NAME = "auxiliary";
+    //public static final String ATTRIBUTE_FIELD_NAME = "attribute";
     
     @DatabaseField(columnName = ID_FIELD_NAME, id = true)
     private String verb = "";
     
-    @DatabaseField(columnName = ACTIONS_FIELD_NAME, dataType = DataType.SERIALIZABLE)
-    private HashSet<Action.ActionType> actions = new HashSet<Action.ActionType>(); //VerbAction.UNDEFINED;
+    @ForeignCollectionField(columnName = ACTIONS_FIELD_NAME, eager = true)
+    private Collection<VerbAction> actions = new ArrayList<VerbAction>();
     
     @DatabaseField(columnName = AUXILIARY_FIELD_NAME)
     private boolean auxiliary = false;
@@ -64,11 +63,11 @@ public class Verb implements IVerb {
     	
     }
     
-    public Verb(String infinitiveForm, boolean aux, Action.ActionType... verbActions){
-    	this(infinitiveForm, new HashSet<Action.ActionType>(Arrays.asList(verbActions)), aux);
+    public Verb(String infinitiveForm, boolean aux, VerbAction... verbActions){
+    	this(infinitiveForm, Arrays.asList(verbActions), aux);
     }
     
-    public Verb(String infinitiveForm, Set<Action.ActionType> verbActions, boolean aux){
+    public Verb(String infinitiveForm, Collection<VerbAction> verbActions, boolean aux){
     	verb = infinitiveForm;
     	actions.addAll(verbActions);
     	auxiliary = aux;
@@ -78,18 +77,31 @@ public class Verb implements IVerb {
         return auxiliary;
     }
 
-	@Override
 	public String getValue() {
 		return verb;
 	}
 
-	@Override
-	public boolean hasAction(ActionType act) {
-		return actions.contains(act);
+	public boolean hasAction(ActionType action){
+		for(VerbAction a: actions){
+			if(a.getAction() == action){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
-	@Override
-	public Set<ActionType> getActions(){
-		return actions;
+	public VerbAction getAction(ActionType action){
+		for(VerbAction a: actions){
+			if(a.getAction() == action){
+				return a;
+			}
+		}
+		
+		return null;
+	}
+	
+	public VerbAction getMainAction(){
+		return actions.iterator().next();
 	}
 }

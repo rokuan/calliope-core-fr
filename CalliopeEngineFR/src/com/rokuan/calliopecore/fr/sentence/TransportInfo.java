@@ -19,7 +19,7 @@ public class TransportInfo implements ITransportInfo {
 	@DatabaseField(columnName = TYPE_FIELD_NAME)
 	private TransportType transportType;
 	
-	TransportInfo(){
+	public TransportInfo(){
 		
 	}
 	

@@ -1,13 +1,12 @@
 package com.rokuan.calliopecore.fr.pattern;
 
-import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordMatcher;
-import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.IWord;
+import com.rokuan.calliopecore.sentence.IAction.Form;
 
-public class VerbMatcher implements WordMatcher {
+public class VerbMatcher implements WordMatcher<Word> {
 	private boolean auxiliary = false;
 	private String infiniteVerb = null;
 	private String conjugatedVerb = null;
@@ -58,9 +57,7 @@ public class VerbMatcher implements WordMatcher {
 	}
 
 	@Override
-	public boolean matches(IWord word) {
-		Word w = (Word)word;
-		
+	public boolean matches(Word w) {		
 		if(!w.isOfType(WordType.VERB)){
 			return false;
 		}
@@ -75,7 +72,8 @@ public class VerbMatcher implements WordMatcher {
 
 		try{
 			if(infiniteVerb != null
-					&& (w.getVerbInfo() == null || !((Verb)(w.getVerbInfo().getVerb())).getValue().matches(infiniteVerb))){
+					//&& (w.getVerbInfo() == null || !((Verb)(w.getVerbInfo().getVerb())).getValue().matches(infiniteVerb))){
+					&& (w.getVerbInfo() == null || !((VerbConjugation)w.getVerbInfo()).getVerb().getValue().matches(infiniteVerb))){
 				return false;
 			}
 		}catch(Exception e){

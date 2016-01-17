@@ -18,6 +18,10 @@ public class AdjectiveInfo implements IAdjectiveInfo {
 	@DatabaseField(columnName = VALUE_FIELD_NAME, uniqueIndex = true)
 	private String text;
 	
+	public AdjectiveInfo(){
+		
+	}
+	
 	public AdjectiveInfo(String aText, AdjectiveValue aType){
 		text = aText;
 		adjectiveType = aType;

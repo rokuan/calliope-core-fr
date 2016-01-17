@@ -6,14 +6,15 @@ import com.rokuan.calliopecore.fr.pattern.VerbMatcher;
 import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.Verb;
+import com.rokuan.calliopecore.fr.sentence.VerbAction;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
-import com.rokuan.calliopecore.sentence.Action.ActionType;
+import com.rokuan.calliopecore.sentence.IAction.ActionType;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.IPronoun.PronounSource;
-import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
-import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
+import com.rokuan.calliopecore.sentence.IAction.Form;
+import com.rokuan.calliopecore.sentence.IAction.Tense;
 import com.rokuan.calliopecore.sentence.structure.content.IVerbalObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
@@ -97,7 +98,6 @@ public class VerbConverter {
 			object.setSubject(new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue())));
 			words.consume();
 
-			//object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
 			object.setAction(new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo()));
 			words.consume();
 		} else if(words.syntaxStartsWith(PRESENT_QUESTION_PATTERN)){			
@@ -106,7 +106,6 @@ public class VerbConverter {
 				words.consume();
 			}		
 
-			//object.setAction(getActionFromVerb(words.getCurrentElement().getVerbInfo()));
 			object.setAction(new ActionObject(Tense.PRESENT, words.getCurrentElement().getVerbInfo()));
 			words.consume();
 
@@ -119,8 +118,10 @@ public class VerbConverter {
 		} else if(words.syntaxStartsWith(IS_THERE_PATTERN)){
 			words.consume();	// y
 			
+			/*VerbConjugation conjug = new VerbConjugation("y " + words.getCurrentElement().getValue(), (VerbConjugation)words.getCurrentElement().getVerbInfo(), 
+					new Verb("y avoir", ActionType.THERE_IS));*/
 			VerbConjugation conjug = new VerbConjugation("y " + words.getCurrentElement().getValue(), (VerbConjugation)words.getCurrentElement().getVerbInfo(), 
-					new Verb("y avoir", false, ActionType.THERE_IS));
+					new Verb("y avoir", false, new VerbAction(ActionType.THERE_IS)));
 			
 			object.setAction(new ActionObject(conjug.getTense(), conjug));
 			words.consume();
@@ -214,12 +215,4 @@ public class VerbConverter {
 			}
 		}
 	}
-
-	/*private static Action.VerbAction getActionFromVerb(VerbConjugation conjug){
-		if(conjug == null || conjug.getVerb() == null){
-			return Action.VerbAction.UNDEFINED;
-		}
-
-		return (Action.VerbAction)conjug.getVerb().getAction();
-	}*/
 }

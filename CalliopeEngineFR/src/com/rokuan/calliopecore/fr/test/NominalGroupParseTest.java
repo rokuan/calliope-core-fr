@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.sentence.CustomObject;
+import com.rokuan.calliopecore.fr.sentence.NameInfo;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
@@ -18,9 +19,12 @@ public class NominalGroupParseTest {
 	@Test
 	public void NameObjectParseTest(){
 		FRWordBuffer words = new FRWordBuffer();
+		Word cat = new Word("chat", WordType.COMMON_NAME);
+		
+		cat.setNameInfo(new NameInfo("chat", "CAT"));
 		
 		words.add(new Word("le", WordType.DEFINITE_ARTICLE));
-		words.add(new Word("chat", WordType.COMMON_NAME));
+		words.add(cat);
 		
 		INominalObject nominal = NominalGroupConverter.parseDirectObject(words);
 		
@@ -28,7 +32,7 @@ public class NominalGroupParseTest {
 		
 		NameObject compl = (NameObject)nominal;
 		
-		assertEquals(compl.object, "chat");
+		assertEquals(compl.object.getValue(), "chat");
 	}
 	
 	@Test

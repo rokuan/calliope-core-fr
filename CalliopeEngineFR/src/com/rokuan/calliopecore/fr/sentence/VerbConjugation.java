@@ -2,14 +2,13 @@ package com.rokuan.calliopecore.fr.sentence;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.rokuan.calliopecore.sentence.Action.ActionType;
-import com.rokuan.calliopecore.sentence.IVerbConjugation;
+import com.rokuan.calliopecore.sentence.IAction;
 
 /**
  * Created by LEBEAU Christophe on 19/02/2015.
  */
 @DatabaseTable(tableName = "conjugations")
-public class VerbConjugation implements IVerbConjugation {
+public class VerbConjugation implements IAction {
 	public static final String VALUE_FIELD_NAME = "value";
 	public static final String VERB_FIELD_NAME = "verb";
 	public static final String TENSE_FIELD_NAME = "tense";
@@ -29,16 +28,16 @@ public class VerbConjugation implements IVerbConjugation {
 	private Verb.ConjugationTense tense;
 
 	@DatabaseField(columnName = FORM_FIELD_NAME, uniqueCombo = true)
-	private IVerbConjugation.Form form;
+	private IAction.Form form;
 
 	@DatabaseField(columnName = PERSON_FIELD_NAME, uniqueCombo = true)
 	private Verb.Pronoun pronoun;
 
-	public VerbConjugation(){
+	protected VerbConjugation(){
 
 	}
 
-	public VerbConjugation(Verb.ConjugationTense conjugTense, IVerbConjugation.Form conjugForm, Verb.Pronoun conjugPerson, String conjugValue, Verb conjugVerb){
+	public VerbConjugation(Verb.ConjugationTense conjugTense, IAction.Form conjugForm, Verb.Pronoun conjugPerson, String conjugValue, Verb conjugVerb){
 		tense = conjugTense;
 		form = conjugForm;
 		pronoun = conjugPerson;
@@ -50,12 +49,10 @@ public class VerbConjugation implements IVerbConjugation {
 		this(conjug.tense, conjug.form, conjug.pronoun, conjugValue, v);
 	}
 	
-	@Override
 	public String getValue(){
 		return name;
 	}
 
-	@Override
 	public Verb getVerb() {
 		return verb;
 	}
@@ -64,17 +61,10 @@ public class VerbConjugation implements IVerbConjugation {
 		this.verb = verb;
 	}
 
-	@Override
 	public Form getForm() {
 		return form;
 	}
 
-	@Override
-	public boolean does(ActionType action){
-		return verb != null && verb.hasAction(action);
-	}
-
-	@Override
 	public Tense getTense() {
 		switch(tense){
 		case PRESENT:
@@ -94,5 +84,20 @@ public class VerbConjugation implements IVerbConjugation {
 		}
 
 		return Tense.PRESENT;
+	}
+
+	@Override
+	public ActionType getAction() {
+		return verb.getMainAction().getAction();
+	}
+
+	@Override
+	public String getBoundField() {
+		return verb.getMainAction().getBoundField();
+	}
+
+	@Override
+	public boolean isFieldBound() {
+		return verb.getMainAction().isAFieldAction();
 	}
 }

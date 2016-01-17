@@ -7,6 +7,7 @@ import java.util.Set;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.rokuan.calliopecore.sentence.IAction;
 import com.rokuan.calliopecore.sentence.IAdjectiveInfo;
 import com.rokuan.calliopecore.sentence.ICharacterInfo;
 import com.rokuan.calliopecore.sentence.ICityInfo;
@@ -24,9 +25,9 @@ import com.rokuan.calliopecore.sentence.IPurposePreposition;
 import com.rokuan.calliopecore.sentence.ITimePreposition;
 import com.rokuan.calliopecore.sentence.ITransportInfo;
 import com.rokuan.calliopecore.sentence.IUnitInfo;
-import com.rokuan.calliopecore.sentence.IVerbConjugation;
 import com.rokuan.calliopecore.sentence.IWayPreposition;
 import com.rokuan.calliopecore.sentence.IWord;
+import com.rokuan.calliopecore.sentence.structure.common.IVerbalContent;
 
 @DatabaseTable(tableName = "words")
 public class Word implements IWord {
@@ -110,7 +111,8 @@ public class Word implements IWord {
 	private String value;
 	@DatabaseField(columnName = TYPES_FIELD_NAME, dataType = DataType.SERIALIZABLE)
 	private HashSet<WordType> types = new HashSet<WordType>();
-	private IVerbConjugation verbInfo;
+	//private IAction verbInfo;
+	private VerbConjugation verbInfo;
 	private NameInfo nameInfo;
 	private AdjectiveInfo adjectiveInfo;
 	private LanguageInfo langInfo;
@@ -184,8 +186,7 @@ public class Word implements IWord {
 		return value;
 	}
 
-	@Override
-	public IVerbConjugation getVerbInfo() {
+	public IAction getVerbInfo() {
 		return verbInfo;
 	}
 

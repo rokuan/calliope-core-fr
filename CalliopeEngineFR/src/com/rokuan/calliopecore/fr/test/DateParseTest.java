@@ -13,11 +13,12 @@ import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
+import com.rokuan.calliopecore.fr.sentence.VerbAction;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
-import com.rokuan.calliopecore.sentence.Action;
-import com.rokuan.calliopecore.sentence.IVerbConjugation.Form;
+import com.rokuan.calliopecore.sentence.IAction;
+import com.rokuan.calliopecore.sentence.IAction.Form;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.content.ITimeObject;
 import com.rokuan.calliopecore.sentence.structure.data.time.SingleTimeObject;
@@ -198,13 +199,13 @@ public class DateParseTest {
 		FRWordBuffer words = new FRWordBuffer();
 
 		Word futureBe = new Word("sera", Word.WordType.VERB);
-		Verb toBeVerb = new Verb("�tre", true, Action.ActionType.BE);
+		Verb toBeVerb = new Verb("�tre", true, new VerbAction(IAction.ActionType.BE));
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "sera", toBeVerb);		
 		toBeConjug.setVerb(toBeVerb);
 		futureBe.setVerbInfo(toBeConjug);
 		
 		Word imperativeAlert = new Word("pr�viens", Word.WordType.VERB);
-		Verb toAlert = new Verb("pr�venir", false, Action.ActionType.ALERT);
+		Verb toAlert = new Verb("pr�venir", false, new VerbAction(IAction.ActionType.ALERT));
 		VerbConjugation alertConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "pr�viens", toAlert);		
 		alertConjug.setVerb(toAlert);
 		imperativeAlert.setVerbInfo(alertConjug);		
@@ -249,7 +250,7 @@ public class DateParseTest {
 		
 		SingleTimeObject single = (SingleTimeObject)time;
 		
-		assertEquals(single.getTimePreposition(), TimeContext.BEFORE);		
+		assertEquals(single.getTimePreposition().getTimeContext(), TimeContext.BEFORE);		
 	}
 	
 	@Test
@@ -270,7 +271,7 @@ public class DateParseTest {
 		
 		SingleTimeObject single = (SingleTimeObject)time;
 		
-		assertEquals(single.getTimePreposition(), TimeContext.UNTIL);
+		assertEquals(single.getTimePreposition().getTimeContext(), TimeContext.UNTIL);
 	}
 	
 	@Test

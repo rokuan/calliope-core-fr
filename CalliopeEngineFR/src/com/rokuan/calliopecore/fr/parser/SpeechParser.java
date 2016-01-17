@@ -13,6 +13,7 @@ import com.rokuan.calliopecore.fr.data.NominalGroupConverter;
 import com.rokuan.calliopecore.fr.data.PlaceConverter;
 import com.rokuan.calliopecore.fr.data.VerbConverter;
 import com.rokuan.calliopecore.fr.data.WayConverter;
+import com.rokuan.calliopecore.fr.parser.route.RouteTree;
 import com.rokuan.calliopecore.fr.sentence.AdjectiveInfo;
 import com.rokuan.calliopecore.fr.sentence.CharacterInfo;
 import com.rokuan.calliopecore.fr.sentence.CityInfo;
@@ -38,8 +39,8 @@ import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.fr.structure.Question;
 import com.rokuan.calliopecore.parser.AbstractParser;
 import com.rokuan.calliopecore.sentence.ActionObject;
-import com.rokuan.calliopecore.sentence.IVerbConjugation;
-import com.rokuan.calliopecore.sentence.IVerbConjugation.Tense;
+import com.rokuan.calliopecore.sentence.IAction;
+import com.rokuan.calliopecore.sentence.IAction.Tense;
 import com.rokuan.calliopecore.sentence.structure.AffirmationObject;
 import com.rokuan.calliopecore.sentence.structure.InterpretationObject;
 import com.rokuan.calliopecore.sentence.structure.OrderObject;
@@ -51,14 +52,25 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 public final class SpeechParser implements AbstractParser {
 	private WordDatabase db;
+	private RouteTree tree; 
 
 	public SpeechParser(WordDatabase database){
 		db = database;
 	}
+	
+	public RouteTree getRouteTree(){
+		return tree;
+	}
 
 	@Override
 	public InterpretationObject parseText(String text){
-		return this.parseFRWordBuffer(this.lexSpeech(text));
+		InterpretationObject result = this.parseFRWordBuffer(this.lexSpeech(text));
+		
+		if(result != null){
+			tree.run(result);
+		}
+		
+		return result;
 	}
 
 	private final FRWordBuffer lexSpeech(String text){
@@ -180,19 +192,19 @@ public final class SpeechParser implements AbstractParser {
 			//return inter;			
 		} else if(words.syntaxStartsWith(SentencePattern.INDIRECT_ORDER_PATTERN)){
 			OrderObject oObject = new OrderObject();
-			List<IVerbConjugation> additionalVerbs = null;
+			List<IAction> additionalVerbs = null;
 
 			if(words.syntaxStartsWith(SentencePattern.IS_ARE_PATTERN)){
 				words.consume();	// est-ce
 				words.consume();	// que
 				words.consume();	// tu
 
-				additionalVerbs = new ArrayList<IVerbConjugation>();
+				additionalVerbs = new ArrayList<IAction>();
 				additionalVerbs.add(words.getCurrentElement().getVerbInfo());
 				words.consume();	// peux/pourrais
 			} else {
 				//words.consume();	
-				additionalVerbs = new ArrayList<IVerbConjugation>();
+				additionalVerbs = new ArrayList<IAction>();
 				additionalVerbs.add(words.getCurrentElement().getVerbInfo());
 				words.consume();	// peux/pourrais
 				words.consume();	// tu
@@ -203,7 +215,7 @@ public final class SpeechParser implements AbstractParser {
 				words.consume();
 			}
 
-			IVerbConjugation verb = words.getCurrentElement().getVerbInfo();
+			IAction verb = words.getCurrentElement().getVerbInfo();
 			ActionObject action = additionalVerbs == null ? new ActionObject(Tense.PRESENT, verb) 
 			: new ActionObject(Tense.PRESENT, verb, additionalVerbs);
 
