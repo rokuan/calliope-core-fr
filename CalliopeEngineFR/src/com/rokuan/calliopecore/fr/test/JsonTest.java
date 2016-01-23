@@ -12,7 +12,7 @@ import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
-import com.rokuan.calliopecore.fr.sentence.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Action;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.IAction.ActionType;
@@ -69,7 +69,7 @@ public class JsonTest {
 		time.date = new SimpleDateFormat("HH:mm").parse("17:40");
 		
 		obj.action = new ActionObject(Tense.PRESENT, 
-				new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "allume", new Verb("allumer", false, new VerbAction(ActionType.TURN_ON))));
+				new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "allume", new Verb("allumer", false, new Action(ActionType.TURN_ON))));
 		obj.what = customObject;
 		
 		String json = InterpretationObject.toJSON(obj);

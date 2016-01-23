@@ -13,7 +13,7 @@ public class TransportInfo implements ITransportInfo {
 	@DatabaseField(generatedId = true)
 	private int id;
 	
-	@DatabaseField(columnName = TRANSPORT_FIELD_NAME, id = true)
+	@DatabaseField(columnName = TRANSPORT_FIELD_NAME, uniqueIndex = true)
 	private String name;
 	
 	@DatabaseField(columnName = TYPE_FIELD_NAME)

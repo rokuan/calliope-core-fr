@@ -1,7 +1,7 @@
 package com.rokuan.calliopecore.fr.parser.route;
 
 import com.google.gson.Gson;
-import com.rokuan.calliopecore.fr.sentence.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Action;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.sentence.ActionObject;
 import com.rokuan.calliopecore.sentence.IAction;
@@ -58,7 +58,7 @@ public class VerbRoute extends Route {
 		final IAction oldMainAction = oldAction.getMainAction();
 		
 		if(oldMainAction instanceof VerbConjugation){
-			final VerbAction newVerbAction = ((VerbConjugation)oldMainAction).getVerb().getAction(action); 
+			final Action newVerbAction = ((VerbConjugation)oldMainAction).getVerb().getAction(action); 
 			ActionObject newAction = new ActionObject(oldAction.getTense(), 
 					new IAction() {					
 						@Override

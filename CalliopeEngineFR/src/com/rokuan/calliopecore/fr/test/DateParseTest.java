@@ -13,7 +13,7 @@ import com.rokuan.calliopecore.fr.sentence.TimePreposition;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
-import com.rokuan.calliopecore.fr.sentence.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Action;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
@@ -199,13 +199,13 @@ public class DateParseTest {
 		FRWordBuffer words = new FRWordBuffer();
 
 		Word futureBe = new Word("sera", Word.WordType.VERB);
-		Verb toBeVerb = new Verb("�tre", true, new VerbAction(IAction.ActionType.BE));
+		Verb toBeVerb = new Verb("�tre", true, new Action(IAction.ActionType.BE));
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "sera", toBeVerb);		
 		toBeConjug.setVerb(toBeVerb);
 		futureBe.setVerbInfo(toBeConjug);
 		
 		Word imperativeAlert = new Word("pr�viens", Word.WordType.VERB);
-		Verb toAlert = new Verb("pr�venir", false, new VerbAction(IAction.ActionType.ALERT));
+		Verb toAlert = new Verb("pr�venir", false, new Action(IAction.ActionType.ALERT));
 		VerbConjugation alertConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "pr�viens", toAlert);		
 		alertConjug.setVerb(toAlert);
 		imperativeAlert.setVerbInfo(alertConjug);		

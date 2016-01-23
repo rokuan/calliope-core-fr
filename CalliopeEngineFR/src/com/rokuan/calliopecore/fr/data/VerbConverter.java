@@ -6,7 +6,7 @@ import com.rokuan.calliopecore.fr.pattern.VerbMatcher;
 import com.rokuan.calliopecore.fr.pattern.VerbPattern;
 import com.rokuan.calliopecore.fr.sentence.Pronoun;
 import com.rokuan.calliopecore.fr.sentence.Verb;
-import com.rokuan.calliopecore.fr.sentence.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Action;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.pattern.WordPattern;
@@ -121,7 +121,7 @@ public class VerbConverter {
 			/*VerbConjugation conjug = new VerbConjugation("y " + words.getCurrentElement().getValue(), (VerbConjugation)words.getCurrentElement().getVerbInfo(), 
 					new Verb("y avoir", ActionType.THERE_IS));*/
 			VerbConjugation conjug = new VerbConjugation("y " + words.getCurrentElement().getValue(), (VerbConjugation)words.getCurrentElement().getVerbInfo(), 
-					new Verb("y avoir", false, new VerbAction(ActionType.THERE_IS)));
+					new Verb("y avoir", false, new Action(ActionType.THERE_IS)));
 			
 			object.setAction(new ActionObject(conjug.getTense(), conjug));
 			words.consume();

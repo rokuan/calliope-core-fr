@@ -56,6 +56,7 @@ public final class SpeechParser implements AbstractParser {
 
 	public SpeechParser(WordDatabase database){
 		db = database;
+		tree = new RouteTree();
 	}
 	
 	public RouteTree getRouteTree(){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -53,8 +54,10 @@ public class Verb {
     @DatabaseField(columnName = ID_FIELD_NAME, id = true)
     private String verb = "";
     
+    /*@ForeignCollectionField(columnName = ACTIONS_FIELD_NAME, eager = true)
+    private ForeignCollection<Action> actions;*/
     @ForeignCollectionField(columnName = ACTIONS_FIELD_NAME, eager = true)
-    private Collection<VerbAction> actions = new ArrayList<VerbAction>();
+    private ForeignCollection<VerbAction> actions;
     
     @DatabaseField(columnName = AUXILIARY_FIELD_NAME)
     private boolean auxiliary = false;
@@ -63,13 +66,13 @@ public class Verb {
     	
     }
     
-    public Verb(String infinitiveForm, boolean aux, VerbAction... verbActions){
+    public Verb(String infinitiveForm, boolean aux, Action... verbActions){
     	this(infinitiveForm, Arrays.asList(verbActions), aux);
     }
     
-    public Verb(String infinitiveForm, Collection<VerbAction> verbActions, boolean aux){
+    public Verb(String infinitiveForm, Collection<Action> verbActions, boolean aux){
     	verb = infinitiveForm;
-    	actions.addAll(verbActions);
+    	//actions.addAll(verbActions);
     	auxiliary = aux;
     }
     
@@ -81,8 +84,18 @@ public class Verb {
 		return verb;
 	}
 
+	private Collection<Action> getActions(){
+		ArrayList<Action> actionsList = new ArrayList<Action>(actions.size());
+		
+		for(VerbAction verbAction: actions){
+			actionsList.add(verbAction.getAction());
+		}
+
+		return actionsList;
+	}
+	
 	public boolean hasAction(ActionType action){
-		for(VerbAction a: actions){
+		for(Action a: getActions()){
 			if(a.getAction() == action){
 				return true;
 			}
@@ -91,8 +104,8 @@ public class Verb {
 		return false;
 	}
 	
-	public VerbAction getAction(ActionType action){
-		for(VerbAction a: actions){
+	public Action getAction(ActionType action){
+		for(Action a: getActions()){
 			if(a.getAction() == action){
 				return a;
 			}
@@ -101,7 +114,7 @@ public class Verb {
 		return null;
 	}
 	
-	public VerbAction getMainAction(){
-		return actions.iterator().next();
+	public Action getMainAction(){
+		return getActions().iterator().next();
 	}
 }

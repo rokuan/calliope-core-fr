@@ -14,7 +14,7 @@ import com.rokuan.calliopecore.fr.sentence.NameInfo;
 import com.rokuan.calliopecore.fr.sentence.Verb;
 import com.rokuan.calliopecore.fr.sentence.Verb.ConjugationTense;
 import com.rokuan.calliopecore.fr.sentence.Verb.Pronoun;
-import com.rokuan.calliopecore.fr.sentence.VerbAction;
+import com.rokuan.calliopecore.fr.sentence.Action;
 import com.rokuan.calliopecore.fr.sentence.VerbConjugation;
 import com.rokuan.calliopecore.fr.sentence.Word;
 import com.rokuan.calliopecore.fr.sentence.Word.WordType;
@@ -31,7 +31,7 @@ public class QuestionParseTest {
 	public void howManyTimeTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word have = new Word("a", WordType.VERB, WordType.AUXILIARY);
-		Verb toHave = new Verb("avoir", true, new VerbAction(IAction.ActionType.HAVE));
+		Verb toHave = new Verb("avoir", true, new Action(IAction.ActionType.HAVE));
 		VerbConjugation toHaveConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "avoir", toHave);
 		toHaveConjug.setVerb(toHave);
 		have.setVerbInfo(toHaveConjug);
@@ -56,7 +56,7 @@ public class QuestionParseTest {
 	public void whatIsTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB, WordType.COMMON_NAME);
-		Verb toBe = new Verb("�tre", true, new VerbAction(IAction.ActionType.BE));
+		Verb toBe = new Verb("�tre", true, new Action(IAction.ActionType.BE));
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "�tre", toBe);
 		toBeConjug.setVerb(toBe);
 		is.setVerbInfo(toBeConjug);
@@ -79,7 +79,7 @@ public class QuestionParseTest {
 	public void whatWillBeTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word willBe = new Word("fera", WordType.VERB);
-		Verb toBe = new Verb("faire", false, new VerbAction(IAction.ActionType.DO));
+		Verb toBe = new Verb("faire", false, new Action(IAction.ActionType.DO));
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.FUTURE, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "faire", toBe);
 		toBeConjug.setVerb(toBe);
 		willBe.setVerbInfo(toBeConjug);
@@ -119,7 +119,7 @@ public class QuestionParseTest {
 	public void whatTimeIsItTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		Word is = new Word("est", WordType.AUXILIARY, WordType.VERB);
-		Verb toBe = new Verb("�tre", true, new VerbAction(IAction.ActionType.BE));
+		Verb toBe = new Verb("�tre", true, new Action(IAction.ActionType.BE));
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "�tre", toBe);
 		toBeConjug.setVerb(toBe);
 		is.setVerbInfo(toBeConjug);
