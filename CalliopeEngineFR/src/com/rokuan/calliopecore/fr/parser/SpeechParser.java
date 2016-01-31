@@ -274,6 +274,8 @@ public final class SpeechParser implements AbstractParser {
 				if(VerbConverter.isAnInfinitiveVerb(words)){
 					// Comment aller � la Tour Eiffel
 					VerbConverter.parseInfinitiveVerb(words, qObject);
+				} else if(VerbConverter.isAQuestionVerbalForm(words)){
+					VerbConverter.parseQuestionVerbalGroup(words, qObject);
 				} else if(VerbConverter.isAConjugatedVerb(words)){
 					// Comment est la maison du Dr. Watson
 					VerbConverter.parseConjugatedVerb(words, qObject);
