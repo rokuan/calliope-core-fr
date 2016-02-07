@@ -62,6 +62,8 @@ public class Verb {
     @DatabaseField(columnName = AUXILIARY_FIELD_NAME)
     private boolean auxiliary = false;
     
+    private boolean reflexiveMode = false;
+    
     public Verb(){
     	
     }
@@ -115,6 +117,30 @@ public class Verb {
 	}
 	
 	public Action getMainAction(){
-		return getActions().iterator().next();
+		return reflexiveMode ? getReflexiveAction() : getActions().iterator().next();
+	}
+	
+	private Action getReflexiveAction(){
+		for(Action a: getActions()){
+			if(a.isReflexive()){
+				return a;
+			}
+		}
+		
+		return null;
+	}
+	
+	public boolean existsInReflexiveForm(){
+		for(Action a: getActions()){
+			if(a.isReflexive()){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void valorizeReflexiveMode(){
+		reflexiveMode = true;
 	}
 }

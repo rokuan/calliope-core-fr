@@ -9,6 +9,7 @@ import com.rokuan.calliopecore.fr.sentence.CustomMode;
 import com.rokuan.calliopecore.fr.sentence.CustomObject;
 import com.rokuan.calliopecore.fr.sentence.CustomPerson;
 import com.rokuan.calliopecore.fr.sentence.CustomPlace;
+import com.rokuan.calliopecore.fr.sentence.FirstnameInfo;
 import com.rokuan.calliopecore.fr.sentence.LanguageInfo;
 import com.rokuan.calliopecore.fr.sentence.NameInfo;
 import com.rokuan.calliopecore.fr.sentence.PlaceInfo;
@@ -34,6 +35,7 @@ public interface WordDatabase {
 	CountryInfo findCountryInfo(String q);
 	TransportInfo findTransportInfo(String q);
 	UnitInfo findUnitInfo(String q);
+	FirstnameInfo findFirstnameInfo(String q);
 	CharacterInfo findCharacterInfo(String q);
 	PlaceInfo findPlaceInfo(String q);
 	

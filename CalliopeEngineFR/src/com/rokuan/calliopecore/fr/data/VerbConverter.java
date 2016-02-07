@@ -1,5 +1,6 @@
 package com.rokuan.calliopecore.fr.data;
 
+import com.rokuan.calliopecore.fr.data.nominal.PronounObject;
 import com.rokuan.calliopecore.fr.parser.FRWordBuffer;
 import com.rokuan.calliopecore.fr.pattern.FRWordPattern;
 import com.rokuan.calliopecore.fr.pattern.VerbMatcher;
@@ -20,6 +21,12 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.AbstractTarget;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 public class VerbConverter {	
+	public static final WordPattern PRONOUN_OBJECT_PATTERN = WordPattern.or(
+			FRWordPattern.simpleWord(WordType.SOURCE_PRONOUN),
+			FRWordPattern.simpleWord(WordType.TARGET_PRONOUN),
+			FRWordPattern.simpleWord(WordType.REFLEXIVE_PRONOUN)
+			);
+	
 	// existe-t-il / suis-je / m'envoie-t-il
 	public static final WordPattern PRESENT_QUESTION_PATTERN = WordPattern.sequence(
 			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
@@ -45,7 +52,8 @@ public class VerbConverter {
 
 	// TODO: prendre en compte les COD entre le verbe et le TARGET_PRONOUN
 	public static final WordPattern CONJUGATED_VERB_PATTERN = WordPattern.sequence(
-			WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			//WordPattern.optional(FRWordPattern.simpleWord(WordType.TARGET_PRONOUN)),
+			WordPattern.optional(PRONOUN_OBJECT_PATTERN),
 			WordPattern.or(
 					WordPattern.sequence(FRWordPattern.simpleWord(WordType.AUXILIARY), FRWordPattern.simpleWord(WordType.VERB)),
 					FRWordPattern.simpleWord(WordType.VERB)));
@@ -150,10 +158,20 @@ public class VerbConverter {
 	public static void parseConjugatedVerb(FRWordBuffer words, IVerbalObject object){
 		if(words.syntaxStartsWith(CONJUGATED_VERB_PATTERN)){
 			boolean past = false;
+			PronounObject pronoun = null;
+			boolean reflexive = false;
+			boolean matchesReflexiveMode = false;
 			
-			if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN)){
-				// TODO: affecter le bon attribut selon le verbe
-				object.setDirectObject(new AbstractTarget(Pronoun.parseDirectPronoun(words.getCurrentElement().getValue())));
+			if(words.syntaxStartsWith(PRONOUN_OBJECT_PATTERN)){
+				if(words.getCurrentElement().isOfType(WordType.REFLEXIVE_PRONOUN)){
+					reflexive = true;
+				}/* else if(words.getCurrentElement().isOfType(WordType.TARGET_PRONOUN) ||
+						words.getCurrentElement().isOfType(WordType.SOURCE_PRONOUN)){
+					pronoun = new PronounObject(words.getCurrentElement().getValue(), words.getCurrentElement().getTypes());
+					words.consume();
+				}*/
+
+				pronoun = new PronounObject(words.getCurrentElement().getValue(), words.getCurrentElement().getTypes());
 				words.consume();
 			}
 			
@@ -178,9 +196,32 @@ public class VerbConverter {
 				words.consume();
 			}
 			
+			Verb mainVerb = ((VerbConjugation)object.getAction().getMainAction()).getVerb();
+			
+			if(mainVerb.existsInReflexiveForm() && reflexive){
+				// TODO: check that the subject is as the same type as the reflexive pronoun
+				if(Pronoun.sameSource(object.getSubject(), pronoun.getReflexiveForm())){
+					matchesReflexiveMode = true;
+					mainVerb.valorizeReflexiveMode();
+				}
+			}
+			
 			if(NominalGroupConverter.isADirectObject(words)){
-				object.setTarget(object.getDirectObject());
+				if(pronoun != null && !matchesReflexiveMode){
+					 object.setTarget(new AbstractTarget(pronoun.getTargetForm()));
+				}
+				
 				object.setDirectObject(NominalGroupConverter.parseDirectObject(words));
+			} else {
+				if(pronoun != null && !matchesReflexiveMode){
+					if(pronoun.isTarget() && !pronoun.isSource()){
+						object.setTarget(new AbstractTarget(pronoun.getTargetForm()));
+					/*} else if(pronoun.isSource() && !pronoun.isTarget()) {
+						object.setDirectObject(pronoun.getDirectForm());*/
+					} else {
+						object.setDirectObject(new AbstractTarget(pronoun.getSourceForm()));
+					}
+				}
 			}
 		}
 	}

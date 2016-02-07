@@ -73,7 +73,12 @@ public class Word implements IWord {
 		PREPOSITION_WITH,	// avec
 		CONJUGATION_LINK,	// t
 		SUPERLATIVE,	// moins/plus
-		TARGET_PRONOUN,	// moi/toi/me/te/...
+		
+		//TARGET_PRONOUN,	// moi/toi/me/te/...
+		SOURCE_PRONOUN,	//
+		TARGET_PRONOUN,	// me/te/lui/nous/vous/leur
+		REFLEXIVE_PRONOUN,	// me/te/se/nous/vous/se
+		
 		DATE_UNIT_HOUR,	// midi/minuit
 		MEAN_OF_TRANSPORT, // pied/voiture/bus/avion/...
 		PLACE_TYPE,	// restaurant/cin�ma/...
@@ -120,6 +125,7 @@ public class Word implements IWord {
 	private CityInfo cityInfo;
 	private TransportInfo transportInfo;
 	private UnitInfo unitInfo;
+	private FirstnameInfo firstnameInfo;
 	private CharacterInfo characterInfo;
 	private PlaceInfo placeInfo;
 	private TimePreposition timePreposition;
@@ -263,6 +269,14 @@ public class Word implements IWord {
 
 	public void setUnitInfo(UnitInfo unitInfo) {
 		this.unitInfo = unitInfo;
+	}
+	
+	public FirstnameInfo getFirstnameInfo() {
+		return firstnameInfo;
+	}
+	
+	public void setFirstnameInfo(FirstnameInfo firstnameInfo) {
+		this.firstnameInfo = firstnameInfo;
 	}
 
 	@Override

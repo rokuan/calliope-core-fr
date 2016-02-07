@@ -13,6 +13,7 @@ import com.rokuan.calliopecore.sentence.structure.data.nominal.AdditionalPerson;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.CharacterObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.ColorObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.NameObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.PersonObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PhoneNumberObject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 import com.rokuan.calliopecore.sentence.structure.data.nominal.QuantityObject;
@@ -43,19 +44,20 @@ public class NominalGroupConverter {
 	public static final WordPattern FIRST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(FRWordPattern.simpleWord(WordType.FIRSTNAME));
 	public static final WordPattern LAST_NAME_SEQUENCE_PATTERN = WordPattern.nonEmptyList(FRWordPattern.simpleWord(WordType.PROPER_NAME));
 
-	/*public static final WordPattern PERSON_PATTERN = WordPattern.or(
-			FRWordPattern.simpleWord(WordType.PERSON)
+	public static final WordPattern PERSON_PATTERN = WordPattern.or(
+			//FRWordPattern.simpleWord(WordType.PERSON)
 			// TODO: trouver un moyen de parser les noms non enregistres (ex: Ludwig Van Beethoven)
-			//, LAST_NAME_SEQUENCE_PATTERN,
-			//FIRST_NAME_SEQUENCE_PATTERN,
-			//WordPattern.sequence(FIRST_NAME_SEQUENCE_PATTERN, LAST_NAME_SEQUENCE_PATTERN),
+			//, LAST_NAME_SEQUENCE_PATTERN,,
+			WordPattern.sequence(FIRST_NAME_SEQUENCE_PATTERN, LAST_NAME_SEQUENCE_PATTERN),			
+			FIRST_NAME_SEQUENCE_PATTERN
 			//WordPattern.sequence(LAST_NAME_SEQUENCE_PATTERN, FIRST_NAME_SEQUENCE_PATTERN)
-			);*/
-	public static final WordPattern PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
+			);
+	public static final WordPattern ADDITIONAL_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
 	public static final WordPattern CHARACTER_PATTERN = WordPattern.sequence(
 			// TODO: ajouter la prise en charge des articles possessifs
 			CountConverter.COUNT_PATTERN,
 			FRWordPattern.simpleWord(WordType.PERSON_TYPE));
+	public static final WordPattern PERSON_OBJECT_PATTERN = WordPattern.or(ADDITIONAL_PERSON_PATTERN, PERSON_PATTERN);
 
 	private static final WordPattern PRONOUN_PATTERN = FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN);
 	private static final WordPattern COLOR_PATTERN = WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COLOR));
@@ -83,6 +85,7 @@ public class NominalGroupConverter {
 			PlaceConverter.CITY_ONLY_PATTERN,
 			PlaceConverter.COUNTRY_ONLY_PATTERN,
 			CHARACTER_PATTERN,
+			ADDITIONAL_PERSON_PATTERN,
 			PERSON_PATTERN,
 			PRONOUN_PATTERN,
 			DateConverter.FIXED_DATE_ONLY_PATTERN,
@@ -96,7 +99,7 @@ public class NominalGroupConverter {
 	
 	private static final WordPattern PERSON_SECOND_OBJECT_PATTERN = WordPattern.sequence(
 			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
-			PERSON_PATTERN);			
+			WordPattern.or(ADDITIONAL_PERSON_PATTERN, PERSON_PATTERN));			
 	private static final WordPattern COMPLEMENT_SECOND_OBJECT_PATTERN = WordPattern.sequence(
 			FRWordPattern.simpleWord(WordType.PREPOSITION_OF),
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
@@ -123,7 +126,8 @@ public class NominalGroupConverter {
 
 	private static final WordPattern INDIRECT_PERSON_PATTERN = WordPattern.sequence(
 			FRWordPattern.simpleWord("�"),
-			FRWordPattern.simpleWord(WordType.PERSON));
+			//FRWordPattern.simpleWord(WordType.PERSON));
+			PERSON_OBJECT_PATTERN);
 	private static final WordPattern INDIRECT_PERSON_TYPE_PATTERN = WordPattern.sequence(
 			WordPattern.or(FRWordPattern.simpleWord("�"), FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE, "la"),
 					FRWordPattern.simpleWord("au")),
@@ -170,8 +174,10 @@ public class NominalGroupConverter {
 			result = PlaceConverter.parseNominalPlaceObject(words);
 		} else if(words.syntaxStartsWith(CHARACTER_PATTERN)){
 			result = parseCharacterObject(words);
-		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
+		} else if(words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN)){
 			result = parseAdditionalPerson(words);
+		} else if(words.syntaxStartsWith(PERSON_PATTERN)) {
+			result = parsePerson(words);
 		} else if(words.syntaxStartsWith(PRONOUN_PATTERN)){
 			PronounSubject pronoun = new PronounSubject(Pronoun.parseSubjectPronoun(words.getCurrentElement().getValue()));
 			words.consume();
@@ -202,7 +208,7 @@ public class NominalGroupConverter {
 		return words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)
 				|| words.syntaxStartsWith(QUANTITY_PATTERN)
 				|| words.syntaxStartsWith(DIRECT_OBJECT_PATTERN) 
-				|| words.syntaxStartsWith(PERSON_PATTERN);
+				|| words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN);
 	}
 
 	public static INominalObject parseDirectObject(FRWordBuffer words){
@@ -212,8 +218,10 @@ public class NominalGroupConverter {
 			result = parseAdditionalObject(words);
 		} else if(words.syntaxStartsWith(QUANTITY_PATTERN)){
 			result = parseQuantityObject(words);
-		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
+		} else if(words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN)){
 			result = parseAdditionalPerson(words);
+		} else if(words.syntaxStartsWith(PERSON_PATTERN)){
+			result = parsePerson(words);
 		} else if(words.syntaxStartsWith(DIRECT_OBJECT_PATTERN)){
 			result = parseNameObject(words);
 		}
@@ -235,7 +243,11 @@ public class NominalGroupConverter {
 				words.consume();
 			}
 
-			result = parseAdditionalPerson(words);
+			if(words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN)){
+				result = parseAdditionalPerson(words);
+			} else {
+				result = parsePerson(words);
+			}
 		} else if(words.syntaxStartsWith(INDIRECT_PERSON_TYPE_PATTERN)){
 			NameObject compl = new NameObject();
 			
@@ -265,10 +277,20 @@ public class NominalGroupConverter {
 		
 		if(words.syntaxStartsWith(CUSTOM_OBJECT_SECOND_OBJECT_PATTERN)){
 			words.consume();
-			result = parseAdditionalObject(words);
+			
+			if(words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN)){
+				result = parseAdditionalObject(words);
+			} else {
+				result = parsePerson(words);
+			}
 		} else if(words.syntaxStartsWith(PERSON_SECOND_OBJECT_PATTERN)){
 			words.consume();
-			result = parseAdditionalPerson(words);
+			
+			if(words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN)){
+				result = parseAdditionalPerson(words);
+			} else {
+				result = parsePerson(words);
+			}
 		} else if(words.syntaxStartsWith(COMPLEMENT_SECOND_OBJECT_PATTERN)){
 			words.consume();
 			result = parseNameObject(words);
@@ -415,7 +437,7 @@ public class NominalGroupConverter {
 		return person;
 	}
 	
-	/*private static String parsePerson(FRWordBuffer words){
+	private static PersonObject parsePerson(FRWordBuffer words){
 		StringBuilder name = new StringBuilder();
 
 		if(words.getCurrentElement().isOfType(WordType.FIRSTNAME)){
@@ -444,6 +466,6 @@ public class NominalGroupConverter {
 			}
 		}
 
-		return name.toString().trim();
-	}*/
+		return new PersonObject(name.toString().trim());
+	}
 }

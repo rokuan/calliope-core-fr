@@ -10,6 +10,7 @@ import com.rokuan.calliopecore.sentence.IAction.ActionType;
 public class Action {
 	public static final String ACTION_FIELD_NAME = "action";
 	public static final String ATTRIBUTE_FIELD_NAME = "attribute";
+	public static final String REFLEXIVE_FIELD_NAME = "reflexive";
 	public static final String VERBS_FIELD_NAME = "verbs";
 	
 	@DatabaseField(generatedId = true)
@@ -25,6 +26,9 @@ public class Action {
 	@ForeignCollectionField(columnName = VERBS_FIELD_NAME, eager = false)
 	private ForeignCollection<VerbAction> verbs;
 	
+	@DatabaseField(columnName = REFLEXIVE_FIELD_NAME)
+	private boolean reflexive = false;
+	
 	protected Action(){
 		
 	}
@@ -33,9 +37,23 @@ public class Action {
 		action = a;
 	}
 	
+	public Action(ActionType a, boolean r){
+		this(a);
+		reflexive = r;
+	}
+	
 	public Action(ActionType a, String f){
 		this(a);
 		field = f;
+	}
+	
+	public Action(ActionType a, String f, boolean r){
+		this(a, f);
+		reflexive = r;
+	}
+	
+	public Action(ActionType a, boolean r, String f){
+		this(a, f, r);
 	}
 	
 	public String getBoundField() {
@@ -48,5 +66,9 @@ public class Action {
 	
 	public ActionType getAction(){
 		return action;
+	}
+	
+	public boolean isReflexive(){
+		return reflexive;
 	}
 }

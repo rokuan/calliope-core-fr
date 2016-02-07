@@ -23,6 +23,7 @@ import com.rokuan.calliopecore.fr.sentence.CustomMode;
 import com.rokuan.calliopecore.fr.sentence.CustomObject;
 import com.rokuan.calliopecore.fr.sentence.CustomPerson;
 import com.rokuan.calliopecore.fr.sentence.CustomPlace;
+import com.rokuan.calliopecore.fr.sentence.FirstnameInfo;
 import com.rokuan.calliopecore.fr.sentence.LanguageInfo;
 import com.rokuan.calliopecore.fr.sentence.NameInfo;
 import com.rokuan.calliopecore.fr.sentence.PlaceInfo;
@@ -507,6 +508,7 @@ public final class SpeechParser implements AbstractParser {
 		CountryInfo country = db.findCountryInfo(q);
 		TransportInfo transport = db.findTransportInfo(q);
 		UnitInfo unit = db.findUnitInfo(q);
+		FirstnameInfo firstname = db.findFirstnameInfo(q);
 		CharacterInfo character = db.findCharacterInfo(q);
 		PlaceInfo place = db.findPlaceInfo(q);
 		CustomObject cObject = db.findCustomObject(q);
@@ -559,6 +561,10 @@ public final class SpeechParser implements AbstractParser {
 
 		if(unit != null){
 			types.add(WordType.UNIT);
+		}
+		
+		if(firstname != null){
+			types.add(WordType.FIRSTNAME);
 		}
 
 		if(character != null){
@@ -634,6 +640,7 @@ public final class SpeechParser implements AbstractParser {
 			result.setCountryInfo(country);
 			result.setTransportInfo(transport);
 			result.setUnitInfo(unit);
+			result.setFirstnameInfo(firstname);
 			result.setCharacterInfo(character);
 			result.setPlaceInfo(place);
 

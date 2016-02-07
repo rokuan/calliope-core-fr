@@ -1,6 +1,8 @@
 package com.rokuan.calliopecore.fr.sentence;
 
 import com.rokuan.calliopecore.sentence.IPronoun;
+import com.rokuan.calliopecore.sentence.structure.content.INominalObject;
+import com.rokuan.calliopecore.sentence.structure.data.nominal.PronounSubject;
 
 public class Pronoun implements IPronoun {
 	public enum Person {
@@ -23,6 +25,12 @@ public class Pronoun implements IPronoun {
 		ILS,
 		ELLES
 	}
+	
+	private static final int JE_MASK = 			0x1;
+	private static final int TU_MASK = 			0x10;
+	private static final int IL_ELLE_ON_ILS_ELLES_MASK = 	0x100;
+	private static final int NOUS_MASK = 		0x1000;
+	private static final int VOUS_MASK = 		0x10000;
 
 	private String value;
 	private PronounSource source = PronounSource.UNDEFINED; 
@@ -127,6 +135,111 @@ public class Pronoun implements IPronoun {
 		}
 		
 		return new Pronoun(str, p);
+	}
+	
+	public static Pronoun parseReflexivePronoun(String str){
+		PronounSource p = PronounSource.UNDEFINED;
+		
+		if(str.equals("me") || str.equals("m")){
+			p = PronounSource.I;
+		} else if(str.equals("tu") || str.equals("t")){
+			p = PronounSource.YOU;
+		} else if(str.equals("se")){
+			p = PronounSource.HE_SHE;
+		} else if(str.equals("nous")){
+			p = PronounSource.WE;
+		} else if(str.equals("vous")){
+			p = PronounSource.YOU_;
+		}
+		
+		return new Pronoun(str, p);
+	}
+	
+	public static boolean sameSource(INominalObject subject, Pronoun pronoun){
+		int subjectMask = 0;
+		int pronounMask = getMaskFromReflexivePronoun(pronoun);
+		
+		switch(subject.getGroupType()){
+		/*case ABSTRACT:
+			clazz = AbstractTarget.class;
+			break;*/
+		case COLOR:
+		case LANGUAGE:
+		case NUMBER:		
+		case PHONE_NUMBER:
+		case UNIT:
+		case DATE:
+		case CITY:
+		case COUNTRY:
+		case LOCATION:
+		case NAMED_PLACE:
+		case CHARACTER:
+		case PLACE_TYPE:
+		case COMMON_NAME:
+		case QUANTITY:
+			subjectMask = IL_ELLE_ON_ILS_ELLES_MASK;
+			break;
+		/*case OBJECT:
+			clazz = AdditionalObject.class;
+			break;
+		case PERSON:
+			clazz = AdditionalPerson.class;
+			break;*/				
+		case PRONOUN:
+			subjectMask = getMaskFromPronounSubject((PronounSubject)subject);
+			break;
+			// TODO: check if such a sentence does exist (subject verb + reflexive)
+		/*case VERB:
+			clazz = VerbalGroup.class;
+			break;*/
+		/*case ADDITIONAL_PLACE:
+			clazz = AdditionalPlace.class;
+			break;*/
+		default:
+			break;
+		}
+		
+		return (subjectMask & pronounMask) > 0;
+	}
+	
+	private static int getMaskFromPronounSubject(PronounSubject pronoun){
+		String value = pronoun.pronoun.getValue().toLowerCase();
+		
+		switch(value.charAt(0)){
+		case 'j':
+			return JE_MASK;
+		case 't':
+			return TU_MASK;
+		case 'i':
+		case 'e':
+		case 'o':
+			return IL_ELLE_ON_ILS_ELLES_MASK;
+		case 'n':
+			return NOUS_MASK;
+		case 'v':
+			return VOUS_MASK;
+		}
+		
+		return 0;
+	}
+	
+	private static int getMaskFromReflexivePronoun(Pronoun pronoun){
+		String value = pronoun.getValue().toLowerCase();
+		
+		switch(value.charAt(0)){
+		case 'm':
+			return JE_MASK;
+		case 't':
+			return TU_MASK;
+		case 's':
+			return IL_ELLE_ON_ILS_ELLES_MASK;
+		case 'n':
+			return NOUS_MASK;
+		case 'v':
+			return VOUS_MASK;
+		}
+		
+		return 0;
 	}
 
 	/*public static Pronoun parseIndirectPronoun(String str){
