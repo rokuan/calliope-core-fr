@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class VerbAction {
 	public static final String ACTION_FIELD_NAME = "action";
 	public static final String VERB_FIELD_NAME = "verb";
+	public static final String REFLEXIVE_FIELD_NAME = "reflexive";
 	
 	@DatabaseField(generatedId = true)
 	private int id;
@@ -17,6 +18,9 @@ public class VerbAction {
 	@DatabaseField(columnName = ACTION_FIELD_NAME, foreign = true, foreignAutoRefresh = true, uniqueCombo = true)
 	private Action action;
 	
+	@DatabaseField(columnName = REFLEXIVE_FIELD_NAME)
+	private boolean reflexive = false;
+	
 	public VerbAction(){
 		
 	}
@@ -26,11 +30,20 @@ public class VerbAction {
 		action = a;
 	}
 	
+	public VerbAction(Verb v, Action a, boolean r){
+		this(v, a);
+		reflexive = r;
+	}
+	
 	public Verb getVerb(){
 		return verb;
 	}
 	
 	public Action getAction(){
 		return action;
+	}
+	
+	public boolean isReflexive(){
+		return reflexive;
 	}
 }

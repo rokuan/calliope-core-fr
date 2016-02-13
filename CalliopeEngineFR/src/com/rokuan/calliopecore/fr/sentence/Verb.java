@@ -121,18 +121,18 @@ public class Verb {
 	}
 	
 	private Action getReflexiveAction(){
-		for(Action a: getActions()){
-			if(a.isReflexive()){
-				return a;
+		for(VerbAction va: actions){
+			if(va.isReflexive()){
+				return va.getAction();
 			}
 		}
 		
-		return null;
+		return new Action(ActionType.UNDEFINED);
 	}
 	
 	public boolean existsInReflexiveForm(){
-		for(Action a: getActions()){
-			if(a.isReflexive()){
+		for(VerbAction va: actions){
+			if(va.isReflexive()){
 				return true;
 			}
 		}

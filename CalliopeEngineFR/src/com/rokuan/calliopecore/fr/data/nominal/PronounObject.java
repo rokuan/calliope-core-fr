@@ -13,7 +13,9 @@ public class PronounObject {
 	private int types = 0;
 	
 	//public PronounObject(IPronoun src, Set<WordType> ts) {
-	public PronounObject(String v, Set<WordType> ts) {		
+	public PronounObject(String v, Set<WordType> ts) {	
+		value = v;
+		
 		if(ts.contains(WordType.SOURCE_PRONOUN)){
 			types |= SOURCE_PRONOUN;
 		}

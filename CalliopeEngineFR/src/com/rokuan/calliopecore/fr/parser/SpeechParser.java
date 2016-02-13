@@ -104,7 +104,9 @@ public final class SpeechParser implements AbstractParser {
 							buffer.add(leftWord);
 							wordBuilder = new StringBuilder(rightPart);
 							shouldContinue = true;
-						}
+						}						
+
+						// TODO: que faire quand le rightPart n'existe pas en DB  
 					}
 
 					String tmpPart = wordBuilder.toString();
