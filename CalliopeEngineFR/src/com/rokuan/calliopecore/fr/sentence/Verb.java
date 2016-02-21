@@ -3,8 +3,8 @@ package com.rokuan.calliopecore.fr.sentence;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -57,7 +57,7 @@ public class Verb {
     /*@ForeignCollectionField(columnName = ACTIONS_FIELD_NAME, eager = true)
     private ForeignCollection<Action> actions;*/
     @ForeignCollectionField(columnName = ACTIONS_FIELD_NAME, eager = true)
-    private ForeignCollection<VerbAction> actions;
+    private Collection<VerbAction> actions;
     
     @DatabaseField(columnName = AUXILIARY_FIELD_NAME)
     private boolean auxiliary = false;
@@ -72,10 +72,19 @@ public class Verb {
     	this(infinitiveForm, Arrays.asList(verbActions), aux);
     }
     
+    public Verb(String infinitiveForm, boolean aux){
+    	this(infinitiveForm, Collections.<Action>emptyList(), aux);
+    }
+    
     public Verb(String infinitiveForm, Collection<Action> verbActions, boolean aux){
     	verb = infinitiveForm;
     	//actions.addAll(verbActions);
     	auxiliary = aux;
+    }
+    
+    public Verb(String infinitiveForm, VerbAction... verbActions){
+    	verb = infinitiveForm;
+    	actions = Arrays.asList(verbActions);
     }
     
     public boolean isAuxiliary() {

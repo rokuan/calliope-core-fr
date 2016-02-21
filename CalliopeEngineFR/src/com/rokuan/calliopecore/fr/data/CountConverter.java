@@ -67,7 +67,7 @@ public class CountConverter {
 	
 	public static final String REAL_REGEX = "\\d+(\\.|\\,)\\d+";
 	public static final String NUMBER_REGEX = "\\d+";
-	public static final String NUMERICAL_POSITION_REGEX = "(\\d+(è|e)me$)|(\\d+e$)";
+	public static final String NUMERICAL_POSITION_REGEX = "(\\d+(ï¿½|e)me$)|(\\d+e$)";
 	
 	public static final WordPattern FIXED_ITEM_PATTERN = WordPattern.sequence(
 			FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), 
@@ -79,7 +79,8 @@ public class CountConverter {
 			FRWordPattern.simpleWord(Word.WordType.NUMERICAL_POSITION));
 
 	public static final WordPattern ALL_PATTERN = WordPattern.sequence(
-			FRWordPattern.simpleWord(Word.WordType.QUANTITY), 
+			//FRWordPattern.simpleWord(Word.WordType.QUANTITY),
+			FRWordPattern.simpleWord("tout|tous|toutes"),
 			FRWordPattern.simpleWord(Word.WordType.DEFINITE_ARTICLE));
 	
 	public static final WordPattern QUANTITY_PATTERN = WordPattern.sequence(
@@ -92,7 +93,7 @@ public class CountConverter {
 
 	private static final WordPattern SINGLE_ITEM_PATTERN = WordPattern.sequence(
 			WordPattern.optional(FRWordPattern.simpleWord(WordType.PREPOSITION_AND)),
-			WordPattern.optional(FRWordPattern.simpleWord("numéro(s?)")), 
+			WordPattern.optional(FRWordPattern.simpleWord("numï¿½ro(s?)")), 
 			FRWordPattern.simpleWord(WordType.NUMBER));
 
 	private static final WordPattern SINGLE_POSITION_PATTERN = WordPattern.sequence(
@@ -116,11 +117,11 @@ public class CountConverter {
 	// TODO: les intervalles (du 3eme au 5eme)
 
 	public static long parsePosition(String posStr){
-		if(posStr.equals("premier") || posStr.equals("première") || posStr.equals("1er") || posStr.equals("1ère") || posStr.equals("1ere")){
+		if(posStr.equals("premier") || posStr.equals("premiï¿½re") || posStr.equals("1er") || posStr.equals("1ï¿½re") || posStr.equals("1ere")){
 			return 1;
 		}
 
-		if(posStr.endsWith("ième")){
+		if(posStr.endsWith("iï¿½me")){
 			String base = posStr.substring(0, posStr.length() - 4);
 
 			if(base.length() == 0){
@@ -138,7 +139,7 @@ public class CountConverter {
 			return parseCount(base);
 		}
 
-		if(Pattern.compile("\\d+(è|e)me$").matcher(posStr).find()){
+		if(Pattern.compile("\\d+(ï¿½|e)me$").matcher(posStr).find()){
 			return Long.parseLong(posStr.substring(0, posStr.length() - 3));
 		} else if(Pattern.compile("\\d+e$").matcher(posStr).find()){
 			return Long.parseLong(posStr.substring(0, posStr.length() - 1));
@@ -194,13 +195,13 @@ public class CountConverter {
 	}
 	
 	public static boolean isAPosition(String posStr){
-		if(posStr.equals("premier") || posStr.equals("premiers") || posStr.equals("première") || posStr.equals("premières")
-				|| posStr.equals("1er") || posStr.equals("1ère") || posStr.equals("1ere")
-				|| posStr.equals("dernier") || posStr.equals("derniers") || posStr.equals("dernière") || posStr.equals("dernières")){
+		if(posStr.equals("premier") || posStr.equals("premiers") || posStr.equals("premiï¿½re") || posStr.equals("premiï¿½res")
+				|| posStr.equals("1er") || posStr.equals("1ï¿½re") || posStr.equals("1ere")
+				|| posStr.equals("dernier") || posStr.equals("derniers") || posStr.equals("derniï¿½re") || posStr.equals("derniï¿½res")){
 			return true;
 		}
 
-		if(posStr.endsWith("ième")){
+		if(posStr.endsWith("iï¿½me")){
 			String base = posStr.substring(0, posStr.length() - 4);
 
 			if(base.length() == 0){
@@ -218,7 +219,7 @@ public class CountConverter {
 			return parseCount(base) >= 0;
 		}
 
-		if(Pattern.compile("\\d+(è|e)me$").matcher(posStr).find()){
+		if(Pattern.compile("\\d+(ï¿½|e)me$").matcher(posStr).find()){
 			return true;
 		} else if(Pattern.compile("\\d+e$").matcher(posStr).find()){
 			return true;
@@ -282,6 +283,14 @@ public class CountConverter {
 		} else if(words.syntaxStartsWith(ALL_PATTERN)) {
 			result = new AllItemsObject();
 			words.consume();
+			
+			if(words.getCurrentElement().isOfType(WordType.POSSESSIVE_ADJECTIVE)){
+				result.definition = ArticleType.POSSESSIVE;
+			} else if(words.getCurrentElement().isOfType(WordType.INDEFINITE_ARTICLE)){
+				result.definition = ArticleType.INDEFINITE;
+			} else {
+				result.definition = ArticleType.DEFINITE;
+			}
 			words.consume();
 		} else if(words.syntaxStartsWith(QUANTITY_PATTERN)){
 			words.consume();			
@@ -289,6 +298,7 @@ public class CountConverter {
 			words.consume();
 		} else if(words.syntaxStartsWith(SIMPLE_ARTICLE_PATTERN)) {        	
 			boolean singular = isSingular(words.getCurrentElement().getValue());
+			boolean definite = words.getCurrentElement().isOfType(WordType.DEFINITE_ARTICLE);
 
 			words.consume();
 
@@ -296,7 +306,9 @@ public class CountConverter {
 				result = new FixedItemObject(1);
 			} else {
 				result = new AllItemsObject();
-			}
+			}		
+
+			result.definition = definite ? ArticleType.DEFINITE : ArticleType.INDEFINITE; 
 		} else if(words.syntaxStartsWith(POSSESSIVE_PATTERN)){
 			// TODO: integrer le possessif aux autres patterns
 			ArticleType articleType = ArticleType.POSSESSIVE;
@@ -329,7 +341,7 @@ public class CountConverter {
 					words.consume();
 				}
 
-				if(words.getCurrentElement().getValue().startsWith("numéro")){
+				if(words.getCurrentElement().getValue().startsWith("numï¿½ro")){
 					words.consume();
 				}
 

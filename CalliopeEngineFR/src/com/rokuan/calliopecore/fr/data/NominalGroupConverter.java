@@ -208,7 +208,8 @@ public class NominalGroupConverter {
 		return words.syntaxStartsWith(CUSTOM_OBJECT_PATTERN)
 				|| words.syntaxStartsWith(QUANTITY_PATTERN)
 				|| words.syntaxStartsWith(DIRECT_OBJECT_PATTERN) 
-				|| words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN);
+				//|| words.syntaxStartsWith(ADDITIONAL_PERSON_PATTERN);
+				|| words.syntaxStartsWith(PERSON_OBJECT_PATTERN);
 	}
 
 	public static INominalObject parseDirectObject(FRWordBuffer words){

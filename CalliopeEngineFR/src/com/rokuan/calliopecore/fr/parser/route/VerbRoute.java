@@ -63,7 +63,7 @@ public class VerbRoute extends Route {
 					new IAction() {					
 						@Override
 						public boolean isFieldBound() {
-							return newVerbAction.isAFieldAction();
+							return newVerbAction.isFieldBound();
 						}
 						
 						@Override
@@ -89,6 +89,21 @@ public class VerbRoute extends Route {
 						@Override
 						public ActionType getAction() {
 							return newVerbAction.getAction();
+						}
+
+						@Override
+						public String getBoundState() {
+							return newVerbAction.getBoundState();
+						}
+
+						@Override
+						public String getState() {
+							return newVerbAction.getState();
+						}
+
+						@Override
+						public boolean isStateBound() {
+							return newVerbAction.isStateBound();
 						}
 					}, oldAction.getPrefixActions());
 			obj.setAction(newAction);

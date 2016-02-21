@@ -98,6 +98,21 @@ public class VerbConjugation implements IAction {
 
 	@Override
 	public boolean isFieldBound() {
-		return verb.getMainAction().isAFieldAction();
+		return verb.getMainAction().isFieldBound();
+	}
+
+	@Override
+	public String getBoundState() {
+		return verb.getMainAction().getBoundState();
+	}
+
+	@Override
+	public String getState() {
+		return verb.getMainAction().getState();
+	}
+
+	@Override
+	public boolean isStateBound() {
+		return verb.getMainAction().isStateBound();
 	}
 }
