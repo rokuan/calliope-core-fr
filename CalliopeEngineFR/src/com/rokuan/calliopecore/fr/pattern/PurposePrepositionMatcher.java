@@ -1,8 +1,8 @@
 package com.rokuan.calliopecore.fr.pattern;
 
+import com.rokuan.calliopecore.fr.sentence.Preposition;
 import com.rokuan.calliopecore.fr.sentence.PurposePreposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
-import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.data.purpose.PurposeAdverbial.PurposeType;
 
 public class PurposePrepositionMatcher extends PrepositionMatcher<PurposeType> {
@@ -15,28 +15,10 @@ public class PurposePrepositionMatcher extends PrepositionMatcher<PurposeType> {
 
 	public PurposePrepositionMatcherBuilder getBuilder(){
 		return new PurposePrepositionMatcherBuilder(this);
-	}	
+	}
 
 	@Override
-	public boolean matches(Word word) {
-		if(matchContractedForm && !((Word)word).isOfType(WordType.CONTRACTED)){
-			return false;
-		}
-
-		if(possibleFollowers != null){
-			PurposePreposition prep = (PurposePreposition)word.getPurposePreposition();
-
-			if(prep == null){
-				return false;
-			}
-			
-			for(PurposeType ty: possibleFollowers){
-				if(!prep.canBeFollowedBy(ty)){
-					return false;
-				}
-			}
-		}
-
-		return true;
+	public Preposition<?, PurposeType> getPreposition(Word w) {
+		return (PurposePreposition)w.getPurposePreposition();
 	}
 }

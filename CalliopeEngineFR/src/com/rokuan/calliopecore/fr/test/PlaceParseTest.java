@@ -151,7 +151,7 @@ public class PlaceParseTest {
 		
 		AdditionalPlace customPlace = (AdditionalPlace)place;
 		
-		assertEquals(customPlace.getPlacePreposition().getPlaceContext(), PlaceContext.NEAR);
+		assertEquals(customPlace.getPlacePreposition().getContext(), PlaceContext.NEAR);
 		assertEquals(customPlace.place.getValue(), placeName);
 	}	
 }

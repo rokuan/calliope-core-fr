@@ -79,6 +79,12 @@ public class Verb {
     public Verb(String infinitiveForm, Collection<Action> verbActions, boolean aux){
     	verb = infinitiveForm;
     	//actions.addAll(verbActions);
+    	actions = new ArrayList<VerbAction>(verbActions.size());
+    	
+    	for(Action a: verbActions){
+    		actions.add(new VerbAction(this, a));
+    	}
+    	
     	auxiliary = aux;
     }
     

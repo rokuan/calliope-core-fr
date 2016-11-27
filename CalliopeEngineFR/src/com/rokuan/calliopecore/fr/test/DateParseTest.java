@@ -250,7 +250,7 @@ public class DateParseTest {
 		
 		SingleTimeObject single = (SingleTimeObject)time;
 		
-		assertEquals(single.getTimePreposition().getTimeContext(), TimeContext.BEFORE);		
+		assertEquals(single.getTimePreposition().getContext(), TimeContext.BEFORE);		
 	}
 	
 	@Test
@@ -271,7 +271,7 @@ public class DateParseTest {
 		
 		SingleTimeObject single = (SingleTimeObject)time;
 		
-		assertEquals(single.getTimePreposition().getTimeContext(), TimeContext.UNTIL);
+		assertEquals(single.getTimePreposition().getContext(), TimeContext.UNTIL);
 	}
 	
 	@Test

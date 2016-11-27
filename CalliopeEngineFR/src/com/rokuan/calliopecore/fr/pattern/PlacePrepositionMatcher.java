@@ -2,8 +2,8 @@ package com.rokuan.calliopecore.fr.pattern;
 
 
 import com.rokuan.calliopecore.fr.sentence.PlacePreposition;
+import com.rokuan.calliopecore.fr.sentence.Preposition;
 import com.rokuan.calliopecore.fr.sentence.Word;
-import com.rokuan.calliopecore.fr.sentence.Word.WordType;
 import com.rokuan.calliopecore.sentence.structure.data.place.PlaceAdverbial.PlaceType;
 
 public class PlacePrepositionMatcher extends PrepositionMatcher<PlaceType> {
@@ -18,25 +18,7 @@ public class PlacePrepositionMatcher extends PrepositionMatcher<PlaceType> {
 	}
 
 	@Override
-	public boolean matches(Word word) {
-		if(matchContractedForm && !((Word)word).isOfType(WordType.CONTRACTED)){
-			return false;
-		}
-
-		if(possibleFollowers != null){
-			PlacePreposition prep = (PlacePreposition)word.getPlacePreposition();
-
-			if(prep == null){
-				return false;
-			}
-			
-			for(PlaceType ty: possibleFollowers){
-				if(!prep.canBeFollowedBy(ty)){
-					return false;
-				}
-			}
-		}
-
-		return true;
+	public Preposition<?, PlaceType> getPreposition(Word w) {
+		return (PlacePreposition)w.getPlacePreposition();
 	}
 }

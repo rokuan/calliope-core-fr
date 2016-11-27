@@ -247,7 +247,7 @@ public class SentenceParseTest {
 		QuestionObject question = (QuestionObject)obj;
 		assertEquals(question.questionType, QuestionType.WHO);
 		//assertEquals(question.what.getGroupType(), GroupType.COMPLEMENT);
-		assertEquals(question.what.getGroupType(), GroupType.PERSON);
+		assertEquals(question.what.getGroupType(), GroupType.ADDITIONAL_PERSON);
 
 		/*NameObject compl = (NameObject)question.what;
 		assertEquals(compl.object, "Arnold Schwarzenegger");*/
