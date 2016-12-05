@@ -33,11 +33,11 @@ public class NominalGroupConverter {
 
 	public static final WordPattern CUSTOM_OBJECT_PATTERN = WordPattern.sequence(
 			WordPattern.optional(CountConverter.COUNT_PATTERN),
-			FRWordPattern.simpleWord(WordType.OBJECT));
-	public static final WordPattern CUSTOM_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
+			FRWordPattern.simpleWord(WordType.CUSTOM_OBJECT));
+	public static final WordPattern CUSTOM_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.CUSTOM_PERSON);
 
 	public static final WordPattern NAME_PATTERN = WordPattern.or(
-			FRWordPattern.simpleWord(WordType.OBJECT),
+			FRWordPattern.simpleWord(WordType.CUSTOM_OBJECT),
 			FRWordPattern.simpleWord(WordType.COMMON_NAME)
 			);
 
@@ -52,7 +52,7 @@ public class NominalGroupConverter {
 			FIRST_NAME_SEQUENCE_PATTERN
 			//WordPattern.sequence(LAST_NAME_SEQUENCE_PATTERN, FIRST_NAME_SEQUENCE_PATTERN)
 			);
-	public static final WordPattern ADDITIONAL_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.PERSON);
+	public static final WordPattern ADDITIONAL_PERSON_PATTERN = FRWordPattern.simpleWord(WordType.CUSTOM_PERSON);
 	public static final WordPattern CHARACTER_PATTERN = WordPattern.sequence(
 			// TODO: ajouter la prise en charge des articles possessifs
 			CountConverter.COUNT_PATTERN,
@@ -62,7 +62,7 @@ public class NominalGroupConverter {
 	private static final WordPattern PRONOUN_PATTERN = FRWordPattern.simpleWord(WordType.PERSONAL_PRONOUN);
 	private static final WordPattern COLOR_PATTERN = WordPattern.sequence(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE), FRWordPattern.simpleWord(WordType.COLOR));
 	// TODO: ajouter les adjectifs
-	private static final WordPattern OBJECT_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, FRWordPattern.simpleWord(WordType.OBJECT));
+	private static final WordPattern OBJECT_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, FRWordPattern.simpleWord(WordType.CUSTOM_OBJECT));
 	private static final WordPattern COMMON_NAME_PATTERN = WordPattern.sequence(CountConverter.COUNT_PATTERN, FRWordPattern.simpleWord(WordType.COMMON_NAME));
 
 	// TODO: 

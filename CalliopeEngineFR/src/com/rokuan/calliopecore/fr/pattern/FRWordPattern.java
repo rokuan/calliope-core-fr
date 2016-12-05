@@ -10,23 +10,23 @@ import com.rokuan.calliopecore.sentence.structure.data.way.WayAdverbial.WayType;
 
 public class FRWordPattern {
 	public static WordPattern simpleWord(WordType ty){
-		return WordPattern.simple(SimpleWordMatcher.builder().setTypes(ty).build());
+		return WordPattern.simple(new SimpleWordMatcher().getBuilder().setTypes(ty).build());
 	}
 
 	public static WordPattern simpleWord(WordType[] ty){
-		return WordPattern.simple(SimpleWordMatcher.builder().setTypes(ty).build());
+		return WordPattern.simple(new SimpleWordMatcher().getBuilder().setTypes(ty).build());
 	}
 
 	public static WordPattern simpleWord(String regex){
-		return WordPattern.simple(SimpleWordMatcher.builder().setWordRegex(regex).build());
+		return WordPattern.simple(new SimpleWordMatcher().getBuilder().setWordRegex(regex).build());
 	}
 
 	public static WordPattern simpleWord(WordType ty, String regex){
-		return WordPattern.simple(SimpleWordMatcher.builder().setTypes(ty).setWordRegex(regex).build());
+		return WordPattern.simple(new SimpleWordMatcher().getBuilder().setTypes(ty).setWordRegex(regex).build());
 	}
 
 	public static WordPattern simpleWord(WordType[] ty, String regex){
-		return WordPattern.simple(SimpleWordMatcher.builder().setTypes(ty).setWordRegex(regex).build());
+		return WordPattern.simple(new SimpleWordMatcher().getBuilder().setTypes(ty).setWordRegex(regex).build());
 	}
 
 	/*public static WordPattern simple(Word.WordType ty, String valueRegex, String verbRegex){

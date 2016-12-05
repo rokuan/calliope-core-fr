@@ -578,19 +578,19 @@ public final class SpeechParser implements AbstractParser {
 		}
 
 		if(cObject != null){
-			types.add(Word.WordType.OBJECT);
+			types.add(Word.WordType.CUSTOM_OBJECT);
 		}
 
 		if(cPlace != null){
-			types.add(Word.WordType.ADDITIONAL_PLACE);
+			types.add(Word.WordType.CUSTOM_PLACE);
 		}
 
 		if(cMode != null){
-			types.add(WordType.MODE);
+			types.add(WordType.CUSTOM_MODE);
 		}
 
 		if(cPerson != null){
-			types.add(WordType.PERSON);
+			types.add(WordType.CUSTOM_PERSON);
 		}
 
 		if(placePreposition != null){

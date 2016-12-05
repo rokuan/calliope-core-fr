@@ -47,11 +47,7 @@ public class VerbMatcher implements WordMatcher<Word> {
 			return matcher;
 		}
 	}
-
-	public VerbMatcher(){
-
-	}
-
+	
 	public VerbMatcherBuilder getBuilder(){
 		return new VerbMatcherBuilder(this);
 	}

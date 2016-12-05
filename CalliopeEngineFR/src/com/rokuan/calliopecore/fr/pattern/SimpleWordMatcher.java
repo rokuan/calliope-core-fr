@@ -8,11 +8,11 @@ public class SimpleWordMatcher implements WordMatcher<Word> {
 	private WordType[] types;
 	private String wordRegex;
 
-	static class SimpleWordMatcherBuilder {
+	public static class SimpleWordMatcherBuilder {
 		private SimpleWordMatcher matcher;
 		
-		private SimpleWordMatcherBuilder(){
-			matcher = new SimpleWordMatcher();
+		private SimpleWordMatcherBuilder(SimpleWordMatcher m){
+			matcher = m;
 		}
 		
 		public SimpleWordMatcherBuilder setTypes(WordType... wordTypes){
@@ -30,8 +30,8 @@ public class SimpleWordMatcher implements WordMatcher<Word> {
 		}
 	}
 	
-	public static SimpleWordMatcherBuilder builder(){
-		return new SimpleWordMatcherBuilder();
+	public SimpleWordMatcherBuilder getBuilder(){
+		return new SimpleWordMatcherBuilder(this);
 	}
 	
 	@Override

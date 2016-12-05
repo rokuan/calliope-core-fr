@@ -39,7 +39,7 @@ public class NominalGroupParseTest {
 	public void customObjectParseTest(){
 		FRWordBuffer words = new FRWordBuffer();
 		String objectName = "QR code";
-		Word qr = new Word(objectName, WordType.OBJECT);
+		Word qr = new Word(objectName, WordType.CUSTOM_OBJECT);
 		
 		qr.setCustomObject(new CustomObject(objectName, "QR_CODE"));
 		

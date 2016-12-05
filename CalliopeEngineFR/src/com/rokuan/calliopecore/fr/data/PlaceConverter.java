@@ -43,7 +43,7 @@ public class PlaceConverter {
 
 	public static final WordPattern ADDITIONAL_PLACE_ONLY_PATTERN = WordPattern.sequence(
 			WordPattern.optional(FRWordPattern.simpleWord(WordType.DEFINITE_ARTICLE)),
-			FRWordPattern.simpleWord(WordType.ADDITIONAL_PLACE)
+			FRWordPattern.simpleWord(WordType.CUSTOM_PLACE)
 			);	
 	
 	private static final WordPattern COUNTRY_PREPOSITION_PATTERN = WordPattern.or(
@@ -79,7 +79,7 @@ public class PlaceConverter {
 	// jusqu'aux Chutes Fanis
 	private static final WordPattern ADDITIONAL_PLACE_PATTERN = WordPattern.sequence(
 			ADDITIONAL_PLACE_PREPOSITION_PATTERN,
-			FRWordPattern.simpleWord(WordType.ADDITIONAL_PLACE)
+			FRWordPattern.simpleWord(WordType.CUSTOM_PLACE)
 			);
 
 	// le mus�e du Louvre, la Grande Muraille de Chine 

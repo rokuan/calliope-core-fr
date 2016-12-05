@@ -138,7 +138,7 @@ public class PlaceParseTest {
 		String placeName = "Mont Compote Energie";
 		Word near = new Word("� proximit� de", WordType.PLACE_PREPOSITION);
 		near.setPlacePreposition(new PlacePreposition("� proximit� de", PlaceContext.NEAR, PlaceType.CUSTOM));
-		Word mountCompoteEnergie = new Word(placeName, WordType.ADDITIONAL_PLACE);
+		Word mountCompoteEnergie = new Word(placeName, WordType.CUSTOM_PLACE);
 		mountCompoteEnergie.setCustomPlace(new CustomPlace(placeName, "MOUNT_COMP"));
 		
 		words.add(near);

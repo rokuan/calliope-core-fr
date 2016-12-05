@@ -227,7 +227,7 @@ public class SentenceParseTest {
 		VerbConjugation toBeConjug = new VerbConjugation(ConjugationTense.PRESENT, Form.INDICATIVE, Pronoun.IL_ELLE_ON, "�tre", toBe);		
 		toBeConjug.setVerb(toBe);
 		be.setVerbInfo(toBeConjug);
-		Word person = new Word("Arnold Schwarzenegger", WordType.PERSON);
+		Word person = new Word("Arnold Schwarzenegger", WordType.CUSTOM_PERSON);
 		CustomPerson schwarzy = new CustomPerson("Arnold Schwarzenegger", "SCHWARZY");
 		person.setCustomPerson(schwarzy);
 		
@@ -348,7 +348,7 @@ public class SentenceParseTest {
 	public void testObjectSentence(){
 		FRWordBuffer words = new FRWordBuffer();
 		String objectName = "lumières de la cuisine";
-		Word light = new Word(objectName, WordType.OBJECT);
+		Word light = new Word(objectName, WordType.CUSTOM_OBJECT);
 		Word switchOff = new Word("�teinds", WordType.VERB);
 		Verb toSwitchOff = new Verb("�teindre", false, new Action(ActionType.TURN_OFF));
 		VerbConjugation switchConjugation = new VerbConjugation(ConjugationTense.PRESENT, Form.IMPERATIVE, Pronoun.TU, "�teinds", toSwitchOff);

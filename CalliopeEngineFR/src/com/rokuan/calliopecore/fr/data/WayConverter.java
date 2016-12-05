@@ -30,7 +30,7 @@ public class WayConverter {
 	
 	public static final WordPattern MODE_PATTERN = WordPattern.sequence(
 			FRWordPattern.simpleWord(WordType.WAY_PREPOSITION),
-			FRWordPattern.simpleWord(WordType.MODE));
+			FRWordPattern.simpleWord(WordType.CUSTOM_MODE));
 	
 	public static final WordPattern COLOR_PATTERN = WordPattern.sequence(
 			//FRWordPattern.simpleWord(WordType.WAY_PREPOSITION, "en"),
